@@ -218,3 +218,72 @@
   `components/HydratationStores.tsx`, `components/CartePokemon.tsx`, `components/EnTete.tsx`,
   `components/Icone.tsx`, `lib/pokeapi-client.ts`, `app/favoris/page.tsx`,
   `app/favoris/layout.tsx`, `app/layout.tsx`, `app/pokemon/[nom]/page.tsx`.
+
+## Étape 16 — la sacoche
+
+### La règle vit dans le store
+
+- **Point du cours** : ch. 9, « Dernière grande fonctionnalité » — « La sacoche obéit à des règles
+  métier, et c'est le store qui les fait respecter, pas les boutons » ; code de
+  `stores/sacoche.ts` repris : `TAILLE_SACOCHE = 6`, `ajouter` renvoie **l'état inchangé** si le
+  Pokémon est déjà là ou si l'équipe est pleine, `retirer`, `renommer` par `map` + copie, `vider`,
+  `persist` sous `pokedex-sacoche` avec `skipHydration`, réhydraté dans `HydratationStores`.
+- **Ajout (research R8, note de la tâche T059)** : `renommer` borne le surnom à
+  **12 caractères** (`slice(0, LONGUEUR_SURNOM)`) dans l'action elle-même ; le champ a aussi
+  `maxLength={12}`, mais c'est le store qui garantit la règle.
+- **`Pick`** : `Membre = Pick<Pokemon, "id" | "nom" | "image" | "types"> & { surnom }` — seulement
+  ce qu'il faut pour afficher un membre, pas les statistiques.
+- **Rien de calculable n'est stocké** : « pleine » (`equipe.length >= 6`), le nombre de membres de
+  l'indicateur et les types couverts sont calculés à l'affichage.
+- **Vérifié** (développement puis production, même scénario automatisé) :
+  - ajouts depuis 6 fiches → indicateur « Sacoche : 6 Pokémon sur 6 » ; 7ᵉ fiche (Mew) : bouton
+    « Sacoche pleine (6/6) » inactif (spec US5-1) ;
+  - fiche de Pikachu déjà présent : seul « Retirer de la sacoche » est proposé (pas de doublon) ;
+  - surnom : une saisie de 16 caractères injectée directement (sans passer par `maxLength`) est
+    ramenée à 12 par le store (« Pikachuuuuuu ») ; « Pika » conservé après rechargement ;
+  - 4 membres → 2 emplacements libres dessinés, indicateur 4/6 ;
+  - « Vider la sacoche » → « Confirmer ? » (rien n'est vidé) → second clic : 0 membre,
+    6 emplacements libres, le bouton disparaît ;
+  - rechargements : aucune erreur d'hydratation, console vide (production) ;
+  - onglet « Sacoche · Pokédex » (la `metadata` est dans `app/sacoche/layout.tsx`, la page étant
+    client).
+- **Fichiers** : `stores/sacoche.ts`, `components/HydratationStores.tsx`.
+
+### `BoutonSacoche` (fiche)
+
+- **Point du cours** : code du cours (sélecteurs à une valeur ; la fiche serveur passe l'objet
+  `pokemon`, des données simples, au composant client). Libellés de la tâche T061 : « Ajouter à
+  la sacoche », « Retirer de la sacoche », « Sacoche pleine (6/6) ». Le libellé « Coller dans la
+  sacoche » de la maquette n'est pas repris (il était marqué « à valider »).
+- **Fichiers** : `components/BoutonSacoche.tsx`, `app/pokemon/[nom]/page.tsx`.
+
+### `IndicateurSacoche` (en-tête)
+
+- **Point du cours** : six pastilles pleines ou vides, sélecteur sur `etat.equipe.length`, lien
+  vers `/sacoche`, `aria-label` « Sacoche : N Pokémon sur 6 ».
+- **Choix (direction « Album »)** : l'indicateur **est** le lien « Sacoche » de la navigation
+  (texte « Sacoche » + pastilles), pour ne pas avoir deux liens vers la même page côte à côte.
+  Sur téléphone, « 3/6 » en texte (six pastilles ne tiennent pas dans la ligne de 375 px).
+- **Vérifié** : en-tête à 375 px (« Sacoche 6/6 »), 640 px et 1 280 px (pastilles), en clair et
+  en sombre, sans débordement.
+- **Fichiers** : `components/IndicateurSacoche.tsx`, `components/EnTete.tsx`.
+
+### Page Sacoche et emplacements numérotés (geste signature de la direction)
+
+- **Point du cours** : page client ; membres avec image, surnom modifiable (`input` avec libellé,
+  `maxLength={12}`), types et bouton retirer ; emplacements libres **dessinés** et menant à `/` ;
+  « {n} / 6 Pokémon · {k} type(s) couvert(s) ».
+- **Choix** : structure du cours mise en forme selon la maquette : vignettes numérotées 1 à 6, les
+  vides en tirets avec leur grand numéro et « Emplacement libre » ; bouton retirer en croix
+  (SVG Phosphor) avec `aria-label` « Retirer {nom} de la sacoche » ; libellé visible « Surnom de
+  {nom} » relié au champ (`htmlFor`).
+- **Correction faite pendant la vérification** : à 1 280 px, les emplacements libres débordaient
+  et se chevauchaient (`aspect-[3/4]` combiné à `h-full`) ; remplacé par `h-full min-h-48`.
+- **Fichiers** : `app/sacoche/page.tsx`, `app/sacoche/layout.tsx`, `components/Icone.tsx`.
+
+### `BoutonVider` : confirmation en deux clics
+
+- **Point du cours** : exercice « Vider la sacoche, avec confirmation » — affiché seulement si la
+  sacoche n'est pas vide ; 1er clic « Confirmer ? », 2e clic vide ; l'état « à confirmer » reste
+  dans un `useState` (il ne concerne que ce bouton), remis à zéro quand le bouton perd le focus.
+- **Fichiers** : `components/BoutonVider.tsx`.

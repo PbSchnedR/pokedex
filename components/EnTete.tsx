@@ -1,6 +1,7 @@
 import Link from "next/link";
 import BoutonTheme from "./BoutonTheme";
 import CompteurFavoris from "./CompteurFavoris";
+import IndicateurSacoche from "./IndicateurSacoche";
 
 const LIEN_NAV =
   "rounded-full px-2 py-2 text-base font-semibold hover:bg-fond focus-visible:outline-2 " +
@@ -24,7 +25,7 @@ export default function EnTete() {
             <Link href="/favoris" className={`${LIEN_NAV} inline-flex items-center gap-2`}>
               Favoris <CompteurFavoris />
             </Link>
-            <Link href="/sacoche" className={LIEN_NAV}>Sacoche</Link>
+            <IndicateurSacoche className={LIEN_NAV} />
           </nav>
           <BoutonTheme />
         </div>

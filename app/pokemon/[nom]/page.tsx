@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import BadgeType from "@/components/BadgeType";
 import BarresStats from "@/components/BarresStats";
 import BoutonFavori from "@/components/BoutonFavori";
+import BoutonSacoche from "@/components/BoutonSacoche";
 import GrillePokemons from "@/components/GrillePokemons";
 import { teinteType } from "@/lib/types";
 import {
@@ -88,6 +89,9 @@ async function Fiche({ params }: Props) {
         <h2 className="mt-6 text-base font-bold">Statistiques de base</h2>
         <div className="mt-2">
           <BarresStats stats={pokemon.stats} />
+        </div>
+        <div className="mt-6">
+          <BoutonSacoche pokemon={pokemon} />
         </div>
       </div>
 

@@ -203,14 +203,14 @@ confirmé, persistance.
 
 **Independent Test**: [quickstart.md › US5](./quickstart.md)
 
-- [ ] T059 [US5] Créer `stores/sacoche.ts` : `TAILLE_SACOCHE = 6`, `Membre = Pick<Pokemon, "id" | "nom" | "image" | "types"> & { surnom: string }`, `equipe: Membre[]`, `ajouter` qui **renvoie l'état inchangé si doublon d'`id` ou équipe pleine**, `retirer(id)`, `renommer(id, surnom)` par `map` avec surnom limité à **12 caractères** (`slice(0, 12)`, chaîne vide = pas de surnom), `vider()` ; `persist` `{ name: "pokedex-sacoche", skipHydration: true }` ; ne **pas** stocker `estPleine`
-- [ ] T060 [US5] Ajouter `useSacoche.persist.rehydrate()` dans `components/HydratationStores.tsx`
-- [ ] T061 [P] [US5] Créer `components/BoutonSacoche.tsx` : « Ajouter à la sacoche » / « Retirer de la sacoche » sur la fiche ; désactivé quand la sacoche est pleine avec le message « Sacoche pleine (6/6) » (dérivé `equipe.length >= TAILLE_SACOCHE`) ; l'intégrer dans `app/pokemon/[nom]/page.tsx`
-- [ ] T062 [P] [US5] Créer `components/IndicateurSacoche.tsx` : six pastilles pleines ou vides, sélecteur sur `etat.equipe.length`, lien vers `/sacoche` ; l'afficher dans `components/EnTete.tsx`
-- [ ] T063 [US5] Créer `app/sacoche/page.tsx` (`"use client"`) : membres avec image, surnom modifiable (`<input maxLength={12}>` avec libellé), types et bouton retirer ; emplacements libres **dessinés** et menant à `/` ; créer `app/sacoche/layout.tsx` avec `metadata = { title: "Sacoche" }`
+- [X] T059 [US5] Créer `stores/sacoche.ts` : `TAILLE_SACOCHE = 6`, `Membre = Pick<Pokemon, "id" | "nom" | "image" | "types"> & { surnom: string }`, `equipe: Membre[]`, `ajouter` qui **renvoie l'état inchangé si doublon d'`id` ou équipe pleine**, `retirer(id)`, `renommer(id, surnom)` par `map` avec surnom limité à **12 caractères** (`slice(0, 12)`, chaîne vide = pas de surnom), `vider()` ; `persist` `{ name: "pokedex-sacoche", skipHydration: true }` ; ne **pas** stocker `estPleine`
+- [X] T060 [US5] Ajouter `useSacoche.persist.rehydrate()` dans `components/HydratationStores.tsx`
+- [X] T061 [P] [US5] Créer `components/BoutonSacoche.tsx` : « Ajouter à la sacoche » / « Retirer de la sacoche » sur la fiche ; désactivé quand la sacoche est pleine avec le message « Sacoche pleine (6/6) » (dérivé `equipe.length >= TAILLE_SACOCHE`) ; l'intégrer dans `app/pokemon/[nom]/page.tsx`
+- [X] T062 [P] [US5] Créer `components/IndicateurSacoche.tsx` : six pastilles pleines ou vides, sélecteur sur `etat.equipe.length`, lien vers `/sacoche` ; l'afficher dans `components/EnTete.tsx`
+- [X] T063 [US5] Créer `app/sacoche/page.tsx` (`"use client"`) : membres avec image, surnom modifiable (`<input maxLength={12}>` avec libellé), types et bouton retirer ; emplacements libres **dessinés** et menant à `/` ; créer `app/sacoche/layout.tsx` avec `metadata = { title: "Sacoche" }`
   - *Note (décision du manager, 2026-11-23)* : une page provisoire `app/sacoche/page.tsx` (`<h1>Ma sacoche</h1>` + `metadata`) existe depuis le complément de l'étape 7 ; elle est remplacée ici et sa `metadata` passe dans `app/sacoche/layout.tsx`, puisque la page devient client.
-- [ ] T064 [P] [US5] Créer `components/BoutonVider.tsx` : affiché seulement si la sacoche contient au moins 1 Pokémon ; 1er clic « Confirmer ? », 2e clic vide ; état « à confirmer » dans un `useState` (pas dans le store) ; l'intégrer dans `app/sacoche/page.tsx`
-- [ ] T065 [US5] Étape 16 : 7ᵉ ajout refusé, doublon refusé, surnom persistant, rechargement sans erreur d'hydratation ; documenter « la règle vit dans le store », `Pick`, valeurs dérivées dans `docs/09-interactivite-avancee.md`
+- [X] T064 [P] [US5] Créer `components/BoutonVider.tsx` : affiché seulement si la sacoche contient au moins 1 Pokémon ; 1er clic « Confirmer ? », 2e clic vide ; état « à confirmer » dans un `useState` (pas dans le store) ; l'intégrer dans `app/sacoche/page.tsx`
+- [X] T065 [US5] Étape 16 : 7ᵉ ajout refusé, doublon refusé, surnom persistant, rechargement sans erreur d'hydratation ; documenter « la règle vit dans le store », `Pick`, valeurs dérivées dans `docs/09-interactivite-avancee.md`
 
 ⏸ **STOP étape 16**
 
