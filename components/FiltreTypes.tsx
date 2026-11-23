@@ -1,10 +1,12 @@
 import Link from "next/link";
+import type { Tri } from "@/lib/parametres";
 import { TYPES } from "@/lib/types";
 
-function adresse(q: string, type: string) {
+function adresse(q: string, type: string, tri: Tri) {
   const parametres = new URLSearchParams();
   if (q) parametres.set("q", q);
   if (type) parametres.set("type", type);
+  if (tri === "nom") parametres.set("tri", "nom"); // bonus FR-036 : le tri est conservé
   return `/?${parametres.toString()}`;
 }
 
@@ -15,13 +17,13 @@ const PASTILLE =
 // ch. 9 — composant serveur, sans JavaScript côté navigateur : un état rangé dans l'adresse se
 // modifie avec un lien. Le type actif est signalé par aria-current et un anneau (pas seulement
 // par la couleur) ; les pastilles inactives gardent leur couleur pleine (contraste du texte blanc).
-export default function FiltreTypes({ q, typeActif }: { q: string; typeActif: string }) {
+export default function FiltreTypes({ q, typeActif, tri }: { q: string; typeActif: string; tri: Tri }) {
   return (
     <nav aria-label="Filtrer par type" className="-mx-4 overflow-x-auto px-4 md:mx-0 md:overflow-visible md:px-0">
       <ul className="flex gap-2 py-2 md:flex-wrap">
         <li>
           <Link
-            href={adresse(q, "")}
+            href={adresse(q, "", tri)}
             aria-current={typeActif ? undefined : "true"}
             className={`${PASTILLE} ${
               typeActif
@@ -35,7 +37,7 @@ export default function FiltreTypes({ q, typeActif }: { q: string; typeActif: st
         {Object.entries(TYPES).map(([type, style]) => (
           <li key={type}>
             <Link
-              href={adresse(q, type)}
+              href={adresse(q, type, tri)}
               aria-current={type === typeActif ? "true" : undefined}
               className={`${PASTILLE} text-white transition-opacity hover:opacity-85 motion-reduce:transition-none ${style.classe} ${
                 type === typeActif ? "ring-2 ring-encre ring-offset-2 ring-offset-fond dark:ring-encre-sombre dark:ring-offset-fond-sombre" : ""

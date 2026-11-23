@@ -4,9 +4,11 @@ import { CLASSES_CHAMP } from "@/components/classes";
 import FiltreTypes from "@/components/FiltreTypes";
 import GrillePokemons from "@/components/GrillePokemons";
 import Pagination from "@/components/Pagination";
+import SelecteurTri from "@/components/SelecteurTri";
 import Icone from "@/components/Icone";
 import SqueletteGrille from "@/components/SqueletteGrille";
-import { bornerPage, lireFiltres, PAR_PAGE, type ParametresRecherche } from "@/lib/parametres";
+import { nomFrancaisDepuisNom } from "@/lib/noms-fr";
+import { bornerPage, lireFiltres, lireTri, PAR_PAGE, type ParametresRecherche } from "@/lib/parametres";
 import { recupererNomsParType, recupererPlusieurs, recupererTousLesNoms } from "@/lib/pokeapi";
 
 type Props = {
@@ -57,7 +59,7 @@ function Squelette() {
 async function ZoneResultats({ searchParams }: Props) {
   const parametres = await searchParams;
   const { texte, type } = lireFiltres(parametres);
-  const cle = [texte, type, String(parametres.page ?? "1")].join("|");
+  const cle = [texte, type, String(parametres.page ?? "1"), lireTri(parametres.tri)].join("|");
   return (
     <Suspense key={cle} fallback={<Squelette />}>
       <Resultats searchParams={searchParams} />
@@ -69,9 +71,15 @@ async function Resultats({ searchParams }: Props) {
   const parametres = await searchParams;
   // ch. 9 — tout ce qui vient de l'adresse est validé (lib/parametres.ts, testé).
   const { q, texte, type } = lireFiltres(parametres);
-  // Ordre des numéros conservé : aucune recherche ne trie par nom (clarification « Analyse »).
+  // Ordre des numéros par défaut (clarification « Analyse ») ; le tri par nom est le bonus FR-036.
   let noms = type ? await recupererNomsParType(type) : await recupererTousLesNoms();
   if (texte) noms = noms.filter((nom) => nom.includes(texte));
+  // Bonus FR-036 — tri par nom français, AVANT le découpage en pages. Copie d'abord : sans
+  // recherche, `noms` est le tableau mis en cache par "use cache", qu'il ne faut pas modifier.
+  const tri = lireTri(parametres.tri);
+  if (tri === "nom") {
+    noms = [...noms].sort((a, b) => nomFrancaisDepuisNom(a).localeCompare(nomFrancaisDepuisNom(b), "fr"));
+  }
   const { pageCourante, nombrePages } = bornerPage(parametres.page, noms.length);
   // Seuls les 24 Pokémon visibles sont chargés en détail.
   const visibles = noms.slice((pageCourante - 1) * PAR_PAGE, pageCourante * PAR_PAGE);
@@ -80,9 +88,12 @@ async function Resultats({ searchParams }: Props) {
   return (
     <>
       <div className="mt-2">
-        <FiltreTypes q={q} typeActif={type} />
+        <FiltreTypes q={q} typeActif={type} tri={tri} />
       </div>
-      <p className="mt-2 text-base text-doux dark:text-doux-sombre">{noms.length.toLocaleString("fr-FR")} Pokémon</p>
+      <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+        <p className="text-base text-doux dark:text-doux-sombre">{noms.length.toLocaleString("fr-FR")} Pokémon</p>
+        <SelecteurTri q={q} type={type} tri={tri} />
+      </div>
       <div className="mt-4">
         {noms.length === 0 ? (
           <p className="py-8 text-center text-base text-doux dark:text-doux-sombre">
@@ -92,7 +103,7 @@ async function Resultats({ searchParams }: Props) {
           <GrillePokemons pokemons={pokemons} />
         )}
       </div>
-      <Pagination page={pageCourante} nombrePages={nombrePages} q={q} type={type} />
+      <Pagination page={pageCourante} nombrePages={nombrePages} q={q} type={type} tri={tri} />
     </>
   );
 }

@@ -1,17 +1,21 @@
 import Link from "next/link";
+import type { Tri } from "@/lib/parametres";
 
 type Props = {
   page: number;
   nombrePages: number;
   q: string;
   type: string;
+  tri: Tri;
 };
 
-// ch. 9 — chaque lien conserve la recherche et le type ; `page=1` n'est pas écrit.
-function adresse({ q, type }: Props, page: number) {
+// ch. 9 — chaque lien conserve la recherche, le type et le tri (bonus) ; `page=1` et
+// `tri=numero` (défauts) ne sont pas écrits.
+function adresse({ q, type, tri }: Props, page: number) {
   const parametres = new URLSearchParams();
   if (q) parametres.set("q", q);
   if (type) parametres.set("type", type);
+  if (tri === "nom") parametres.set("tri", "nom");
   if (page > 1) parametres.set("page", String(page));
   return `/?${parametres.toString()}`;
 }
