@@ -9,7 +9,7 @@ import type { Pokemon } from "@/types/pokemon";
 // Ce que la page a trouvé pour chaque côté (adresse validée puis API interrogée).
 export type Colonne =
   | { etat: "vide" }
-  | { etat: "introuvable"; saisi: string }
+  | { etat: "introuvable"; saisi: string; suggestions: { nom: string; lien: string }[] }
   | { etat: "trouve"; pokemon: Pokemon };
 
 // Mêmes libellés que BarresStats (non exportés là-bas) ; l'ordre fixe garde les 6 lignes même
@@ -102,9 +102,29 @@ function EnTeteColonne({ colonne, cote }: { colonne: Colonne; cote: "a" | "b" })
     <th scope="col" className="pb-2 align-top text-sm font-normal text-doux dark:text-doux-sombre">
       <div className="flex min-h-24 flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-black/15 p-2 sm:min-h-32 dark:border-white/15">
         {colonne.etat === "introuvable" ? (
-          <p>
-            Aucun Pokémon nommé <span className="font-bold wrap-break-word text-encre dark:text-encre-sombre">« {colonne.saisi} »</span>.
-          </p>
+          <>
+            <p>
+              Aucun Pokémon nommé <span className="font-bold wrap-break-word text-encre dark:text-encre-sombre">{`« ${colonne.saisi} »`}</span>.
+            </p>
+            {colonne.suggestions.length > 0 ? (
+              // Q-C1 — de simples liens (ch. 9, comme le filtre par type) : aucun JavaScript client.
+              <nav aria-label={`Suggestions pour « ${colonne.saisi} »`}>
+                <p>Vouliez-vous dire :</p>
+                <ul className="mt-1 flex flex-wrap justify-center gap-1">
+                  {colonne.suggestions.map((s) => (
+                    <li key={s.nom}>
+                      <Link
+                        href={s.lien}
+                        className="inline-block rounded-full border border-black/15 px-2 py-0.5 font-semibold capitalize text-encre hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokedex dark:border-white/20 dark:text-encre-sombre dark:hover:bg-white/10 dark:focus-visible:outline-pokedex-sombre"
+                      >
+                        {s.nom}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            ) : null}
+          </>
         ) : cote === "b" ? (
           <p>Choisissez un second Pokémon dans le champ ci-dessus.</p>
         ) : (

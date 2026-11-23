@@ -13,7 +13,22 @@ export default function ChoixComparaison() {
   const parametres = useSearchParams();
   const actuel = parametres.get("b") ?? "";
   const [texte, setTexte] = useState(actuel);
+  const [vu, setVu] = useState(actuel); // dernière valeur de `b` lue dans l'adresse
+  const [ecrit, setEcrit] = useState(actuel); // dernière valeur de `b` écrite par ce champ
   const id = useId(); // ch. 10 — relier le libellé visible à son champ
+
+  // Q-C1 — `b` peut changer sans ce champ (clic sur une suggestion, « Précédent ») : le champ
+  // reprend alors la valeur de l'adresse ; sinon l'effet ci-dessous réécrirait l'ancien texte.
+  // Mise à jour pendant l'affichage (motif React « ajuster l'état quand une donnée change ») ;
+  // une valeur que le champ vient d'écrire lui-même est ignorée, pour ne pas effacer les
+  // lettres tapées depuis.
+  if (actuel !== vu) {
+    setVu(actuel);
+    if (actuel !== ecrit) {
+      setTexte(actuel);
+      setEcrit(actuel); // sinon un « Précédent » vers une valeur écrite plus tôt serait ignoré
+    }
+  }
 
   useEffect(() => {
     if (texte === actuel) return;
@@ -22,6 +37,7 @@ export default function ChoixComparaison() {
       const suivants = new URLSearchParams(parametres.toString()); // `a` est conservé
       if (texte) suivants.set("b", texte);
       else suivants.delete("b");
+      setEcrit(texte);
       router.replace(`${chemin}?${suivants.toString()}`); // pas une entrée d'historique par lettre
     }, 300);
     return () => clearTimeout(minuteur);

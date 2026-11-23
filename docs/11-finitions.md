@@ -75,8 +75,8 @@ _Aucune entrée pour l'instant : ce chapitre n'a pas encore été mis en œuvre.
   sacoche.
 - **Alternatives écartées** : un bouton + `router.push` (moins accessible, pas préchargé) ;
   `router.push` à chaque frappe (historique pollué).
-- **Limite connue** : pendant la saisie (« rai »), la colonne affiche brièvement « Aucun Pokémon
-  nommé « rai » » ; les noms sont les noms anglais de l'API tant que les noms français (R5) ne
+- **Limite connue** : pendant la saisie (« rai »), la colonne affiche « Aucun Pokémon nommé
+  « rai » », désormais suivi de suggestions (Q-C1, ci-dessous) ; les noms sont les noms anglais de l'API tant que les noms français (R5) ne
   sont pas branchés.
 - **Fichiers** : `components/ChoixComparaison.tsx`, `app/pokemon/[nom]/page.tsx`.
 
@@ -91,3 +91,35 @@ _Aucune entrée pour l'instant : ce chapitre n'a pas encore été mis en œuvre.
 - `b=inconnu` → « Aucun Pokémon nommé « inconnu » » dans la colonne de droite, Pikachu affiché ;
   `/comparer` seul → deux messages ; `a=PIKACHU&b=../type/fire&b=mew` → Pikachu + message ;
   `a=pikachu&b=Pikachu` → `=` sur chaque ligne, aucun cadre.
+
+### Suggestions quand un nom est introuvable (décision Q-C1 : option C)
+
+- **Décision de l'utilisateur** : Q-C1, option C — côté serveur, proposer en liens les noms qui
+  contiennent la saisie.
+- **Point du cours** : ch. 9, « Chercher parmi 1 025 Pokémon » (liste complète en cache, filtrée
+  par `includes`) et « Le filtre par type : de simples liens » ; ch. 6, composants serveur par
+  défaut.
+- **Choix** : `suggerer(saisi, noms, 8)` (fonction pure) garde les noms de
+  `recupererTousLesNoms()` qui contiennent la saisie, dans l'ordre des numéros, au plus 8 ; saisie
+  vide → aucune. La liste n'est lue que si une colonne est introuvable. Chaque suggestion est un
+  `Link` construit par `lienComparaison`, qui remplace son côté et conserve l'autre
+  (`?a=pika&b=raichu` → « pikachu » mène à `?a=pikachu&b=raichu`). Aucun résultat → le message
+  seul. Tableau toujours serveur : aucun JavaScript client en plus pour les suggestions.
+- **Correction liée dans `ChoixComparaison`** : le champ gardait son texte quand `b` changeait
+  sans lui (clic sur une suggestion, « Précédent ») et son effet réécrivait aussitôt l'ancien texte
+  dans l'adresse (vu : clic sur « raichu » → retour à `b=rai`). Le champ reprend maintenant la
+  valeur de l'adresse quand elle change de l'extérieur (motif React « ajuster l'état pendant
+  l'affichage », états `vu` et `ecrit`), sans écraser les lettres tapées pendant la temporisation.
+  `BarreRecherche` a la même faiblesse en théorie (aucun lien de l'accueil ne change `q`
+  aujourd'hui) ; non modifiée, hors périmètre.
+- **Alternatives écartées** : `<datalist>` des 1 025 noms (environ 12 Ko de plus dans la page,
+  option B) ; suggestions côté client (composant client en plus).
+- **Vérifié** (production, Chrome sans interface, 375 px sombre) : saisie « rai » → 8 suggestions
+  (raichu, remoraid, raikou, masquerain, darkrai, braixen, koraidon, miraidon) → clic sur
+  raichu → `?a=pikachu&b=raichu`, tableau complet (6 meilleures valeurs), champ « raichu » et
+  adresse stable une seconde plus tard → « Précédent » → `?a=pikachu&b=rai`, champ « rai ».
+  `?a=pika&b=raichu` → suggestion pikachu vers `?a=pikachu&b=raichu` ; `b=zzz` → message seul.
+  Console sans erreur.
+- **Fichiers** : `lib/comparaison.ts` (`suggerer`, `lienComparaison`, `valeurChoix`),
+  `lib/comparaison.test.ts` (+9 tests), `app/comparer/page.tsx`,
+  `components/TableauComparaison.tsx`, `components/ChoixComparaison.tsx`.

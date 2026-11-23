@@ -45,3 +45,28 @@ export function meilleuresValeurs(a: Statistique[], b: Statistique[]): Record<st
   }
   return resultat;
 }
+
+// Q-C1 (choix de l'utilisateur : option C) — nom introuvable → noms de l'API qui contiennent la
+// saisie, dans l'ordre des numéros (ordre de `noms`), au plus `limite`. Saisie vide → aucune.
+export const LIMITE_SUGGESTIONS = 8;
+
+export function suggerer(saisi: string, noms: string[], limite = LIMITE_SUGGESTIONS): string[] {
+  const texte = saisi.trim().toLowerCase();
+  if (!texte) return [];
+  return noms.filter((nom) => nom.includes(texte)).slice(0, limite);
+}
+
+// Valeur à recopier dans l'adresse pour l'autre côté (null : rien à recopier).
+export function valeurChoix(choix: Choix): string | null {
+  return choix.etat === "nom" ? choix.nom : choix.etat === "invalide" ? choix.saisi : null;
+}
+
+// Lien d'une suggestion : remplace un côté, conserve l'autre tel qu'il est dans l'adresse.
+export function lienComparaison(cote: "a" | "b", nom: string, autre: string | null): string {
+  const parametres = new URLSearchParams();
+  const autreCote = cote === "a" ? "b" : "a";
+  parametres.set(cote, nom);
+  if (autre) parametres.set(autreCote, autre);
+  parametres.sort(); // toujours ?a=…&b=…
+  return `/comparer?${parametres.toString()}`;
+}

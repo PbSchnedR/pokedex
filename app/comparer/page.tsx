@@ -3,8 +3,16 @@ import ChoixComparaison from "@/components/ChoixComparaison";
 import { CLASSES_CHAMP } from "@/components/classes";
 import Icone from "@/components/Icone";
 import TableauComparaison, { type Colonne } from "@/components/TableauComparaison";
-import { lireComparaison, type Choix, type ParametresComparaison } from "@/lib/comparaison";
-import { recupererPokemon } from "@/lib/pokeapi";
+import {
+  lienComparaison,
+  lireComparaison,
+  suggerer,
+  valeurChoix,
+  type Choix,
+  type ParametresComparaison,
+} from "@/lib/comparaison";
+import { recupererPokemon, recupererTousLesNoms } from "@/lib/pokeapi";
+import type { Pokemon } from "@/types/pokemon";
 
 type Props = {
   searchParams: Promise<ParametresComparaison>;
@@ -49,17 +57,32 @@ function ChampInactif() {
 
 // ch. 7 — 404 → null : un nom inconnu devient un message dans sa colonne, pas un notFound()
 // global (FR-035). Une panne de l'API, elle, lève une erreur attrapée par error.tsx.
-async function versColonne(choix: Choix): Promise<Colonne> {
+async function chercher(choix: Choix): Promise<Pokemon | null> {
+  return choix.etat === "nom" ? recupererPokemon(choix.nom) : null; // invalide → aucune requête
+}
+
+// Q-C1 — colonne introuvable : suggestions prises dans la liste complète (en cache, ordre des
+// numéros), chacune en lien qui conserve l'autre côté de la comparaison.
+function versColonne(choix: Choix, pokemon: Pokemon | null, cote: "a" | "b", autre: Choix, noms: string[]): Colonne {
+  if (pokemon) return { etat: "trouve", pokemon };
   if (choix.etat === "vide") return { etat: "vide" };
-  if (choix.etat === "invalide") return { etat: "introuvable", saisi: choix.saisi }; // aucune requête
-  const pokemon = await recupererPokemon(choix.nom);
-  return pokemon ? { etat: "trouve", pokemon } : { etat: "introuvable", saisi: choix.nom };
+  const saisi = choix.etat === "nom" ? choix.nom : choix.saisi;
+  const suggestions = suggerer(saisi, noms).map((nom) => ({ nom, lien: lienComparaison(cote, nom, valeurChoix(autre)) }));
+  return { etat: "introuvable", saisi, suggestions };
 }
 
 async function Comparaison({ searchParams }: Props) {
   // ch. 9 — tout ce qui vient de l'adresse est validé (lib/comparaison.ts, testé).
   const { a, b } = lireComparaison(await searchParams);
   // ch. 7 — les deux appels partent ensemble.
-  const [colonneA, colonneB] = await Promise.all([versColonne(a), versColonne(b)]);
-  return <TableauComparaison a={colonneA} b={colonneB} />;
+  const [pokemonA, pokemonB] = await Promise.all([chercher(a), chercher(b)]);
+  // La liste des noms n'est lue que si une saisie n'a rien donné.
+  const manque = (choix: Choix, pokemon: Pokemon | null) => choix.etat !== "vide" && !pokemon;
+  const noms = manque(a, pokemonA) || manque(b, pokemonB) ? await recupererTousLesNoms() : [];
+  return (
+    <TableauComparaison
+      a={versColonne(a, pokemonA, "a", b, noms)}
+      b={versColonne(b, pokemonB, "b", a, noms)}
+    />
+  );
 }

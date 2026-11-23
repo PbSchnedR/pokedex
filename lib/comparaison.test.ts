@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { lireChoix, lireComparaison, meilleuresValeurs } from "@/lib/comparaison";
+import { lienComparaison, lireChoix, lireComparaison, meilleuresValeurs, suggerer, valeurChoix } from "@/lib/comparaison";
 
 describe("lireChoix (ch. 9 — l'adresse est non fiable)", () => {
   it("nom de l'API gardé tel quel", () => {
@@ -56,5 +56,55 @@ describe("meilleuresValeurs", () => {
 
   it("stat absente d'un côté → ignorée", () => {
     expect(meilleuresValeurs([stat("hp", 10)], [])).toEqual({});
+  });
+});
+
+describe("suggerer (Q-C1)", () => {
+  const noms = ["pikachu", "raichu", "raticate", "raichu-alola", "rattata"];
+
+  it("noms qui contiennent la saisie, dans l'ordre de la liste", () => {
+    expect(suggerer("rai", noms)).toEqual(["raichu", "raichu-alola"]);
+    expect(suggerer("chu", noms)).toEqual(["pikachu", "raichu", "raichu-alola"]);
+  });
+
+  it("insensible à la casse et aux espaces autour", () => {
+    expect(suggerer("  RAI ", noms)).toEqual(["raichu", "raichu-alola"]);
+  });
+
+  it("limité à 8 par défaut, ou à la limite donnée", () => {
+    const beaucoup = Array.from({ length: 20 }, (_, i) => `nom-${i}`);
+    expect(suggerer("nom", beaucoup)).toEqual(beaucoup.slice(0, 8));
+    expect(suggerer("nom", beaucoup, 3)).toEqual(["nom-0", "nom-1", "nom-2"]);
+  });
+
+  it("saisie vide → aucune suggestion (pas toute la liste)", () => {
+    expect(suggerer("", noms)).toEqual([]);
+    expect(suggerer("   ", noms)).toEqual([]);
+  });
+
+  it("aucun résultat → liste vide", () => {
+    expect(suggerer("zzz", noms)).toEqual([]);
+    expect(suggerer("../type/fire", noms)).toEqual([]);
+  });
+});
+
+describe("lienComparaison et valeurChoix", () => {
+  it("remplace b, conserve a", () => {
+    expect(lienComparaison("b", "raichu", "pikachu")).toBe("/comparer?a=pikachu&b=raichu");
+  });
+
+  it("remplace a, conserve b, toujours dans l'ordre a puis b", () => {
+    expect(lienComparaison("a", "pikachu", "raichu")).toBe("/comparer?a=pikachu&b=raichu");
+  });
+
+  it("autre côté vide → un seul paramètre ; saisie invalide recopiée encodée", () => {
+    expect(lienComparaison("a", "pikachu", null)).toBe("/comparer?a=pikachu");
+    expect(lienComparaison("a", "pikachu", "../x")).toBe("/comparer?a=pikachu&b=..%2Fx");
+  });
+
+  it("valeurChoix : nom, saisie invalide, ou rien", () => {
+    expect(valeurChoix({ etat: "nom", nom: "mew" })).toBe("mew");
+    expect(valeurChoix({ etat: "invalide", saisi: "a b" })).toBe("a b");
+    expect(valeurChoix({ etat: "vide" })).toBeNull();
   });
 });
