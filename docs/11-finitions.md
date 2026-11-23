@@ -289,3 +289,65 @@ simulation en JavaScript), focus relevé après chaque Tab, zones capturées et 
 - **Fichiers** : `lib/comparaison.ts` (`suggerer`, `lienComparaison`, `valeurChoix`),
   `lib/comparaison.test.ts` (+9 tests), `app/comparer/page.tsx`,
   `components/TableauComparaison.tsx`, `components/ChoixComparaison.tsx`.
+
+## Bonus — tri (T084, FR-036)
+
+- **Point du cours** : ch. 9, « État dans l'adresse » et « Le filtre par type : de simples
+  liens » (un état rangé dans l'adresse se change avec un `Link`, composant serveur) ; « Tout ce
+  qui vient de l'adresse est saisi par l'utilisateur, donc non fiable » (validation) ; ch. 2,
+  `sort` modifie le tableau d'origine. Le cours cite « le tri par nom, par numéro ou par
+  statistique » parmi les bonus ; la spec retient numéro et nom.
+- **Choix** :
+  - `lireTri(valeur)` (`lib/parametres.ts`, fonction pure testée) : `nom` → `nom`, toute autre
+    valeur (absente, vide, `licorne`, `NOM`, ` nom`) → `numero` ; paramètre répété → le premier,
+    comme `lireFiltres`. Le type `ParametresRecherche` gagne `tri` ; fonctions existantes
+    inchangées.
+  - `components/SelecteurTri.tsx` : composant serveur, deux liens « Numéro » / « Nom » dans un
+    `nav aria-label="Trier les résultats"`, choix actif signalé par `aria-current` et par un fond
+    plein (encre), pas seulement par la couleur ; libellés visibles = nom accessible. Style
+    direction 2 « Album » : pilule blanche `ring-1`, tailles `text-xs` gras comme les pastilles
+    de type, contour de focus `pokedex`. Placé à droite du nombre de Pokémon.
+  - `app/page.tsx` (`Resultats`) : tri **après** le filtre et **avant** `bornerPage` et le
+    découpage en pages, sinon seule la page visible serait triée. Tri par **nom français**
+    (`nomFrancaisDepuisNom`, `lib/noms-fr.ts`) avec `localeCompare(…, "fr")` : « Aéromite » vient
+    après « Absol » et avant « Aflamanoir ». Copie `[...noms]` avant `sort` : sans recherche,
+    `noms` est le tableau rendu par une fonction `"use cache"` ; le trier sur place modifierait
+    la valeur en cache. `tri=numero` garde l'ordre de l'API (ordre du Pokédex, clarification
+    « Analyse »).
+  - Clé du `Suspense` (Q-14) : `lireTri(parametres.tri)` y est ajouté, donc changer de tri remontre
+    le squelette comme un changement de page ; `?tri=licorne` et l'absence de `tri` donnent la
+    même clé.
+  - Adresse : `tri=numero` (défaut) n'est jamais écrit, comme `page=1`. `FiltreTypes` et
+    `Pagination` conservent `tri=nom` dans leurs liens ; changer de tri conserve `q` et `type` et
+    revient à la page 1 (comme un changement de type). `BarreRecherche` n'a pas été modifiée : elle
+    recopie déjà tous les paramètres de l'adresse et ne supprime que `page`, donc une nouvelle
+    recherche garde le tri et revient à la page 1 (vérifié ci-dessous).
+- **Alternatives écartées** : `<select>` avec `onChange` (composant client, JavaScript en plus,
+  contraire au principe du filtre par liens) ; tri par nom anglais (la grille affiche les noms
+  français une fois le bonus noms FR fusionné, et l'ordre ne correspondrait pas à ce qu'on lit) ;
+  tri de la seule page visible (faux dès la page 2).
+- **Vérifié** (build de production, `next start -p 3112`, Chrome sans interface piloté par CDP) :
+  - `/?tri=nom` : « Nom » marqué `aria-current`, 1 025 Pokémon, premières cartes n° 23, 63, 359,
+    49, 567, 631, 227, 55, 65, 160, 334, 805 = Abo, Abra, Absol, Aéromite, Aéroptéryx, Aflamanoir,
+    Airmure, Akwakwak, Alakazam, Aligatueur, Altaria, Ama-Ama — même liste recalculée à part
+    depuis `data/pokemons-fr.json`. « Suivant » → `/?tri=nom&page=2`, pastille Feu →
+    `/?type=fire&tri=nom`.
+  - `/?tri=nom&page=3` ouvert directement (nouvel onglet) : page 3 active, cartes n° 769, 811,
+    560, 559 (Bacabouh, Badabouin, Baggaïd, Baggiguane, conformes au calcul à part), à 1 280 px et
+    à 375 px.
+  - `/?tri=licorne` → ordre des numéros (001…006), « Numéro » actif, liens sans `tri`.
+    `/?tri=nom&tri=numero` → tri par nom (premier paramètre).
+  - Combiné `/?tri=nom&type=fire&q=a` : 51 Pokémon triés par nom ; liens de pagination, de type et
+    de tri conservent `q`, `type` et `tri`. `/?q=zzzz&tri=nom` → message « Aucun Pokémon… ».
+  - Clic sur « Nom » depuis `/?type=water&page=2` → `/?type=water&tri=nom`, page 1, squelette
+    observé pendant le chargement (`MutationObserver` sur `.animate-pulse`).
+  - Saisie « pi » depuis `/?tri=nom&page=3` → `/?tri=nom&q=pi` (tri gardé, page retirée),
+    38 Pokémon triés par nom.
+  - Captures : 1 280 px clair et 375 px sombre ; aucun défilement horizontal
+    (`scrollWidth = clientWidth`) ; console sans erreur ni avertissement.
+- **Limite constatée** : sur cette branche la grille affiche encore les noms anglais (l'affichage
+  des noms français est un autre bonus) ; l'ordre par nom ne paraît donc alphabétique qu'une fois
+  ce bonus fusionné.
+- **Fichiers** : `components/SelecteurTri.tsx`, `lib/parametres.ts` (`lireTri`, type `Tri`),
+  `lib/parametres.test.ts` (+4 tests), `app/page.tsx`, `components/FiltreTypes.tsx`,
+  `components/Pagination.tsx`.
