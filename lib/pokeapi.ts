@@ -69,3 +69,17 @@ export async function recupererTousLesNoms(): Promise<string[]> {
   if (!page) throw new Error("La liste des Pokémon est introuvable");
   return page.results.map((p) => p.name);
 }
+
+// ch. 9 — la PokéAPI n'a pas de recherche par nom : on croise la liste complète (ordre des
+// numéros) avec les Pokémon du type. Type inconnu de l'API (404) → liste vide.
+export async function recupererNomsParType(type: string): Promise<string[]> {
+  "use cache";
+  cacheLife("days");
+  const [tous, donnees] = await Promise.all([
+    recupererTousLesNoms(),
+    appeler<{ pokemon: { pokemon: { name: string } }[] }>(`/type/${type}`),
+  ]);
+  if (!donnees) return [];
+  const duType = new Set(donnees.pokemon.map((p) => p.pokemon.name));
+  return tous.filter((nom) => duType.has(nom));
+}
