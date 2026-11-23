@@ -144,3 +144,43 @@ conseil « pas de verre » d'impeccable.
 Un réglage de la maquette **n'est pas repris** : elle raccourcit `animate-apparition` à 0,32 s
 avec un décalage par carte. L'application garde la définition du cours (0,4 s, `ease-out`, sans
 décalage) : aucun écart à justifier, et la durée reste sous 0,5 s.
+
+## Jetons de la direction dans `@theme` (T013)
+
+- **Choix** : `app/globals.css` reçoit l'accent du cours (`--color-pokedex`) et sa variante de
+  texte en sombre (`--color-pokedex-sombre`), les neutres `fond`, `surface`, `encre`, `doux` en
+  versions claire et sombre, et les 18 couleurs de type (11 ajustées, valeur du cours en
+  commentaire). Pas de jeton de rayon ni d'ombre : la direction utilise ceux de Tailwind
+  (`rounded-xl`, `rounded-2xl`, `rounded-full`, `shadow-sm`), ce qui suffit à la cohérence.
+- **Contrastes recalculés** par l'agent (formule WCAG 2.x, script Node) : blanc sur les 18 types
+  de 4,60:1 à 9,52:1 ; accent sur blanc 5,22:1, sur fond 4,61:1 ; texte secondaire 5,68:1 (fond
+  clair) et 7,79:1 (fond sombre) ; accent sombre `#ff7a80` 6,58:1 sur surface sombre.
+- **Fichiers** : `app/globals.css`.
+
+## Thème clair par défaut, bascule sombre mémorisée (FR-023, research R7)
+
+- **Point du cours** : ch. 5, « États et thème sombre » (classes `dark:`) et étape 5 —
+  « L'interface reste lisible en thème sombre ». Le cours ne fixe pas comment le thème est choisi.
+- **Choix (décision utilisateur)** : clair par défaut, bouton de bascule, choix mémorisé dans
+  `localStorage["pokedex-theme"]` (`"clair"` | `"sombre"`).
+  - `@custom-variant dark (&:where(.dark, .dark *));` dans `globals.css` : la variante `dark:`
+    suit la classe `dark` de `<html>` et non plus le réglage du système. Syntaxe vérifiée sur
+    Tailwind 4.3.3 : la feuille produite contient les règles `.dark` et le rendu sombre a été
+    contrôlé à l'écran.
+  - Script en ligne dans `<head>` (`app/layout.tsx`) : pose la classe avant le premier affichage,
+    donc pas de flash clair ; `try/catch` si le stockage est indisponible.
+  - `BoutonTheme` (client) : bascule la classe et écrit le choix. Son état affiché est **lu** dans
+    la classe de `<html>` par `useSyncExternalStore` (valeur serveur : clair), au lieu d'être
+    copié dans un `useState` : aucune erreur d'hydratation et aucune valeur dupliquée.
+  - Accessibilité : `aria-pressed` (vrai en sombre) et libellé **fixe** « Thème sombre » : avec
+    `aria-pressed`, changer aussi le libellé ferait annoncer un état contradictoire. L'icône
+    (lune / soleil) change par CSS (`dark:hidden` / `dark:block`), sans attendre JavaScript.
+- **Vérifié** (Chrome sans interface, serveur de développement) : premier passage sans clé →
+  fond `#eef1f5` ; clé `"sombre"` → classe `dark` présente dès le chargement, fond `#11141a` ;
+  clic → `aria-pressed="true"`, classe `dark`, stockage `"sombre"` ; second clic → retour en
+  clair, stockage `"clair"` ; console vide.
+- **Alternatives écartées** : `next-themes` (dépendance hors pile) ; thème selon le système
+  (refusé par l'utilisateur) ; état React initialisé dans un `useEffect` (flash et règle ESLint
+  contre `setState` dans un effet).
+- **Fichiers** : `app/globals.css`, `app/layout.tsx`, `components/BoutonTheme.tsx`,
+  `components/Icone.tsx`.

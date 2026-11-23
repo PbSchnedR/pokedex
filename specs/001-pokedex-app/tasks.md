@@ -68,15 +68,15 @@ couche d'accès aux données. Bloque toutes les stories.
 
 ⏸ **STOP C — validation de la direction artistique**
 
-- [ ] T013 Appliquer les jetons validés en T012 dans `app/globals.css` (`@theme` : accent, neutres, rayons, ombres) sans retirer les couleurs de type ; vérifier le contraste du texte blanc sur chaque `--color-type-*` et ajuster si besoin (ch. 11)
-- [ ] T014 Thème (FR-023, research R7) : dans `app/globals.css`, variante `dark` pilotée par la classe `dark` sur `<html>` (vérifier la syntaxe de la version de Tailwind installée) ; dans `app/layout.tsx`, script en ligne qui lit `localStorage["pokedex-theme"]` (`"clair"` | `"sombre"`, absent = clair) et pose la classe **avant** l'affichage ; `<html lang="fr" suppressHydrationWarning>`
-- [ ] T015 [P] Créer `components/BoutonTheme.tsx` (`"use client"`) : bascule la classe `dark`, écrit `pokedex-theme`, `aria-pressed` et `aria-label` explicites ; stockage indisponible → reste en clair sans erreur ([contracts/stockage-local.md](./contracts/stockage-local.md))
-- [ ] T016 [P] Créer `components/PiedDePage.tsx` : « Données : PokéAPI », PokéAPI étant un lien vers https://pokeapi.co
-- [ ] T017 [P] Créer `components/EnTete.tsx` : Flexbox, titre et navigation empilés sur téléphone puis alignés aux deux extrémités à partir de `sm:` ; liens `Link` « Pokédex » (`/`), « Favoris » (`/favoris`), « Sacoche » (`/sacoche`) ; `BoutonTheme`
-- [ ] T018 Étape 7 : `app/layout.tsx` — `import "./globals.css"`, police `next/font` retenue en T012, `metadata` `{ title: { default: "Pokédex", template: "%s · Pokédex" }, description }`, `EnTete`, `<main className="mx-auto max-w-6xl px-4 py-6">`, `PiedDePage`
-- [ ] T019 Dans `next.config.ts`, ajouter `images.remotePatterns: [{ protocol: "https", hostname: "raw.githubusercontent.com" }]` en gardant `cacheComponents`, `partialPrefetching` et le reste ; redémarrer `npm run dev`
-- [ ] T020 [P] Créer `app/not-found.tsx` : titre « Ce Pokémon s'est enfui », texte, `Link` « Retour au Pokédex » ; visiter `/nimporte-quoi` (en-tête et pied de page visibles)
-- [ ] T021 Documenter l'étape 7 et les choix serveur/client, `Link`, `Image`, polices, `metadata`, page 404 dans `docs/06-nextjs.md` ; documenter le thème (R7) dans `docs/05-tailwind-interface.md` ; noter dans `docs/06-nextjs.md` l'écart de libellé « Pokédex » (au lieu de « Tous » dans le cours, étape 7) et sa raison
+- [X] T013 Appliquer les jetons validés en T012 dans `app/globals.css` (`@theme` : accent, neutres, rayons, ombres) sans retirer les couleurs de type ; vérifier le contraste du texte blanc sur chaque `--color-type-*` et ajuster si besoin (ch. 11)
+- [X] T014 Thème (FR-023, research R7) : dans `app/globals.css`, variante `dark` pilotée par la classe `dark` sur `<html>` (vérifier la syntaxe de la version de Tailwind installée) ; dans `app/layout.tsx`, script en ligne qui lit `localStorage["pokedex-theme"]` (`"clair"` | `"sombre"`, absent = clair) et pose la classe **avant** l'affichage ; `<html lang="fr" suppressHydrationWarning>`
+- [X] T015 [P] Créer `components/BoutonTheme.tsx` (`"use client"`) : bascule la classe `dark`, écrit `pokedex-theme`, `aria-pressed` et `aria-label` explicites ; stockage indisponible → reste en clair sans erreur ([contracts/stockage-local.md](./contracts/stockage-local.md))
+- [X] T016 [P] Créer `components/PiedDePage.tsx` : « Données : PokéAPI », PokéAPI étant un lien vers https://pokeapi.co
+- [X] T017 [P] Créer `components/EnTete.tsx` : Flexbox, titre et navigation empilés sur téléphone puis alignés aux deux extrémités à partir de `sm:` ; liens `Link` « Pokédex » (`/`), « Favoris » (`/favoris`), « Sacoche » (`/sacoche`) ; `BoutonTheme`
+- [X] T018 Étape 7 : `app/layout.tsx` — `import "./globals.css"`, police `next/font` retenue en T012, `metadata` `{ title: { default: "Pokédex", template: "%s · Pokédex" }, description }`, `EnTete`, `<main className="mx-auto max-w-6xl px-4 py-6">`, `PiedDePage`
+- [X] T019 Dans `next.config.ts`, ajouter `images.remotePatterns: [{ protocol: "https", hostname: "raw.githubusercontent.com" }]` en gardant `cacheComponents`, `partialPrefetching` et le reste ; redémarrer `npm run dev`
+- [X] T020 [P] Créer `app/not-found.tsx` : titre « Ce Pokémon s'est enfui », texte, `Link` « Retour au Pokédex » ; visiter `/nimporte-quoi` (en-tête et pied de page visibles)
+- [X] T021 Documenter l'étape 7 et les choix serveur/client, `Link`, `Image`, polices, `metadata`, page 404 dans `docs/06-nextjs.md` ; documenter le thème (R7) dans `docs/05-tailwind-interface.md` ; noter dans `docs/06-nextjs.md` l'écart de libellé « Pokédex » (au lieu de « Tous » dans le cours, étape 7) et sa raison
 
 ⏸ **STOP étape 7** (l'étape 5–6 visuelle est livrée avec US1)
 

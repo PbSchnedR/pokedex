@@ -1,26 +1,46 @@
 @import "tailwindcss";
 
+/* FR-023 / research R7 — thème sombre piloté par la classe `dark` posée sur <html> (et non par
+   le réglage du système) : toutes les classes `dark:` du cours restent valables. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ch. 5 — Tailwind 4 se configure dans le CSS : chaque --color-xxx crée bg-xxx, text-xxx, border-xxx. */
 @theme {
+  /* Accent du cours, conservé par la direction « Album à compléter » (T012, Q-T012-a).
+     `pokedex-sombre` : l'accent quand il sert de texte sur fond sombre. */
   --color-pokedex: #d2232f;
-  --color-type-normal: #7b7b6c;
-  --color-type-fire: #d2571c;
+  --color-pokedex-sombre: #ff7a80;
+
+  /* Neutres de la direction (contrastes vérifiés dans specs/001-pokedex-app/design/directions.md). */
+  --color-fond: #eef1f5;
+  --color-fond-sombre: #11141a;
+  --color-surface: #ffffff;
+  --color-surface-sombre: #1a1f27;
+  --color-encre: #161a22;
+  --color-encre-sombre: #eceff4;
+  --color-doux: #575f6d;
+  --color-doux-sombre: #a1a9b6;
+
+  /* Couleurs de type du cours. 11 d'entre elles sont assombries pour que le texte blanc des
+     badges atteigne 4,5:1 (ch. 11, décision Q-T012-b) ; valeur du cours en commentaire. */
+  --color-type-normal: #767668;   /* cours #7b7b6c */
+  --color-type-fire: #c4511a;     /* cours #d2571c */
   --color-type-water: #2f6fd0;
-  --color-type-electric: #9a7400;
-  --color-type-grass: #3f8f3a;
-  --color-type-ice: #2e8f93;
+  --color-type-electric: #946f00; /* cours #9a7400 */
+  --color-type-grass: #3a8436;    /* cours #3f8f3a */
+  --color-type-ice: #298083;      /* cours #2e8f93 */
   --color-type-fighting: #a8322a;
   --color-type-poison: #8a3fa0;
-  --color-type-ground: #9c7a2e;
-  --color-type-flying: #5b78c9;
-  --color-type-psychic: #d43d6c;
-  --color-type-bug: #7c8a1a;
-  --color-type-rock: #8f7d35;
+  --color-type-ground: #8f702a;   /* cours #9c7a2e */
+  --color-type-flying: #5371c6;   /* cours #5b78c9 */
+  --color-type-psychic: #d33969;  /* cours #d43d6c */
+  --color-type-bug: #6f7b17;      /* cours #7c8a1a */
+  --color-type-rock: #857431;     /* cours #8f7d35 */
   --color-type-ghost: #5a4a8c;
   --color-type-dragon: #5a3fd6;
   --color-type-dark: #50433a;
   --color-type-steel: #6d6d85;
-  --color-type-fairy: #c2528f;
+  --color-type-fairy: #bf4a8a;    /* cours #c2528f */
 
   /* ch. 5 — mouvement discret : < 0,5 s, transform et opacity uniquement. */
   --animate-apparition: apparition 0.4s ease-out both;
@@ -28,5 +48,34 @@
   @keyframes apparition {
     from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: none; }
+  }
+}
+
+/* ch. 6 — police chargée par next/font (variable posée sur <html> dans layout.tsx). */
+@theme inline {
+  --font-sans: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer components {
+  /* Ombre teintée de la carte au survol : seule son opacité est animée (ch. 5 : transform et
+     opacity), au lieu d'animer box-shadow. */
+  .carte::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow: 0 16px 32px -12px color-mix(in oklab, var(--teinte) 45%, transparent);
+    opacity: 0;
+    transition: opacity 0.2s ease-out;
+  }
+  .carte:hover::before,
+  .carte:focus-within::before {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .carte::before {
+      transition: none;
+    }
   }
 }
