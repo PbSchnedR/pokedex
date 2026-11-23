@@ -24,7 +24,7 @@ type Props = {
 export default function PageComparer({ searchParams }: Props) {
   return (
     <>
-      <h1 className="text-3xl font-extrabold tracking-tight font-stretch-85%">Comparer</h1>
+      <h1 className="font-pixel text-3xl">Comparer</h1>
       <div className="mt-4 md:w-80">
         <Suspense fallback={<ChampInactif />}>
           <ChoixComparaison />

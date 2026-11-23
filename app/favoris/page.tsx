@@ -15,7 +15,7 @@ export default function PageFavoris() {
 
   return (
     <>
-      <h1 className="text-3xl font-extrabold tracking-tight font-stretch-85%">Mes favoris</h1>
+      <h1 className="font-pixel text-3xl">Mes favoris</h1>
       <div className="mt-6">
         {etat === "erreur" ? (
           <p className={TEXTE}>Impossible de charger vos favoris.</p>

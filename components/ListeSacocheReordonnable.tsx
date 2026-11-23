@@ -74,77 +74,81 @@ export default function ListeSacocheReordonnable({
           Glissez une carte, ou utilisez ses flèches, pour changer l&apos;ordre.
         </p>
       )}
-      <ul className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-6">
-        {equipe.map((membre, i) => (
-          <li
-            key={membre.id}
-            draggable
-            onDragStart={(e) => {
-              // Sélectionner le texte du surnom ne doit pas soulever la carte.
-              if (e.target instanceof HTMLInputElement) return e.preventDefault();
-              e.dataTransfer.effectAllowed = "move";
-              e.dataTransfer.setData("text/plain", String(i)); // requis par Firefox pour démarrer
-              // Saisie sur l'illustration (une <img> se glisse seule) : on montre quand même toute la carte.
-              const cadre = e.currentTarget.getBoundingClientRect();
-              e.dataTransfer.setDragImage(e.currentTarget, e.clientX - cadre.left, e.clientY - cadre.top);
-              setGlisse(i);
-            }}
-            onDragOver={(e) => {
-              if (glisse === null) return; // un fichier ou un texte venu d'ailleurs : pas de dépôt
-              e.preventDefault(); // autorise le dépôt ici
-              e.dataTransfer.dropEffect = "move";
-              if (cible !== i) setCible(i);
-            }}
-            onDragLeave={quitterCible}
-            onDrop={(e) => {
-              e.preventDefault();
-              if (glisse !== null) reordonner(glisse, i);
-              finirGlisser();
-            }}
-            onDragEnd={finirGlisser}
-            style={{ "--teinte": teinteType(membre.types[0]) } as CSSProperties}
-            className={`relative flex cursor-grab flex-col rounded-2xl bg-surface p-2 shadow-sm ring-1 ring-black/5
-                        transition-opacity duration-150 active:cursor-grabbing motion-reduce:transition-none
-                        dark:bg-surface-sombre dark:ring-white/10 ${glisse === i ? "opacity-40" : ""} ${
-                          cible === i && glisse !== i
-                            ? "outline-2 outline-offset-4 outline-dashed outline-pokedex dark:outline-pokedex-sombre"
-                            : ""
-                        }`}
-          >
-            {rendreMembre(membre, i)}
-            <div className="mt-auto flex justify-end gap-2 px-2 pb-1">
-              {(["monter", "descendre"] as const).map((sens) => {
-                const vers = sens === "monter" ? i - 1 : i + 1;
-                return (
-                  <button
-                    key={sens}
-                    type="button"
-                    ref={(bouton) => {
-                      boutons.current.set(`${membre.id}-${sens}`, bouton);
-                    }}
-                    disabled={vers < 0 || vers >= equipe.length}
-                    onClick={() => {
-                      aFocaliser.current = { id: membre.id, sens };
-                      reordonner(i, vers);
-                    }}
-                    className="grid size-10 place-items-center rounded-full bg-fond text-doux
-                               transition-transform hover:text-pokedex active:scale-90 focus-visible:outline-2
-                               focus-visible:outline-offset-2 focus-visible:outline-pokedex disabled:opacity-30
-                               disabled:hover:text-doux motion-reduce:transition-none dark:bg-fond-sombre
-                               dark:text-doux-sombre dark:hover:text-pokedex-sombre dark:focus-visible:outline-pokedex-sombre"
-                  >
-                    <Icone nom={sens === "monter" ? "flecheHaut" : "flecheBas"} className="size-4" />
-                    <span className="sr-only">
-                      {sens === "monter" ? "Monter" : "Descendre"} {nomAffiche(membre)}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </li>
-        ))}
-        {children}
-      </ul>
+      {/* Refonte « Console de poche » : colonnes selon la largeur de l'écran de la console
+          (requêtes de conteneur), comme la grille des Pokémon. */}
+      <div className="@container mt-6">
+        <ul className="grid grid-cols-2 gap-3 @min-[30rem]:grid-cols-3 @min-[30rem]:gap-4 @min-[52rem]:grid-cols-6">
+          {equipe.map((membre, i) => (
+            <li
+              key={membre.id}
+              draggable
+              onDragStart={(e) => {
+                // Sélectionner le texte du surnom ne doit pas soulever la carte.
+                if (e.target instanceof HTMLInputElement) return e.preventDefault();
+                e.dataTransfer.effectAllowed = "move";
+                e.dataTransfer.setData("text/plain", String(i)); // requis par Firefox pour démarrer
+                // Saisie sur l'illustration (une <img> se glisse seule) : on montre quand même toute la carte.
+                const cadre = e.currentTarget.getBoundingClientRect();
+                e.dataTransfer.setDragImage(e.currentTarget, e.clientX - cadre.left, e.clientY - cadre.top);
+                setGlisse(i);
+              }}
+              onDragOver={(e) => {
+                if (glisse === null) return; // un fichier ou un texte venu d'ailleurs : pas de dépôt
+                e.preventDefault(); // autorise le dépôt ici
+                e.dataTransfer.dropEffect = "move";
+                if (cible !== i) setCible(i);
+              }}
+              onDragLeave={quitterCible}
+              onDrop={(e) => {
+                e.preventDefault();
+                if (glisse !== null) reordonner(glisse, i);
+                finirGlisser();
+              }}
+              onDragEnd={finirGlisser}
+              style={{ "--teinte": teinteType(membre.types[0]) } as CSSProperties}
+              className={`relative flex cursor-grab flex-col overflow-hidden rounded-md bg-surface shadow-sm ring-1 ring-black/10
+                          transition-opacity duration-150 active:cursor-grabbing motion-reduce:transition-none
+                          dark:bg-surface-sombre dark:ring-white/10 ${glisse === i ? "opacity-40" : ""} ${
+                            cible === i && glisse !== i
+                              ? "outline-2 outline-offset-4 outline-dashed outline-pokedex dark:outline-pokedex-sombre"
+                              : ""
+                          }`}
+            >
+              {rendreMembre(membre, i)}
+              <div className="mt-auto flex justify-end gap-2 px-2 pb-2">
+                {(["monter", "descendre"] as const).map((sens) => {
+                  const vers = sens === "monter" ? i - 1 : i + 1;
+                  return (
+                    <button
+                      key={sens}
+                      type="button"
+                      ref={(bouton) => {
+                        boutons.current.set(`${membre.id}-${sens}`, bouton);
+                      }}
+                      disabled={vers < 0 || vers >= equipe.length}
+                      onClick={() => {
+                        aFocaliser.current = { id: membre.id, sens };
+                        reordonner(i, vers);
+                      }}
+                      className="grid size-10 place-items-center rounded-md bg-fond text-doux
+                                 transition-transform hover:text-pokedex-texte active:scale-90 focus-visible:outline-2
+                                 focus-visible:outline-offset-2 focus-visible:outline-pokedex disabled:opacity-30
+                                 disabled:hover:text-doux motion-reduce:transition-none dark:bg-fond-sombre
+                                 dark:text-doux-sombre dark:hover:text-pokedex-sombre dark:focus-visible:outline-pokedex-sombre"
+                    >
+                      <Icone nom={sens === "monter" ? "flecheHaut" : "flecheBas"} className="size-4" />
+                      <span className="sr-only">
+                        {sens === "monter" ? "Monter" : "Descendre"} {nomAffiche(membre)}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </li>
+          ))}
+          {children}
+        </ul>
+      </div>
       {/* ch. 11 — le nouvel ordre est lu par les lecteurs d'écran, sans voler le focus. */}
       <p aria-live="polite" className="sr-only">
         {annonce}

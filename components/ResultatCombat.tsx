@@ -13,7 +13,7 @@ const nombre = (valeur: number) => valeur.toLocaleString("fr-FR"); // 0,25 et no
 const accord = (n: number, mot: string) => `${n} ${mot}${n > 1 ? "s" : ""}`;
 
 const ISSUES = {
-  victoire: { titre: "Victoire !", classe: "text-pokedex dark:text-pokedex-sombre" },
+  victoire: { titre: "Victoire !", classe: "text-pokedex-texte dark:text-pokedex-sombre" },
   defaite: { titre: "Défaite", classe: "" },
   nul: { titre: "Match nul", classe: "" },
 };
@@ -34,18 +34,18 @@ function Combattant({ pokemon, camp, multiplicateur, score, gagnant }: PropsComb
   return (
     <div
       style={teinte}
-      className={`relative flex h-full flex-col rounded-2xl bg-surface p-2 shadow-sm dark:bg-surface-sombre ${
+      className={`relative flex h-full flex-col rounded-md bg-surface p-2 shadow-sm dark:bg-surface-sombre ${
         gagnant ? "ring-2 ring-pokedex dark:ring-pokedex-sombre" : "ring-1 ring-black/5 dark:ring-white/10"
       }`}
     >
-      <div className="relative h-28 overflow-hidden rounded-xl bg-radial-[at_50%_35%] from-(--teinte)/35 to-(--teinte)/10">
+      <div className="relative h-28 overflow-hidden rounded-sm bg-radial-[at_50%_35%] from-(--teinte)/35 to-(--teinte)/10">
         <Image src={pokemon.image} alt={pokemon.nomFr} width={96} height={96} className="mx-auto size-full object-contain p-2 drop-shadow-lg" />
       </div>
       <div className="flex grow flex-col p-2">
         <p className="text-xs font-semibold text-doux dark:text-doux-sombre">{camp}</p>
         {/* Après « Vous » / « Adversaire » dans le code, pour l'ordre de lecture ; posée sur l'image. */}
         {gagnant ? (
-          <span className="absolute left-4 top-4 rounded-full bg-pokedex px-2 py-0.5 text-xs font-bold text-white">Vainqueur</span>
+          <span className="absolute left-4 top-4 rounded-md bg-pokedex px-2 py-0.5 text-xs font-bold text-white">Vainqueur</span>
         ) : null}
         <p className="truncate text-base font-bold">{pokemon.nomFr}</p>
         <div className="mt-1 flex flex-wrap gap-1">
@@ -59,7 +59,7 @@ function Combattant({ pokemon, camp, multiplicateur, score, gagnant }: PropsComb
           <dt className="text-doux dark:text-doux-sombre">Avantage</dt>
           <dd className="text-right font-semibold">×{nombre(multiplicateur)}</dd>
           <dt className="self-end text-doux dark:text-doux-sombre">Score</dt>
-          <dd className="text-right text-3xl leading-none font-extrabold font-stretch-75%">{nombre(score)}</dd>
+          <dd className="text-right text-3xl leading-none font-pixel ">{nombre(score)}</dd>
         </dl>
       </div>
     </div>
@@ -80,11 +80,11 @@ export default function ResultatCombat({
     <>
       <section
         aria-labelledby="titre-issue"
-        className="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-surface p-4 shadow-sm ring-1 ring-black/5
+        className="flex flex-wrap items-center justify-between gap-4 rounded-md bg-surface p-4 shadow-sm ring-1 ring-black/5
                    dark:bg-surface-sombre dark:ring-white/10"
       >
         <div>
-          <h2 id="titre-issue" className={`text-3xl font-extrabold tracking-tight font-stretch-85% ${ISSUES[issue].classe}`}>
+          <h2 id="titre-issue" className={`font-pixel text-3xl ${ISSUES[issue].classe}`}>
             {ISSUES[issue].titre}
           </h2>
           <p className="mt-1 text-base text-doux dark:text-doux-sombre">
@@ -92,14 +92,14 @@ export default function ResultatCombat({
           </p>
         </div>
         {/* Marque façon album, décorative : la phrase ci-dessus dit la même chose. */}
-        <p aria-hidden="true" className="text-6xl leading-none font-extrabold tabular-nums font-stretch-75% text-doux/40 dark:text-doux-sombre/40">
+        <p aria-hidden="true" className="text-6xl leading-none font-pixel tabular-nums  text-doux/40 dark:text-doux-sombre/40">
           {victoiresA}–{victoiresB}
         </p>
         {children}
       </section>
 
       <section aria-labelledby="titre-duels" className="mt-8">
-        <h2 id="titre-duels" className="text-3xl font-extrabold tracking-tight font-stretch-85%">
+        <h2 id="titre-duels" className="font-pixel text-3xl">
           Les duels
         </h2>
         <ol className="mt-4 grid gap-6 lg:grid-cols-2">

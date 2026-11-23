@@ -21,7 +21,7 @@ async function tirerPokemon(): Promise<Pokemon> {
 }
 
 const BOUTON =
-  "rounded-full bg-pokedex px-4 py-2 text-base font-bold text-white transition-transform active:scale-95 " +
+  "rounded-md bg-pokedex px-4 py-2 text-base font-bold text-white transition-transform active:scale-95 " +
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokedex " +
   "motion-reduce:transition-none dark:focus-visible:outline-pokedex-sombre";
 
@@ -75,7 +75,7 @@ export default function Quiz() {
   if (etat.statut === "chargement") {
     return (
       <div className="mx-auto max-w-sm">
-        <div className="aspect-square animate-pulse rounded-2xl bg-surface shadow-sm ring-1 ring-black/5 motion-reduce:animate-none dark:bg-surface-sombre dark:ring-white/10" />
+        <div className="mx-auto aspect-square max-w-52 animate-pulse rounded-md bg-surface shadow-sm sm:max-w-none ring-1 ring-black/5 motion-reduce:animate-none dark:bg-surface-sombre dark:ring-white/10" />
         <p className="mt-4 text-center text-base text-doux dark:text-doux-sombre">Tirage d&apos;un Pokémon…</p>
       </div>
     );
@@ -112,12 +112,14 @@ export default function Quiz() {
 
   return (
     <div className="mx-auto max-w-sm">
-      <div className="rounded-2xl bg-surface p-2 shadow-sm ring-1 ring-black/5 dark:bg-surface-sombre dark:ring-white/10">
+      {/* Refonte « Console de poche » : silhouette réduite sur téléphone, pour que la question,
+          le champ et « Valider » tiennent presque dans l'écran de la console. */}
+      <div className="mx-auto max-w-52 rounded-md bg-surface p-2 shadow-sm ring-1 ring-black/5 sm:max-w-none dark:bg-surface-sombre dark:ring-white/10">
         {/* La clé remonte les deux calques à chaque tirage : la nouvelle image part masquée,
             sans rejouer la transition de la précédente. */}
         <div
           key={pokemon.id}
-          className="relative aspect-square overflow-hidden rounded-xl bg-radial-[at_50%_40%] from-white to-fond
+          className="relative aspect-square overflow-hidden rounded-sm bg-radial-[at_50%_40%] from-white to-fond
                      dark:from-doux-sombre/70 dark:to-doux-sombre/20"
         >
           {/* Cours, « Pour aller plus loin » : la silhouette est l'image elle-même en brightness-0.
@@ -146,7 +148,7 @@ export default function Quiz() {
         </p>
       </div>
 
-      <form onSubmit={valider} noValidate className="mt-6">
+      <form onSubmit={valider} noValidate className="mt-4 sm:mt-6">
         <label htmlFor={idChamp} className="text-sm font-semibold">
           Nom du Pokémon (en français)
         </label>
@@ -161,7 +163,7 @@ export default function Quiz() {
           spellCheck={false}
           aria-describedby={`${idChamp}-message`}
           placeholder="ex. Pikachu"
-          className="mt-1 w-full rounded-full border border-black/10 bg-surface px-4 py-2 text-base shadow-sm
+          className="mt-1 w-full rounded-md border border-black/10 bg-surface px-4 py-2 text-base shadow-sm
                      placeholder:text-doux focus:border-pokedex focus:outline-none focus:ring-4
                      focus:ring-pokedex/20 dark:border-white/10 dark:bg-surface-sombre dark:placeholder:text-doux-sombre"
         />

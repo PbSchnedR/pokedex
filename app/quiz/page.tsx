@@ -4,7 +4,7 @@ import Quiz from "@/components/Quiz";
 export default function PageQuiz() {
   return (
     <>
-      <h1 className="text-3xl font-extrabold tracking-tight font-stretch-85%">Qui est ce Pokémon ?</h1>
+      <h1 className="font-pixel text-3xl">Qui est ce Pokémon ?</h1>
       <p className="mt-2 max-w-prose text-base text-doux dark:text-doux-sombre">
         Devinez le Pokémon d&apos;après sa silhouette et tapez son nom français. Accents et majuscules ne comptent pas.
       </p>

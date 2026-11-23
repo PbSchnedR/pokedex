@@ -35,7 +35,7 @@ export default function TableauComparaison({ a, b }: { a: Colonne; b: Colonne })
   const gagnants: Record<string, Gagnant> = deux ? meilleuresValeurs(a.pokemon.stats, b.pokemon.stats) : {};
 
   return (
-    <div className="max-w-3xl rounded-2xl bg-surface p-3 shadow-sm ring-1 ring-black/5 sm:p-4 dark:bg-surface-sombre dark:ring-white/10">
+    <div className="max-w-3xl rounded-md bg-surface p-3 shadow-sm ring-1 ring-black/5 sm:p-4 dark:bg-surface-sombre dark:ring-white/10">
       <table className="w-full table-fixed border-separate border-spacing-x-1 border-spacing-y-1 sm:border-spacing-x-2">
         <caption className="sr-only">Statistiques de base des deux Pokémon, côte à côte</caption>
         <colgroup>
@@ -77,7 +77,7 @@ function EnTeteColonne({ colonne, cote }: { colonne: Colonne; cote: "a" | "b" })
     const { pokemon } = colonne;
     return (
       <th scope="col" style={teinte(colonne)} className="pb-2 align-top font-normal">
-        <div className="mx-auto size-16 rounded-xl bg-radial-[at_50%_35%] from-(--teinte)/40 to-(--teinte)/10 sm:size-24">
+        <div className="mx-auto size-16 rounded-sm bg-radial-[at_50%_35%] from-(--teinte)/40 to-(--teinte)/10 sm:size-24">
           <Image src={pokemon.image} alt="" width={96} height={96} className="size-16 object-contain p-1 sm:size-24" />
         </div>
         <p className="mt-1 text-xs font-semibold tabular-nums text-doux dark:text-doux-sombre">
@@ -101,7 +101,7 @@ function EnTeteColonne({ colonne, cote }: { colonne: Colonne; cote: "a" | "b" })
   // Colonne sans Pokémon : le message tient dans sa colonne, la page ne plante pas (FR-035, FR-011).
   return (
     <th scope="col" className="pb-2 align-top text-sm font-normal text-doux dark:text-doux-sombre">
-      <div className="flex min-h-24 flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-black/15 p-2 sm:min-h-32 dark:border-white/15">
+      <div className="flex min-h-24 flex-col items-center justify-center gap-1 rounded-sm border-2 border-dashed border-black/15 p-2 sm:min-h-32 dark:border-white/15">
         {colonne.etat === "introuvable" ? (
           <>
             <p>
@@ -116,7 +116,7 @@ function EnTeteColonne({ colonne, cote }: { colonne: Colonne; cote: "a" | "b" })
                     <li key={s.nom}>
                       <Link
                         href={s.lien}
-                        className="inline-block rounded-full border border-black/15 px-2 py-0.5 font-semibold text-encre hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokedex dark:border-white/20 dark:text-encre-sombre dark:hover:bg-white/10 dark:focus-visible:outline-pokedex-sombre"
+                        className="inline-block rounded-md border border-black/15 px-2 py-0.5 font-semibold text-encre hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokedex dark:border-white/20 dark:text-encre-sombre dark:hover:bg-white/10 dark:focus-visible:outline-pokedex-sombre"
                       >
                         {nomFrancaisDepuisNom(s.nom)}
                       </Link>
@@ -133,7 +133,7 @@ function EnTeteColonne({ colonne, cote }: { colonne: Colonne; cote: "a" | "b" })
             <p>Aucun premier Pokémon.</p>
             <Link
               href="/"
-              className="font-bold text-pokedex underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokedex dark:text-pokedex-sombre"
+              className="font-bold text-pokedex-texte underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokedex dark:text-pokedex-sombre"
             >
               Choisir une fiche
             </Link>
@@ -172,7 +172,7 @@ function Cellule({
       style={teinte(colonne)}
       // Meilleure valeur : fond teinté, mais aussi un cadre, la graisse et le signe ▲ (pas
       // seulement la couleur), plus un texte pour les lecteurs d'écran (ch. 11).
-      className={`rounded-lg px-2 py-1 ${meilleure ? "bg-(--teinte)/15 ring-2 ring-(--teinte)" : ""}`}
+      className={`rounded-sm px-2 py-1 ${meilleure ? "bg-(--teinte)/15 ring-2 ring-(--teinte)" : ""}`}
     >
       <div className="flex items-baseline justify-between gap-1">
         <span className={`text-sm tabular-nums ${meilleure ? "font-extrabold" : "font-semibold"}`}>{valeur}</span>
@@ -183,9 +183,9 @@ function Cellule({
         ) : null}
         {meilleure ? <span className="sr-only">, meilleure valeur</span> : egalite ? <span className="sr-only">, égalité</span> : null}
       </div>
-      <div aria-hidden="true" className="mt-1 h-2 overflow-hidden rounded-full bg-black/10 dark:bg-white/10">
+      <div aria-hidden="true" className="mt-1 h-2 overflow-hidden rounded-md bg-black/10 dark:bg-white/10">
         <div
-          className="h-2 rounded-full bg-(--teinte)"
+          className="h-2 rounded-md bg-(--teinte)"
           // ch. 8 — valeur calculée propre à chaque barre : seul usage légitime de style.
           style={{ width: `${(valeur / MAXIMUM) * 100}%` }}
         />

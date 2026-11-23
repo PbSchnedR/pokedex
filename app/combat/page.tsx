@@ -103,7 +103,7 @@ function Combat() {
     <button
       type="button"
       onClick={() => router.push(`/combat?adversaire=${tirerAdversaire(taille)}`)}
-      className="rounded-full bg-pokedex px-4 py-2 text-base font-bold text-white transition-transform active:scale-95
+      className="rounded-md bg-pokedex px-4 py-2 text-base font-bold text-white transition-transform active:scale-95
                  focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokedex
                  motion-reduce:transition-none dark:focus-visible:outline-pokedex-sombre"
     >
@@ -127,7 +127,7 @@ function Combat() {
 export default function PageCombat() {
   return (
     <>
-      <h1 className="text-3xl font-extrabold tracking-tight font-stretch-85%">Combat</h1>
+      <h1 className="font-pixel text-3xl">Combat</h1>
       <p className="mt-2 max-w-prose text-base text-doux dark:text-doux-sombre">
         Votre sacoche affronte une sacoche adverse du même nombre de Pokémon, en duels dans l&apos;ordre.
         Chaque score est le total des statistiques de base, multiplié par l&apos;avantage de type.
