@@ -95,10 +95,10 @@ couche d'accès aux données. Bloque toutes les stories.
 **Independent Test**: [quickstart.md › US1](./quickstart.md) — la pagination est livrée en
 Phase 5 (US3), comme dans le cours (étape 14).
 
-- [ ] T025 [P] [US1] Créer `components/BadgeType.tsx` : lit `TYPES[type]`, repli `{ libelle: type, classe: "bg-gray-500" }`, libellé français, `rounded-full`, texte blanc lisible
-- [ ] T026 [US1] Créer `components/CartePokemon.tsx` (composant serveur) : `numero = "#" + padStart(3, "0")`, variable locale `--teinte` via `teinteType(types[0])`, dégradé `from-(--teinte)/25` `aria-hidden`, numéro en filigrane `aria-hidden`, image `next/image` 160×160 avec ombre portée, `group` / `group-hover:scale-110`, soulèvement au survol, `animate-apparition`, `motion-reduce:` sur toutes les animations, nom capitalisé ; le contenu mène à `/pokemon/{nom}` par un `Link` en laissant la place à des boutons **hors** du lien (`relative` sur la carte)
-- [ ] T027 [US1] Créer `components/GrillePokemons.tsx` : `<ul>` `grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6`, `key={pokemon.id}`, message « Aucun Pokémon » si `pokemons.length === 0` (jamais `{liste.length && …}`)
-- [ ] T028 [US1] Étapes 3–4 (temporaire) : `data/exemples.ts` exporte 6 Pokémon écrits à la main ; `app/page.tsx` affiche la grille ; vérifier la liste vide et l'erreur de l'éditeur si un champ de `Pokemon` manque
+- [X] T025 [P] [US1] Créer `components/BadgeType.tsx` : lit `TYPES[type]`, repli `{ libelle: type, classe: "bg-gray-500" }`, libellé français, `rounded-full`, texte blanc lisible
+- [X] T026 [US1] Créer `components/CartePokemon.tsx` (composant serveur) : `numero = "#" + padStart(3, "0")`, variable locale `--teinte` via `teinteType(types[0])`, dégradé `from-(--teinte)/25` `aria-hidden`, numéro en filigrane `aria-hidden`, image `next/image` 160×160 avec ombre portée, `group` / `group-hover:scale-110`, soulèvement au survol, `animate-apparition`, `motion-reduce:` sur toutes les animations, nom capitalisé ; le contenu mène à `/pokemon/{nom}` par un `Link` en laissant la place à des boutons **hors** du lien (`relative` sur la carte)
+- [X] T027 [US1] Créer `components/GrillePokemons.tsx` : `<ul>` `grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6`, `key={pokemon.id}`, message « Aucun Pokémon » si `pokemons.length === 0` (jamais `{liste.length && …}`)
+- [X] T028 [US1] Étapes 3–4 (temporaire) : `data/exemples.ts` exporte 6 Pokémon écrits à la main ; `app/page.tsx` affiche la grille ; vérifier la liste vide et l'erreur de l'éditeur si un champ de `Pokemon` manque
 
 ⏸ **STOP étapes 3–4**
 
