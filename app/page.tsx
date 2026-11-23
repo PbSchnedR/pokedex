@@ -1,15 +1,24 @@
+import { Suspense } from "react";
 import GrillePokemons from "@/components/GrillePokemons";
+import SqueletteGrille from "@/components/SqueletteGrille";
 import { recupererListe } from "@/lib/pokeapi";
 
-// Étape 9 : les 24 premiers Pokémon, chargés en parallèle et mis en cache (ch. 7).
-export default async function Accueil() {
-  const pokemons = await recupererListe(24);
+// ch. 7 — le titre part tout de suite ; la liste arrive dans la zone <Suspense>, avec un
+// squelette en attendant.
+export default function Accueil() {
   return (
     <>
       <h1 className="text-3xl font-extrabold tracking-tight font-stretch-85%">Pokédex</h1>
       <div className="mt-6">
-        <GrillePokemons pokemons={pokemons} />
+        <Suspense fallback={<SqueletteGrille />}>
+          <ListeChargee />
+        </Suspense>
       </div>
     </>
   );
+}
+
+async function ListeChargee() {
+  const pokemons = await recupererListe(24);
+  return <GrillePokemons pokemons={pokemons} />;
 }

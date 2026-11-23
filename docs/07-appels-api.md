@@ -87,3 +87,47 @@
   - temps de réponse de `/` mesurés avec `curl` : **4,07 s** à la première visite (1 appel de liste
     + 24 appels de détail), puis **0,20 s** et **0,28 s** : les visites suivantes lisent le cache.
 - **Fichiers** : `app/page.tsx`.
+
+## Étape 10 — prévoir l'attente et la panne
+
+### `<Suspense>` et squelette
+
+- **Point du cours** : ch. 7, « Suspense : afficher la page sans attendre » — le titre part tout
+  de suite, la liste (composant serveur async `ListeChargee`) arrive dans un `<Suspense>` dont le
+  `fallback` est `SqueletteGrille`.
+- **`SqueletteGrille`** : code du cours (24 blocs, même grille, `aria-busy="true"`,
+  `animate-pulse`), avec deux ajustements : la forme reprend la vignette de la direction (cadre,
+  champ carré, trois barres) au lieu d'un bloc `h-64`, pour que la page ne saute pas à l'arrivée
+  des cartes ; `motion-reduce:animate-none` (ch. 5 : animations coupées sur demande).
+- **`app/loading.tsx`** : code du cours, `Suspense` automatique autour de la page entière.
+- **Vérifié** :
+  - lenteur : serveur redémarré avec un cache vide et réseau du navigateur ralenti (latence 2 s,
+    50 Ko/s, émulation Chrome) ; capture à 2,5 s : titre « Pokédex » affiché et 24 blocs de
+    squelette ; à la fin, 24 cartes et plus aucun `aria-busy` ;
+  - thème sombre : squelette capturé en sombre à 375 px (liste retardée de 6 s par une
+    modification temporaire, retirée ensuite) ;
+  - au build, `/` reste pré-rendue (`○ /`, cache `1d` / `1w`) : en production, le squelette ne
+    se voit que si le cache est vide.
+
+### `error.tsx`
+
+- **Point du cours** : ch. 7, « error.tsx » — composant client (le bouton réagit au clic, et il
+  attrape aussi les erreurs du navigateur), props `{ error: unknown; retry: () => void }`,
+  message via `error instanceof Error`, titre « Le Pokédex ne répond plus », bouton « Réessayer ».
+  La prop `retry` est bien celle de Next.js 16.4 (vérifié dans
+  `node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/error.md`).
+- **Choix** : code du cours, bouton au style de la direction (pilule, états du ch. 5).
+- **Vérifié — panne** (fausse adresse dans `API`, puis rétablie, `git diff` vide ensuite) :
+  - **piège constaté** : une fausse adresse **sur le bon domaine**
+    (`https://pokeapi.co/api/v2-panne`) ne déclenche pas `error.tsx` : la PokéAPI répond 404,
+    `appeler` renvoie `null` comme prévu, `recupererListe` renvoie `[]` et la page affiche
+    « Aucun Pokémon à afficher. ». C'est le comportement voulu du cours (404 = « n'existe pas »),
+    mais ce n'est pas une panne ;
+  - avec un **domaine inexistant** (`https://pokeapi-panne.invalid/api/v2`), `fetch` rejette
+    (`ENOTFOUND`), l'erreur remonte et `error.tsx` s'affiche dans le layout (en-tête et pied de
+    page conservés) : « Le Pokédex ne répond plus », message `fetch failed`, bouton
+    « Réessayer » ; vu à 375 px en sombre et à 1 280 px en clair ;
+  - « Réessayer » pendant la panne : l'erreur reste affichée ; adresse rétablie puis
+    « Réessayer » : la grille revient (24 cartes), sans recharger la page.
+- **Fichiers** : `components/SqueletteGrille.tsx`, `app/loading.tsx`, `app/error.tsx`,
+  `app/page.tsx`.

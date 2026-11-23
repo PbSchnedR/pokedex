@@ -114,10 +114,10 @@ Phase 5 (US3), comme dans le cours (étape 14).
 
 ⏸ **STOP étape 9**
 
-- [ ] T032 [P] [US1] Créer `components/SqueletteGrille.tsx` (24 blocs, même grille que `GrillePokemons`, `aria-busy="true"`, `animate-pulse` + `motion-reduce:animate-none`) et `app/loading.tsx` qui l'affiche
-- [ ] T033 [P] [US1] Créer `app/error.tsx` (`"use client"`) : props `{ error: unknown; retry: () => void }`, message via `error instanceof Error`, titre « Le Pokédex ne répond plus », bouton « Réessayer » qui appelle `retry()`
-- [ ] T034 [US1] Dans `app/page.tsx`, `<h1>` affiché immédiatement et la liste dans un composant async sous `<Suspense fallback={<SqueletteGrille />}>`
-- [ ] T035 [US1] Étape 10 : tester la panne (fausse adresse dans `API`, puis la rétablir) et la lenteur (réseau ralenti) ; documenter Suspense, `loading.tsx`, `error.tsx` dans `docs/07-appels-api.md`
+- [X] T032 [P] [US1] Créer `components/SqueletteGrille.tsx` (24 blocs, même grille que `GrillePokemons`, `aria-busy="true"`, `animate-pulse` + `motion-reduce:animate-none`) et `app/loading.tsx` qui l'affiche
+- [X] T033 [P] [US1] Créer `app/error.tsx` (`"use client"`) : props `{ error: unknown; retry: () => void }`, message via `error instanceof Error`, titre « Le Pokédex ne répond plus », bouton « Réessayer » qui appelle `retry()`
+- [X] T034 [US1] Dans `app/page.tsx`, `<h1>` affiché immédiatement et la liste dans un composant async sous `<Suspense fallback={<SqueletteGrille />}>`
+- [X] T035 [US1] Étape 10 : tester la panne (fausse adresse dans `API`, puis la rétablir) et la lenteur (réseau ralenti) ; documenter Suspense, `loading.tsx`, `error.tsx` dans `docs/07-appels-api.md`
 
 ⏸ **STOP étape 10**
 
