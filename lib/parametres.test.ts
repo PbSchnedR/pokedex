@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { bornerPage, lireAdversaire, lireFiltres } from "@/lib/parametres";
+import { bornerPage, lireAdversaire, lireFiltres, lireTri } from "@/lib/parametres";
 
 describe("lireFiltres (ch. 9 — l'adresse est non fiable)", () => {
   it("type connu gardé", () => {
@@ -100,5 +100,29 @@ describe("lireAdversaire (bonus FR-039 — ?adversaire= est non fiable)", () => 
   it("paramètre répété (?adversaire=a&adversaire=b) → le premier, sans planter", () => {
     expect(lireAdversaire(["25,6", "94"])).toEqual([25, 6]);
     expect(lireAdversaire(["abc", "94"])).toBeNull();
+  });
+});
+
+describe("lireTri (bonus FR-036 — ?tri= est non fiable)", () => {
+  it("nom et numero gardés", () => {
+    expect(lireTri("nom")).toBe("nom");
+    expect(lireTri("numero")).toBe("numero");
+  });
+
+  it("absent ou vide → numero (ordre du Pokédex)", () => {
+    expect(lireTri(undefined)).toBe("numero");
+    expect(lireTri("")).toBe("numero");
+    expect(lireTri([])).toBe("numero");
+  });
+
+  it("valeur inventée → numero : licorne, NOM, ' nom', constructor", () => {
+    for (const valeur of ["licorne", "NOM", " nom", "nom ", "constructor", "__proto__"]) {
+      expect(lireTri(valeur)).toBe("numero");
+    }
+  });
+
+  it("paramètre répété (?tri=a&tri=b) → le premier, sans planter", () => {
+    expect(lireTri(["nom", "numero"])).toBe("nom");
+    expect(lireTri(["licorne", "nom"])).toBe("numero");
   });
 });

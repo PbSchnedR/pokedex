@@ -11,7 +11,7 @@ export const PAR_PAGE = 24;
 type Valeur = string | string[] | undefined;
 const premiere = (valeur: Valeur): string => (Array.isArray(valeur) ? valeur[0] ?? "" : valeur ?? "");
 
-export type ParametresRecherche = { q?: Valeur; type?: Valeur; page?: Valeur };
+export type ParametresRecherche = { q?: Valeur; type?: Valeur; page?: Valeur; tri?: Valeur };
 
 export function lireFiltres(parametres: ParametresRecherche) {
   const q = premiere(parametres.q);
@@ -30,6 +30,14 @@ export function bornerPage(page: Valeur, nombreResultats: number) {
   const demandee = Math.floor(Number(premiere(page))) || 1;
   const pageCourante = Math.min(Math.max(1, demandee), nombrePages);
   return { pageCourante, nombrePages };
+}
+
+// Bonus FR-036 — `?tri=` (contracts/routes.md) : `numero` (défaut, ordre du Pokédex,
+// clarification « Analyse ») ou `nom`. Toute autre valeur, ou son absence, donne `numero`.
+export type Tri = "numero" | "nom";
+
+export function lireTri(valeur: Valeur): Tri {
+  return premiere(valeur) === "nom" ? "nom" : "numero";
 }
 
 // Bonus FR-039 — `/combat?adversaire=25,6,94` (contracts/routes.md) : 1 à 6 numéros entiers,
