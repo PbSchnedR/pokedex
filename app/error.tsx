@@ -1,13 +1,17 @@
 "use client";
 
 // ch. 7 — composant client : il réagit au clic « Réessayer » et attrape aussi les erreurs
-// survenues dans le navigateur. L'erreur est `unknown` : on peut lever n'importe quelle valeur.
-export default function Erreur({ error, retry }: { error: unknown; retry: () => void }) {
-  const message = error instanceof Error ? error.message : "Erreur inconnue";
+// survenues dans le navigateur. L'erreur (`error: unknown`) n'est plus affichée (T073, décision
+// du manager) : son message est technique et en anglais (« fetch failed »), et Next.js le masque
+// de toute façon en production pour une erreur du serveur. Elle reste dans les journaux du serveur.
+export default function Erreur({ retry }: { error: unknown; retry: () => void }) {
   return (
     <div className="py-20 text-center">
-      <h2 className="text-3xl font-extrabold tracking-tight font-stretch-85%">Le Pokédex ne répond plus</h2>
-      <p className="my-4 text-base text-doux dark:text-doux-sombre">{message}</p>
+      {/* ch. 11 — un <h1> : cette page remplace le contenu de la page, qui n'a plus d'autre titre. */}
+      <h1 className="text-3xl font-extrabold tracking-tight font-stretch-85%">Le Pokédex ne répond plus</h1>
+      <p className="my-4 text-base text-doux dark:text-doux-sombre">
+        Les données des Pokémon sont momentanément indisponibles. Réessayez dans un instant.
+      </p>
       <button
         type="button"
         onClick={() => retry()}

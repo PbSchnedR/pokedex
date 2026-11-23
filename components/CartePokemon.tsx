@@ -7,7 +7,9 @@ import BadgeType from "./BadgeType";
 import BoutonFavori from "./BoutonFavori";
 
 // Composant serveur. Direction « Album à compléter » (T012) : une vignette au cadre blanc.
-export default function CartePokemon({ pokemon }: { pokemon: Pokemon }) {
+// ch. 11 — niveau de titre réglable : <h2> dans une grille de page, <h3> sous la section
+// « Évolutions » (<h2>) de la fiche, pour garder des titres dans l'ordre.
+export default function CartePokemon({ pokemon, titre: Titre = "h2" }: { pokemon: Pokemon; titre?: "h2" | "h3" }) {
   const chiffres = String(pokemon.id).padStart(3, "0");
   const numero = `#${chiffres}`;
   // ch. 5 — la teinte du type principal passe par une variable CSS locale, lue par les classes.
@@ -47,7 +49,7 @@ export default function CartePokemon({ pokemon }: { pokemon: Pokemon }) {
         </div>
         <div className="p-2">
           <p className="text-xs font-semibold tabular-nums text-doux dark:text-doux-sombre">{numero}</p>
-          <h2 className="truncate text-base font-bold capitalize">{pokemon.nom}</h2>
+          <Titre className="truncate text-base font-bold capitalize">{pokemon.nom}</Titre>
           <div className="mt-2 flex flex-wrap gap-2">
             {pokemon.types.map((type) => (
               <BadgeType key={type} type={type} />

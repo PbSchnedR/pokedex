@@ -4,7 +4,7 @@ export default function PiedDePage() {
       Données :{" "}
       <a
         href="https://pokeapi.co"
-        className="underline underline-offset-4 hover:text-encre focus-visible:outline-2 focus-visible:outline-pokedex dark:hover:text-encre-sombre"
+        className="underline underline-offset-4 hover:text-encre focus-visible:outline-2 focus-visible:outline-pokedex dark:hover:text-encre-sombre dark:focus-visible:outline-pokedex-sombre"
       >
         PokéAPI
       </a>

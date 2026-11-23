@@ -233,12 +233,12 @@ accessibilité complète.
 
 ⏸ **STOP étape 17**
 
-- [ ] T071 [US6] Créer `app/api/aleatoire/route.ts` selon [contracts/api-aleatoire.md](./contracts/api-aleatoire.md) : `await connection()`, id aléatoire dans 1–`TOTAL_POKEMONS`, 200 avec le `Pokemon`, 404 `{ erreur: "Pokémon introuvable" }`
-- [ ] T072 [US6] Créer `components/BoutonHasard.tsx` : `fetch("/api/aleatoire")`, `router.push("/pokemon/" + nom)`, désactivé et « Tirage… » pendant l'appel, `finally` ; l'ajouter dans `components/EnTete.tsx`
-- [ ] T073 [US6] Passer la liste de contrôle d'accessibilité du ch. 11 sur toutes les pages : clavier (Tab, Entrée), `focus-visible` partout, `alt` et libellés, un seul `<h1>` puis `<h2>` dans l'ordre, contraste des badges, `<button>` pour les actions et lien pour la navigation, `motion-reduce` ; corriger dans `app/**` et `components/**`, ajuster `--color-type-*` dans `app/globals.css` si un badge manque de contraste
+- [X] T071 [US6] Créer `app/api/aleatoire/route.ts` selon [contracts/api-aleatoire.md](./contracts/api-aleatoire.md) : `await connection()`, id aléatoire dans 1–`TOTAL_POKEMONS`, 200 avec le `Pokemon`, 404 `{ erreur: "Pokémon introuvable" }`
+- [X] T072 [US6] Créer `components/BoutonHasard.tsx` : `fetch("/api/aleatoire")`, `router.push("/pokemon/" + nom)`, désactivé et « Tirage… » pendant l'appel, `finally` ; l'ajouter dans `components/EnTete.tsx`
+- [X] T073 [US6] Passer la liste de contrôle d'accessibilité du ch. 11 sur toutes les pages : clavier (Tab, Entrée), `focus-visible` partout, `alt` et libellés, un seul `<h1>` puis `<h2>` dans l'ordre, contraste des badges, `<button>` pour les actions et lien pour la navigation, `motion-reduce` ; corriger dans `app/**` et `components/**`, ajuster `--color-type-*` dans `app/globals.css` si un badge manque de contraste
   - *Note (décision du manager, 2026-11-23)* : `app/error.tsx` : titre en `<h1>` « Le Pokédex ne répond plus », texte français générique pour l'utilisateur, détail technique (`error.message`) non affiché.
   - *Note (décision du manager, 2026-11-23)* : fiche `app/pokemon/[nom]/page.tsx` — dans la section « Évolutions » (`<h2>`), chaque `CartePokemon` porte aussi un `<h2>` : corriger la hiérarchie des titres.
-- [ ] T074 [US6] Documenter les hooks (règles, ordre d'appel, choix de chaque hook, pourquoi pas `useEffect` pour une saisie) dans `docs/10-hooks.md` ; Route Handler, `connection()`, variables d'environnement (`.env.local` jamais commité, `NEXT_PUBLIC_`) et accessibilité dans `docs/11-finitions.md`
+- [X] T074 [US6] Documenter les hooks (règles, ordre d'appel, choix de chaque hook, pourquoi pas `useEffect` pour une saisie) dans `docs/10-hooks.md` ; Route Handler, `connection()`, variables d'environnement (`.env.local` jamais commité, `NEXT_PUBLIC_`) et accessibilité dans `docs/11-finitions.md`
 
 **Checkpoint**: critère « Qualité de l'interface » prêt pour l'audit.
 

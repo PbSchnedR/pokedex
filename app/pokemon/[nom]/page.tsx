@@ -97,7 +97,7 @@ async function Fiche({ params }: Props) {
 
       <section className="md:col-span-2">
         <h2 className="mb-4 text-base font-bold">Évolutions</h2>
-        <GrillePokemons pokemons={evolutions} />
+        <GrillePokemons pokemons={evolutions} titre="h3" />
       </section>
     </article>
   );
