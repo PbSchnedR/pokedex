@@ -7,7 +7,10 @@ import AjoutRapide from "./AjoutRapide";
 import BadgeType from "./BadgeType";
 import BoutonFavori from "./BoutonFavori";
 
-// Composant serveur. Direction « Album à compléter » (T012) : une vignette au cadre blanc.
+// Composant serveur. Refonte « Console de poche » : une fiche de registre affichée sur l'écran.
+// Bande à la teinte du type (numéro « #025 » en police pixel, ajout rapide, étoile), champ de
+// l'illustration teinté, puis nom et types. « Le physique est arrondi, l'affichage est net » :
+// les fiches de l'écran ont de petits arrondis, la coque et ses touches de grands.
 // ch. 11 — niveau de titre réglable : <h2> dans une grille de page, <h3> sous la section
 // « Évolutions » (<h2>) de la fiche, pour garder des titres dans l'ordre.
 export default function CartePokemon({
@@ -27,23 +30,24 @@ export default function CartePokemon({
   return (
     <article
       style={teinte}
-      className="carte group relative h-full animate-apparition rounded-2xl bg-surface p-2 shadow-sm ring-1 ring-black/5
-                 transition-transform duration-200 ease-out hover:-translate-y-1 hover:-rotate-1 focus-within:-translate-y-1
+      className="carte group relative h-full animate-apparition rounded-md bg-surface shadow-sm ring-1 ring-black/10
+                 transition-transform duration-200 ease-out hover:-translate-y-1 focus-within:-translate-y-1
                  motion-reduce:animate-none motion-reduce:transition-none motion-reduce:hover:translate-y-0
-                 motion-reduce:hover:rotate-0 motion-reduce:focus-within:translate-y-0
-                 dark:bg-surface-sombre dark:ring-white/10"
+                 motion-reduce:focus-within:translate-y-0 dark:bg-surface-sombre dark:ring-white/10"
     >
       {/* Tout le contenu mène à la fiche. */}
       <Link
         href={`/pokemon/${pokemon.nom}`}
-        className="block h-full rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-4
+        className="block h-full overflow-hidden rounded-md focus-visible:outline-2 focus-visible:outline-offset-2
                    focus-visible:outline-pokedex dark:focus-visible:outline-pokedex-sombre"
       >
-        <div className="relative aspect-square overflow-hidden rounded-xl bg-radial-[at_50%_35%] from-(--teinte)/35 to-(--teinte)/10">
-          {/* Numéro en filigrane : décoratif, le numéro lisible est plus bas. */}
+        {/* Bande : le numéro lisible (FR-002), blanc sur la teinte (≥ 4,6:1 pour les 18 types). */}
+        <p className="flex h-8 items-center bg-(--teinte) px-2 font-pixel text-base text-white tabular-nums">{numero}</p>
+        <div className="relative aspect-square overflow-hidden bg-radial-[at_50%_35%] from-(--teinte)/30 to-(--teinte)/8">
+          {/* Numéro en filigrane : décoratif, le numéro lisible est dans la bande. */}
           <span
             aria-hidden="true"
-            className="absolute -bottom-2 right-2 text-7xl leading-none font-extrabold tracking-tight tabular-nums font-stretch-75% text-(--teinte)/25"
+            className="absolute -bottom-1 right-1 font-pixel text-6xl leading-none tabular-nums text-(--teinte)/20"
           >
             {chiffres}
           </span>
@@ -56,30 +60,29 @@ export default function CartePokemon({
             // Les premières cartes, visibles sans défiler, sont chargées tout de suite.
             loading={prioritaire ? "eager" : "lazy"}
             sizes="(min-width: 1024px) 160px, (min-width: 640px) 30vw, 45vw"
-            className="relative mx-auto size-full object-contain p-4 drop-shadow-lg transition-transform duration-300 ease-out
-                       group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+            className="relative mx-auto size-full object-contain p-3 drop-shadow-lg transition-transform duration-300 ease-out
+                       group-hover:scale-108 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
           />
         </div>
         <div className="p-2">
-          <p className="text-xs font-semibold tabular-nums text-doux dark:text-doux-sombre">{numero}</p>
           <Titre className="truncate text-base font-bold">{pokemon.nomFr}</Titre>
-          <div className="mt-2 flex flex-wrap gap-2">
+          <div className="mt-1.5 flex flex-wrap gap-1">
             {pokemon.types.map((type) => (
               <BadgeType key={type} type={type} />
             ))}
           </div>
         </div>
       </Link>
-      {/* ch. 9 — un bouton dans un lien pose un problème d'accessibilité et de clic : il est
-          hors du Link, positionné sur la carte (relative). */}
-      <BoutonFavori nom={pokemon.nom} libelle={pokemon.nomFr} className="absolute right-4 top-4 z-10" />
-      {/* Bonus FR-034 — ajout rapide, hors du Link lui aussi, à l'opposé de l'étoile. Seuls les
-          champs d'un membre traversent la frontière serveur → client (pas les statistiques). */}
-      <AjoutRapide
-        pokemon={{ id: pokemon.id, nom: pokemon.nom, image: pokemon.image, types: pokemon.types }}
-        libelle={pokemon.nomFr}
-        className="absolute left-4 top-4 z-10"
-      />
+      {/* ch. 9 — un bouton dans un lien pose un problème d'accessibilité et de clic : les deux
+          boutons sont hors du Link, posés sur la bande. Bonus FR-034 — seuls les champs d'un
+          membre traversent la frontière serveur → client (pas les statistiques). */}
+      <div className="absolute right-0 top-0 z-10 flex h-8 items-center">
+        <AjoutRapide
+          pokemon={{ id: pokemon.id, nom: pokemon.nom, image: pokemon.image, types: pokemon.types }}
+          libelle={pokemon.nomFr}
+        />
+        <BoutonFavori nom={pokemon.nom} libelle={pokemon.nomFr} surBande />
+      </div>
     </article>
   );
 }

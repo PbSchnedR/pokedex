@@ -11,7 +11,7 @@ function adresse(q: string, type: string, tri: Tri) {
 }
 
 const PASTILLE =
-  "block whitespace-nowrap rounded-full px-4 py-2 text-xs font-bold focus-visible:outline-2 focus-visible:outline-offset-2 " +
+  "block whitespace-nowrap rounded-md px-4 py-2 text-xs font-bold focus-visible:outline-2 focus-visible:outline-offset-2 " +
   "focus-visible:outline-pokedex dark:focus-visible:outline-pokedex-sombre";
 
 // ch. 9 — composant serveur, sans JavaScript côté navigateur : un état rangé dans l'adresse se
@@ -19,7 +19,7 @@ const PASTILLE =
 // par la couleur) ; les pastilles inactives gardent leur couleur pleine (contraste du texte blanc).
 export default function FiltreTypes({ q, typeActif, tri }: { q: string; typeActif: string; tri: Tri }) {
   return (
-    <nav aria-label="Filtrer par type" className="-mx-4 overflow-x-auto px-4 md:mx-0 md:overflow-visible md:px-0">
+    <nav aria-label="Filtrer par type" className="-mx-3 overflow-x-auto px-3 sm:-mx-4 sm:px-4 md:mx-0 md:overflow-visible md:px-0">
       <ul className="flex gap-2 py-2 md:flex-wrap">
         <li>
           <Link

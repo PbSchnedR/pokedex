@@ -21,7 +21,7 @@ type Props = {
 export default function Accueil({ searchParams }: Props) {
   return (
     <>
-      <h1 className="text-3xl font-extrabold tracking-tight font-stretch-85%">Pokédex</h1>
+      <h1 className="font-pixel text-3xl">Pokédex</h1>
       <div className="mt-4 md:w-80">
         <Suspense fallback={<ChampInactif />}>
           <BarreRecherche />

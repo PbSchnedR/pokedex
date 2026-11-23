@@ -23,13 +23,13 @@ export default function SelecteurTri({ q, type, tri }: { q: string; type: string
   return (
     <nav aria-label="Trier les résultats" className="flex items-center gap-2">
       <span className="text-xs font-bold uppercase tracking-wide text-doux dark:text-doux-sombre">Trier par</span>
-      <ul className="flex rounded-full bg-surface p-1 shadow-sm ring-1 ring-black/5 dark:bg-surface-sombre dark:ring-white/10">
+      <ul className="flex rounded-md bg-surface p-1 shadow-sm ring-1 ring-black/5 dark:bg-surface-sombre dark:ring-white/10">
         {CHOIX.map((choix) => (
           <li key={choix.tri}>
             <Link
               href={adresse(q, type, choix.tri)}
               aria-current={choix.tri === tri ? "true" : undefined}
-              className={`block rounded-full px-4 py-2 text-xs font-bold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokedex dark:focus-visible:outline-pokedex-sombre ${
+              className={`block rounded-md px-4 py-2 text-xs font-bold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokedex dark:focus-visible:outline-pokedex-sombre ${
                 choix.tri === tri
                   ? "bg-encre text-surface dark:bg-encre-sombre dark:text-fond-sombre"
                   : "text-encre hover:bg-fond dark:text-encre-sombre dark:hover:bg-fond-sombre"

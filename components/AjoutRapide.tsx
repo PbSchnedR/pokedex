@@ -43,14 +43,16 @@ export default function AjoutRapide({ pokemon, libelle: nomAffiche = pokemon.nom
       }}
       aria-label={libelle}
       title={libelle}
-      className={`grid size-10 place-items-center rounded-full shadow-sm transition-transform duration-150
-                  focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokedex
-                  motion-reduce:transition-none dark:focus-visible:outline-pokedex-sombre ${
+      // Refonte « Console de poche » : bouton de la bande colorée de la carte, icône blanche
+      // (≥ 4,6:1 sur les 18 teintes) ; l'état se lit à l'icône (plus / coche) et au fond.
+      className={`grid size-8 place-items-center rounded-md text-white transition-transform duration-150
+                  focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-white
+                  motion-reduce:transition-none ${
                     dedans
-                      ? "cursor-default bg-pokedex text-white" // blanc sur #d2232f, lisible dans les deux thèmes
+                      ? "cursor-default bg-white/25"
                       : pleine
-                        ? "cursor-not-allowed bg-surface text-doux opacity-50 dark:bg-surface-sombre dark:text-doux-sombre"
-                        : "bg-surface text-pokedex hover:scale-110 active:scale-90 dark:bg-surface-sombre dark:text-pokedex-sombre"
+                        ? "cursor-not-allowed opacity-50"
+                        : "hover:scale-110 hover:bg-white/15 active:scale-90"
                   } ${className}`}
     >
       <Icone nom={dedans ? "coche" : "plus"} className="size-5" />
