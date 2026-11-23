@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { Pokemon } from "@/types/pokemon";
 import { teinteType } from "@/lib/types";
 import BadgeType from "./BadgeType";
+import BoutonFavori from "./BoutonFavori";
 
 // Composant serveur. Direction « Album à compléter » (T012) : une vignette au cadre blanc.
 export default function CartePokemon({ pokemon }: { pokemon: Pokemon }) {
@@ -21,8 +22,7 @@ export default function CartePokemon({ pokemon }: { pokemon: Pokemon }) {
                  motion-reduce:hover:rotate-0 motion-reduce:focus-within:translate-y-0
                  dark:bg-surface-sombre dark:ring-white/10"
     >
-      {/* Tout le contenu mène à la fiche ; les futurs boutons (favori, sacoche) resteront hors
-          du lien, positionnés sur la carte (relative). */}
+      {/* Tout le contenu mène à la fiche. */}
       <Link
         href={`/pokemon/${pokemon.nom}`}
         className="block h-full rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-4
@@ -55,6 +55,9 @@ export default function CartePokemon({ pokemon }: { pokemon: Pokemon }) {
           </div>
         </div>
       </Link>
+      {/* ch. 9 — un bouton dans un lien pose un problème d'accessibilité et de clic : il est
+          hors du Link, positionné sur la carte (relative). */}
+      <BoutonFavori nom={pokemon.nom} className="absolute right-4 top-4 z-10" />
     </article>
   );
 }

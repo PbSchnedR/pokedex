@@ -181,14 +181,14 @@ validé ([contracts/routes.md](./contracts/routes.md)).
 
 **Independent Test**: [quickstart.md › US4](./quickstart.md)
 
-- [ ] T052 [US4] `npm install zustand` ; créer `stores/favoris.ts` : `noms: string[]`, `basculer(nom)` (nouveau tableau, jamais `push`), `persist` avec `{ name: "pokedex-favoris", skipHydration: true }` ([contracts/stockage-local.md](./contracts/stockage-local.md))
-- [ ] T053 [US4] Créer `components/HydratationStores.tsx` (`"use client"`, `useEffect(() => useFavoris.persist.rehydrate(), [])`, renvoie `null`) et l'ajouter en tête de `<body>` dans `app/layout.tsx`
-- [ ] T054 [P] [US4] Créer `components/BoutonFavori.tsx` : sélecteurs **à une valeur** (`etat.noms.includes(nom)`, `etat.basculer`), ☆/★, `aria-pressed`, `aria-label` « Ajouter/Retirer {nom} des favoris » ; l'intégrer **hors du `Link`** dans `components/CartePokemon.tsx` (`absolute left-2 top-2 z-10`) et sur la fiche `app/pokemon/[nom]/page.tsx`
-- [ ] T055 [P] [US4] Créer `components/CompteurFavoris.tsx` (client, sélecteur `etat.noms.length`) et l'afficher dans `components/EnTete.tsx` à côté du lien Favoris
-- [ ] T056 [P] [US4] Créer `lib/pokeapi-client.ts` : `chargerPokemon(nom)` pour le navigateur (404 → `null`, autre échec → erreur), réutilise `versPokemon`
-- [ ] T057 [US4] Créer `app/favoris/page.tsx` (`"use client"`, version du ch. 9 avec `useEffect` + annulation) : états chargement, erreur, liste vide (« Aucun favori pour le moment… »), grille ; créer `app/favoris/layout.tsx` (serveur) avec `metadata = { title: "Favoris" }` ([contracts/routes.md](./contracts/routes.md))
+- [X] T052 [US4] `npm install zustand` ; créer `stores/favoris.ts` : `noms: string[]`, `basculer(nom)` (nouveau tableau, jamais `push`), `persist` avec `{ name: "pokedex-favoris", skipHydration: true }` ([contracts/stockage-local.md](./contracts/stockage-local.md))
+- [X] T053 [US4] Créer `components/HydratationStores.tsx` (`"use client"`, `useEffect(() => useFavoris.persist.rehydrate(), [])`, renvoie `null`) et l'ajouter en tête de `<body>` dans `app/layout.tsx`
+- [X] T054 [P] [US4] Créer `components/BoutonFavori.tsx` : sélecteurs **à une valeur** (`etat.noms.includes(nom)`, `etat.basculer`), ☆/★, `aria-pressed`, `aria-label` « Ajouter/Retirer {nom} des favoris » ; l'intégrer **hors du `Link`** dans `components/CartePokemon.tsx` (`absolute left-2 top-2 z-10`) et sur la fiche `app/pokemon/[nom]/page.tsx`
+- [X] T055 [P] [US4] Créer `components/CompteurFavoris.tsx` (client, sélecteur `etat.noms.length`) et l'afficher dans `components/EnTete.tsx` à côté du lien Favoris
+- [X] T056 [P] [US4] Créer `lib/pokeapi-client.ts` : `chargerPokemon(nom)` pour le navigateur (404 → `null`, autre échec → erreur), réutilise `versPokemon`
+- [X] T057 [US4] Créer `app/favoris/page.tsx` (`"use client"`, version du ch. 9 avec `useEffect` + annulation) : états chargement, erreur, liste vide (« Aucun favori pour le moment… »), grille ; créer `app/favoris/layout.tsx` (serveur) avec `metadata = { title: "Favoris" }` ([contracts/routes.md](./contracts/routes.md))
   - *Note (décision du manager, 2026-11-23)* : une page provisoire `app/favoris/page.tsx` (code du ch. 6 : `<h1>Mes favoris</h1>` + `metadata`) existe depuis le complément de l'étape 7 ; elle est remplacée ici et sa `metadata` passe dans `app/favoris/layout.tsx`, puisque la page devient client.
-- [ ] T058 [US4] Étape 15 : rechargement, fermeture du navigateur, aucune erreur d'hydratation ; documenter store, sélecteurs, `persist`, piège de l'hydratation, Context vs Zustand dans `docs/09-interactivite-avancee.md`
+- [X] T058 [US4] Étape 15 : rechargement, fermeture du navigateur, aucune erreur d'hydratation ; documenter store, sélecteurs, `persist`, piège de l'hydratation, Context vs Zustand dans `docs/09-interactivite-avancee.md`
 
 ⏸ **STOP étape 15**
 

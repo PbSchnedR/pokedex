@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque } from "next/font/google";
 import EnTete from "@/components/EnTete";
+import HydratationStores from "@/components/HydratationStores";
 import PiedDePage from "@/components/PiedDePage";
 import "./globals.css";
 
@@ -29,6 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: SCRIPT_THEME }} />
       </head>
       <body className="min-h-dvh bg-fond font-sans text-encre antialiased dark:bg-fond-sombre dark:text-encre-sombre">
+        <HydratationStores />
         <a
           href="#contenu"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-20 focus:rounded-full focus:bg-pokedex focus:px-4 focus:py-2 focus:text-white"

@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import BadgeType from "@/components/BadgeType";
 import BarresStats from "@/components/BarresStats";
+import BoutonFavori from "@/components/BoutonFavori";
 import GrillePokemons from "@/components/GrillePokemons";
 import { teinteType } from "@/lib/types";
 import {
@@ -65,7 +66,10 @@ async function Fiche({ params }: Props) {
 
       <div>
         <p className="text-xs font-semibold tabular-nums text-doux dark:text-doux-sombre">#{chiffres}</p>
-        <h1 className="text-3xl font-extrabold tracking-tight capitalize font-stretch-85%">{pokemon.nom}</h1>
+        <div className="flex items-center justify-between gap-4">
+          <h1 className="text-3xl font-extrabold tracking-tight capitalize font-stretch-85%">{pokemon.nom}</h1>
+          <BoutonFavori nom={pokemon.nom} />
+        </div>
         <div className="mt-2 flex gap-2">
           {pokemon.types.map((type) => (
             <BadgeType key={type} type={type} />

@@ -139,3 +139,82 @@
   avant d'afficher la nouvelle page ; je ne l'ai pas cherché plus loin. Le critère est rempli dans
   la version de production.
 - **Fichiers** : `app/page.tsx`.
+
+## Étape 15 — les favoris avec Zustand
+
+### Pourquoi un store (et pas Context, pas l'adresse)
+
+- **Point du cours** : ch. 9, « Les favoris doivent être connus de composants éloignés » (étoiles,
+  compteur d'en-tête, page Favoris) ; encadré « Quelle différence avec le Context de React ? »
+  et « Faut-il tout mettre dans un store ? ».
+- **Choix** : Zustand (`npm install zustand`, dépendance du cours ; version installée 5.1.0).
+  Context : tous les lecteurs se réaffichent à chaque changement et il faut un Provider ;
+  Zustand ajoute les sélecteurs et la persistance, sans Provider. Les favoris ne vont pas dans
+  l'adresse : ils sont propres au visiteur et durables, pas un état de navigation.
+- **Fichiers** : `stores/favoris.ts`, `package.json`.
+
+### Le store `useFavoris`
+
+- **Point du cours** : code du cours — `noms: string[]`, `basculer(nom)` qui renvoie un **nouveau
+  tableau** (`filter` ou décomposition, jamais `push`), `persist` sous la clé `pokedex-favoris`
+  (contrat `contracts/stockage-local.md`), `skipHydration: true`.
+- **Vérifié** : après deux clics, `localStorage["pokedex-favoris"]` vaut
+  `{"state":{"noms":["bulbasaur","charmander"]},"version":0}`.
+
+### Sélecteurs à une valeur
+
+- **Point du cours** : « Un sélecteur ne doit pas fabriquer un nouvel objet ou un nouveau tableau
+  à chaque appel […] Sélectionnez une valeur à la fois ».
+- **Choix** : `BoutonFavori` lit `etat.noms.includes(nom)` et `etat.basculer` (deux appels du
+  hook) ; `CompteurFavoris` lit `etat.noms.length`. Cliquer sur une étoile ne réaffiche que ce
+  bouton et le compteur.
+
+### Le piège de l'hydratation
+
+- **Point du cours** : « Le serveur n'a pas de localStorage » ; `skipHydration` + `rehydrate()`
+  dans un effet (`HydratationStores`, placé en tête de `<body>`).
+- **Vérifié** :
+  - développement : 6 rechargements de `/` avec des favoris enregistrés, en clair et en sombre →
+    étoiles pleines et compteur justes, **aucune erreur d'hydratation** ni autre erreur dans la
+    console (seul l'avertissement LCP connu) ;
+  - production (`npm start`) : clic sur deux étoiles puis 3 rechargements → état conservé, console
+    vide ; `/favoris` liste les deux Pokémon ;
+  - une fois en développement, juste après une recompilation, la page rechargée montrait encore
+    0 favori 5 s après le chargement. Non reproduit ensuite (10 essais). Explication probable, non
+    prouvée : le JavaScript n'était pas encore chargé, la page affichait le HTML du serveur (0).
+- **Non vérifié** : la fermeture complète du navigateur (le profil de test est réutilisé, pas
+  fermé et rouvert) ; `localStorage` survit par construction à la fermeture.
+
+### `BoutonFavori` hors du lien, icônes SVG
+
+- **Point du cours** : « Un bouton placé à l'intérieur d'un lien pose un problème d'accessibilité
+  et de clic. Dans la carte, sortez le bouton du Link : relative sur la carte, absolute … z-10
+  sur le bouton. » ; `aria-pressed` et `aria-label` « Ajouter / Retirer {nom} des favoris ».
+- **Choix** : bouton après le `Link`, `absolute right-4 top-4 z-10` (coin haut droit de la
+  maquette validée au lieu de `left-2 top-2`) ; étoile vide / pleine en SVG Phosphor au lieu de
+  « ☆ / ★ » (décision Q-T012-c) ; « coller » : `active:scale-90`, survol `scale-110`, 150 ms,
+  coupés par `motion-reduce:`. Même bouton sur la fiche, à droite du nom.
+- **Vérifié** : clic sur l'étoile de Bulbasaur → `aria-pressed="true"`, libellé « Retirer
+  bulbasaur des favoris », compteur « 1 », l'adresse reste `/` (pas d'ouverture de la fiche).
+
+### Compteur d'en-tête
+
+- **Choix** : `CompteurFavoris` (client) dans le lien « Favoris » de l'en-tête (pastille de la
+  maquette) ; pour les lecteurs d'écran, le lien se lit « Favoris (2 favoris) ».
+
+### Page Favoris : chargement côté navigateur
+
+- **Point du cours** : « Le serveur ne connaît pas vos favoris » ; `lib/pokeapi-client.ts`
+  (`chargerPokemon`, même conversion, 404 → `null`) ; page client avec effet et annulation, états
+  chargement / erreur / vide / grille.
+- **Choix** : code du cours, plus un `<h1>` « Mes favoris » (un titre par page, ch. 11) et un lien
+  vers le Pokédex dans le message vide. La `metadata` (« Favoris ») est passée dans
+  `app/favoris/layout.tsx`, serveur, puisque la page est désormais client (décision du manager,
+  note de T057).
+- **Vérifié** : sans favori → « Aucun favori pour le moment. Cliquez sur une étoile dans le
+  Pokédex. » ; avec deux favoris → leurs deux cartes ; onglet « Favoris · Pokédex » ; 375 px en
+  sombre regardé.
+- **Fichiers** : `components/BoutonFavori.tsx`, `components/CompteurFavoris.tsx`,
+  `components/HydratationStores.tsx`, `components/CartePokemon.tsx`, `components/EnTete.tsx`,
+  `components/Icone.tsx`, `lib/pokeapi-client.ts`, `app/favoris/page.tsx`,
+  `app/favoris/layout.tsx`, `app/layout.tsx`, `app/pokemon/[nom]/page.tsx`.

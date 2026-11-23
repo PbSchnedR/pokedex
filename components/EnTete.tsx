@@ -1,5 +1,6 @@
 import Link from "next/link";
 import BoutonTheme from "./BoutonTheme";
+import CompteurFavoris from "./CompteurFavoris";
 
 const LIEN_NAV =
   "rounded-full px-2 py-2 text-base font-semibold hover:bg-fond focus-visible:outline-2 " +
@@ -20,7 +21,9 @@ export default function EnTete() {
         <div className="flex items-center justify-between gap-2">
           <nav aria-label="Navigation principale" className="flex items-center gap-2">
             <Link href="/" className={LIEN_NAV}>Pokédex</Link>
-            <Link href="/favoris" className={LIEN_NAV}>Favoris</Link>
+            <Link href="/favoris" className={`${LIEN_NAV} inline-flex items-center gap-2`}>
+              Favoris <CompteurFavoris />
+            </Link>
             <Link href="/sacoche" className={LIEN_NAV}>Sacoche</Link>
           </nav>
           <BoutonTheme />
