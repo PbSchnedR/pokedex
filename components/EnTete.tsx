@@ -11,10 +11,11 @@ const LIEN_NAV =
   "focus-visible:outline-pokedex sm:px-4 dark:hover:bg-fond-sombre dark:focus-visible:outline-pokedex-sombre";
 
 // ch. 5 / ch. 6 — Flexbox : titre et navigation empilés sur téléphone, aux deux extrémités dès sm:.
-// En-tête collant et légèrement translucide (« Les détails qui font la différence »).
+// En-tête collant et légèrement translucide (« Les détails qui font la différence ») à partir de
+// md: ; sur téléphone il occupe 3 lignes (~150 px) et défile avec la page (recette, défaut D2).
 export default function EnTete() {
   return (
-    <header className="sticky top-0 z-10 border-b border-black/5 bg-surface/85 backdrop-blur dark:border-white/10 dark:bg-surface-sombre/85">
+    <header className="relative z-10 md:sticky md:top-0border-b border-black/5 bg-surface/85 backdrop-blur dark:border-white/10 dark:bg-surface-sombre/85">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-2">
         <Link
           href="/"

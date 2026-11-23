@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { validerFavoris } from "@/lib/stockage";
 
 type EtatFavoris = {
   noms: string[];
@@ -22,6 +23,12 @@ export const useFavoris = create<EtatFavoris>()(
     }),
     // ch. 9 — skipHydration : le stockage n'est relu qu'après le premier affichage
     // (HydratationStores), sinon le HTML du navigateur différerait de celui du serveur.
-    { name: "pokedex-favoris", skipHydration: true }
+    // Le stockage est une entrée non fiable : seules les données bien formées sont reprises
+    // (contrat stockage-local : « corrompu → store vide, aucune erreur »).
+    {
+      name: "pokedex-favoris",
+      skipHydration: true,
+      merge: (persiste, actuel) => ({ ...actuel, ...validerFavoris(persiste) }),
+    }
   )
 );

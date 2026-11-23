@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { validerSacoche } from "@/lib/stockage";
 import type { Pokemon } from "@/types/pokemon";
 
 export const TAILLE_SACOCHE = 6;
@@ -55,6 +56,12 @@ export const useSacoche = create<EtatSacoche>()(
           return { equipe };
         }),
     }),
-    { name: "pokedex-sacoche", skipHydration: true }
+    // Le stockage est une entrée non fiable : seuls les membres bien formés sont repris, avec les
+    // mêmes règles que `ajouter` (contrat stockage-local : « corrompu → store vide, aucune erreur »).
+    {
+      name: "pokedex-sacoche",
+      skipHydration: true,
+      merge: (persiste, actuel) => ({ ...actuel, ...validerSacoche(persiste) }),
+    }
   )
 );
