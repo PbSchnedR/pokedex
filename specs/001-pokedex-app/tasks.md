@@ -62,8 +62,8 @@ couche d'accès aux données. Bloque toutes les stories.
 
 ⏸ **STOP étape 2**
 
-- [ ] T010 [P] Dans `app/globals.css`, bloc `@theme` : `--color-pokedex`, les 18 `--color-type-*` du cours, et `--animate-apparition: apparition 0.4s ease-out both` avec ses `@keyframes` (opacity + translateY uniquement)
-- [ ] T011 [P] Créer `lib/types.ts` : `TYPES: Record<string, { libelle: string; classe: string }>` avec les 18 types, libellé français et **classe complète** (`"bg-type-fire"`, jamais construite dynamiquement), et `teinteType(type)` qui renvoie `var(--color-type-${type})` (repli `var(--color-gray-500)`)
+- [X] T010 [P] Dans `app/globals.css`, bloc `@theme` : `--color-pokedex`, les 18 `--color-type-*` du cours, et `--animate-apparition: apparition 0.4s ease-out both` avec ses `@keyframes` (opacity + translateY uniquement)
+- [X] T011 [P] Créer `lib/types.ts` : `TYPES: Record<string, { libelle: string; classe: string }>` avec les 18 types, libellé français et **classe complète** (`"bg-type-fire"`, jamais construite dynamiquement), et `teinteType(type)` qui renvoie `var(--color-type-${type})` (repli `var(--color-gray-500)`)
 - [ ] T012 **Phase C — direction artistique (bloquant)** : vérifier que le skill **impeccable** est installé (sinon STOP et question Q-4) ; charger impeccable et `design-taste-frontend` ; proposer 2 ou 3 directions (couleur d'accent, neutres, typographie `next/font`, forme de carte, en-tête, micro-interactions) avec des références d'inspiration type Dribbble décrites et liées, dans les limites du ch. 5 (quatre principes, espacement 2/4/6/8, animations < 0,5 s sur `transform`/`opacity`, `motion-reduce:`) ; **aucun code d'interface avant la validation de l'utilisateur** ; consigner la direction retenue et les écarts écartés dans `docs/05-tailwind-interface.md`
 
 ⏸ **STOP C — validation de la direction artistique**
