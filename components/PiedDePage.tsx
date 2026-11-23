@@ -1,13 +1,15 @@
+// Refonte « Console de poche » — bande du bas de la coque : grille de haut-parleur moulée
+// (décor) et mention des données, imprimée en blanc sur le plastique.
 export default function PiedDePage() {
   return (
-    <footer className="mx-auto max-w-6xl px-4 py-8 text-xs text-doux dark:text-doux-sombre">
-      Données :{" "}
-      <a
-        href="https://pokeapi.co"
-        className="underline underline-offset-4 hover:text-encre focus-visible:outline-2 focus-visible:outline-pokedex dark:hover:text-encre-sombre dark:focus-visible:outline-pokedex-sombre"
-      >
-        PokéAPI
-      </a>
+    <footer className="pied text-xs">
+      <span aria-hidden="true" className="fentes" />
+      <p>
+        Données :{" "}
+        <a href="https://pokeapi.co" className="sur-coque rounded-sm font-semibold underline underline-offset-4">
+          PokéAPI
+        </a>
+      </p>
     </footer>
   );
 }

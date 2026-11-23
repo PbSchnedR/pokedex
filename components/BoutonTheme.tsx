@@ -30,18 +30,21 @@ export default function BoutonTheme() {
     }
   }
 
+  // Refonte « Console de poche » : interrupteur à glissière du rétroéclairage, gravé sur la
+  // coque (soleil à gauche, lune à droite). Le curseur suit la classe `dark` en CSS (.curseur).
   return (
     <button
       type="button"
       onClick={basculer}
       aria-pressed={sombre}
       aria-label="Thème sombre"
-      className="grid size-10 shrink-0 place-items-center rounded-full transition-transform hover:bg-fond
-                 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokedex
-                 motion-reduce:transition-none dark:hover:bg-fond-sombre dark:focus-visible:outline-pokedex-sombre"
+      className="sur-coque flex shrink-0 items-center gap-2 rounded-md p-1.5"
     >
-      <Icone nom="lune" className="size-5 dark:hidden" />
-      <Icone nom="soleil" className="hidden size-5 dark:block" />
+      <Icone nom="soleil" className="size-4" />
+      <span aria-hidden="true" className="glissiere">
+        <span className="curseur" />
+      </span>
+      <Icone nom="lune" className="size-4" />
     </button>
   );
 }

@@ -4,22 +4,51 @@
    le réglage du système) : toutes les classes `dark:` du cours restent valables. */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Refonte « Console de poche » — disposition de l'appareil. `paysage` : écran à gauche, colonne
+   de touches à droite (grand écran, ou téléphone tenu à l'horizontale) ; sinon touches sous
+   l'écran. Mêmes conditions que les règles .appareil plus bas. */
+@custom-variant paysage {
+  @media (min-width: 64rem), (orientation: landscape) and (max-height: 32rem) and (min-width: 36rem) {
+    @slot;
+  }
+}
+
 /* ch. 5 — Tailwind 4 se configure dans le CSS : chaque --color-xxx crée bg-xxx, text-xxx, border-xxx. */
 @theme {
-  /* Accent du cours, conservé par la direction « Album à compléter » (T012, Q-T012-a).
-     `pokedex-sombre` : l'accent quand il sert de texte sur fond sombre. */
+  /* Accent du cours : c'est aussi le plastique de la coque (refonte « Console de poche »).
+     `pokedex-texte` : l'accent quand il sert de texte sur l'écran clair (#d2232f n'y fait que
+     4,03:1) ; `pokedex-sombre` : l'accent en texte ou en focus sur l'écran sombre.
+     Contrastes : node scripts/contrastes-console.mjs */
   --color-pokedex: #d2232f;
+  --color-pokedex-texte: #b0141f;
   --color-pokedex-sombre: #ff7a80;
 
-  /* Neutres de la direction (contrastes vérifiés dans specs/001-pokedex-app/design/directions.md). */
-  --color-fond: #eef1f5;
-  --color-fond-sombre: #11141a;
-  --color-surface: #ffffff;
-  --color-surface-sombre: #1a1f27;
-  --color-encre: #161a22;
-  --color-encre-sombre: #eceff4;
-  --color-doux: #575f6d;
-  --color-doux-sombre: #a1a9b6;
+  /* Écran de la console. Clair = LCD au repos, gris-vert pâle ; sombre = LCD rétroéclairé.
+     Les noms (fond, surface, encre, doux) sont ceux de la direction précédente : seules les
+     valeurs changent, toutes les classes des composants restent valables. */
+  --color-fond: #dde4dc;
+  --color-fond-sombre: #0c181d;
+  --color-surface: #f4f7f2;
+  --color-surface-sombre: #142329;
+  --color-encre: #132027;
+  --color-encre-sombre: #e3efe9;
+  --color-doux: #4a5a56;
+  --color-doux-sombre: #9fb5af;
+
+  /* Coque et touches : plastique, identiques dans les deux thèmes (seul l'écran s'allume). */
+  --color-coque: #d2232f;
+  --color-coque-haut: #da2c38;
+  --color-coque-bas: #b01a25;
+  --color-gravure: #ffffff;
+  --color-touche: #f6efe3;
+  --color-touche-flanc: #cdbfa9;
+  --color-touche-encre: #3a1d20;
+  --color-touche-sombre: #2d1f22;
+  --color-touche-sombre-flanc: #120b0c;
+  --color-voyant: #ffc53d;
+  --color-cadre: #231a1c;
+  --color-table: #d8d2cb;
+  --color-table-sombre: #0b0a0b;
 
   /* Couleurs de type du cours. 11 d'entre elles sont assombries pour que le texte blanc des
      badges atteigne 4,5:1 (ch. 11, décision Q-T012-b) ; valeur du cours en commentaire. */
@@ -54,6 +83,8 @@
 /* ch. 6 — police chargée par next/font (variable posée sur <html> dans layout.tsx). */
 @theme inline {
   --font-sans: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  /* Police pixel (Tiny5, une seule graisse) : titres, numéros, libellés courts. Jamais font-bold. */
+  --font-pixel: var(--font-tiny5), ui-monospace, monospace;
 }
 
 @layer components {
@@ -77,5 +108,490 @@
     .carte::before {
       transition: none;
     }
+  }
+}
+
+/* ───────────────────────────── Refonte « Console de poche » ─────────────────────────────
+   L'appareil remplit la fenêtre ; la page ne défile pas, seul l'écran (main#contenu) défile.
+   Tout le décor est en CSS : aucun composant client n'existe pour lui. Mouvement : transform
+   seulement, 0,1 à 0,15 s, coupé par prefers-reduced-motion. Aucun clip-path, filter, transform
+   ni contain sur les ancêtres de l'écran : les touches fléchées de la page (position: fixed,
+   voir .fleches) doivent se placer par rapport à la fenêtre, pas par rapport à l'écran. */
+
+/* Géométrie partagée par la coque et par les touches fléchées fixes. */
+:root {
+  --marge: 0px; /* table visible autour de l'appareil (haut et bas) */
+  --marge-x: 0px; /* idem à gauche et à droite */
+  --bord: 0.5rem; /* épaisseur de coque à gauche et à droite */
+  --pad: 0.5rem; /* marge intérieure du pupitre */
+  --pied-h: 1.5rem; /* bande gravée du bas */
+  --fleches-l: 12rem;
+  --fleches-h: 3rem;
+}
+@media (min-width: 64rem) {
+  :root {
+    --marge: 1rem;
+    --marge-x: max(1.5rem, calc((100vw - 92rem) / 2));
+    --bord: 1.25rem;
+    --pad: 0.75rem;
+    --pied-h: 2.5rem;
+  }
+}
+/* Téléphone tenu à l'horizontale : colonne de touches, coque allégée. */
+@media (orientation: landscape) and (max-height: 32rem) and (min-width: 36rem) {
+  :root {
+    --marge: 0px;
+    --marge-x: 0px;
+    --bord: 0.5rem;
+    --pad: 0.375rem;
+    --pied-h: 0px;
+    --fleches-h: 2.5rem;
+  }
+}
+
+@layer base {
+  /* La page elle-même ne défile jamais : 100dvh suit la barre d'adresse mobile, 100vh en repli. */
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+  }
+  body {
+    height: 100vh;
+    height: 100dvh;
+    padding: var(--marge) var(--marge-x);
+    background: radial-gradient(120% 90% at 50% 0%, #e9e4de, var(--color-table));
+  }
+  .dark body {
+    background: radial-gradient(120% 90% at 50% 0%, #1c1a1b, var(--color-table-sombre));
+  }
+  ::selection {
+    background: var(--color-voyant);
+    color: var(--color-touche-encre);
+  }
+}
+
+@layer components {
+  /* ── Coque : plastique rouge brillant, dégradé de haut en bas, liseré clair en haut. ── */
+  .appareil {
+    position: relative;
+    height: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto auto;
+    grid-template-areas: "tete" "ecran" "pupitre" "pied";
+    padding-inline: var(--bord);
+    color: var(--color-gravure);
+    background:
+      /* reflet : une tache blanche en haut à droite, là où aucun texte n'est imprimé */
+      radial-gradient(60% 45% at 92% 0%, rgb(255 255 255 / 0.3), transparent 70%),
+      linear-gradient(170deg, var(--color-coque-haut), var(--color-coque) 45%, var(--color-coque-bas));
+    box-shadow:
+      inset 0 2px 0 rgb(255 255 255 / 0.4),
+      inset 0 -3px 0 rgb(0 0 0 / 0.2);
+  }
+  @media (min-width: 64rem), (orientation: landscape) and (max-height: 32rem) and (min-width: 36rem) {
+    .appareil {
+      grid-template-columns: minmax(0, 1fr) calc(var(--fleches-l) + 2 * var(--pad));
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      grid-template-areas: "tete tete" "ecran pupitre" "pied pied";
+      column-gap: 0.75rem;
+    }
+  }
+  @media (min-width: 64rem) {
+    .appareil {
+      border-radius: 2.5rem 2.5rem 3.25rem 3.25rem;
+      box-shadow:
+        inset 0 3px 0 rgb(255 255 255 / 0.45),
+        inset 3px 0 0 rgb(255 255 255 / 0.12),
+        inset 0 -6px 0 rgb(0 0 0 / 0.22),
+        inset -3px 0 0 rgb(0 0 0 / 0.1),
+        0 2px 0 #7d0f17,
+        0 28px 50px -18px rgb(0 0 0 / 0.55),
+        0 10px 18px -8px rgb(0 0 0 / 0.35);
+    }
+  }
+
+  /* Vis moulées dans les quatre coins (grand écran seulement, décor). */
+  .vis {
+    position: absolute;
+    width: 0.625rem;
+    height: 0.625rem;
+    border-radius: 9999px;
+    background: radial-gradient(circle at 35% 30%, #f37a82, #8c121b 70%);
+    box-shadow: inset 0 1px 1px rgb(0 0 0 / 0.45), 0 1px 0 rgb(255 255 255 / 0.25);
+  }
+  .vis::after {
+    content: "";
+    position: absolute;
+    inset: 45% 18%;
+    background: rgb(70 6 12 / 0.7);
+    transform: rotate(-35deg);
+  }
+
+  /* ── Cadre fumé et écran LCD. ── */
+  .cadre {
+    grid-area: ecran;
+    display: flex;
+    min-height: 0;
+    padding: 0.3125rem;
+    border-radius: 0.875rem;
+    background: linear-gradient(180deg, #2f2427, var(--color-cadre) 30%);
+    box-shadow:
+      inset 0 2px 4px rgb(0 0 0 / 0.7),
+      0 1px 0 rgb(255 255 255 / 0.35),
+      0 -1px 0 rgb(0 0 0 / 0.25);
+  }
+  @media (min-width: 64rem) {
+    .cadre {
+      padding: 0.75rem;
+      border-radius: 1.5rem;
+    }
+  }
+  .ecran {
+    flex: 1;
+    min-width: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scroll-padding-top: 1rem;
+    border-radius: 0.5rem;
+    background-color: var(--color-fond);
+    /* trame LCD statique, sous le contenu (jamais par-dessus le texte) ; elle ne défile pas */
+    background-image: repeating-linear-gradient(0deg, rgb(19 32 39 / 0.05) 0 1px, transparent 1px 3px);
+    box-shadow: inset 0 2px 10px rgb(0 0 0 / 0.22);
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-doux) transparent;
+  }
+  .dark .ecran {
+    background-color: var(--color-fond-sombre);
+    background-image: repeating-linear-gradient(0deg, rgb(227 239 233 / 0.03) 0 1px, transparent 1px 3px);
+    box-shadow: inset 0 0 24px rgb(80 180 170 / 0.12), inset 0 2px 10px rgb(0 0 0 / 0.5);
+    scrollbar-color: var(--color-doux-sombre) transparent;
+  }
+  @media (min-width: 64rem) {
+    .ecran {
+      border-radius: 0.75rem;
+    }
+  }
+  .ecran:focus-visible {
+    outline: 3px solid var(--color-pokedex);
+    outline-offset: -3px;
+  }
+  .dark .ecran:focus-visible {
+    outline-color: var(--color-pokedex-sombre);
+  }
+
+  /* ── Pupitre : touches de navigation, Au hasard, logement des flèches. ── */
+  .pupitre {
+    grid-area: pupitre;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-rows: 2.75rem var(--fleches-h);
+    gap: 0.625rem 0.375rem;
+    padding: 0.625rem var(--pad) var(--pad);
+  }
+  .pupitre-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 0.5rem;
+  }
+  .logement {
+    flex: none;
+    width: var(--fleches-l);
+    height: var(--fleches-h);
+  }
+  @media (min-width: 64rem), (orientation: landscape) and (max-height: 32rem) and (min-width: 36rem) {
+    .pupitre {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: repeat(5, auto) minmax(0, 1fr) auto;
+      gap: 0.625rem;
+      padding: 0 var(--pad) var(--pad);
+    }
+    .pupitre-actions {
+      grid-column: auto;
+      flex-direction: column;
+    }
+  }
+  @media (orientation: landscape) and (max-height: 32rem) and (min-width: 36rem) {
+    .pupitre {
+      gap: 0.375rem;
+    }
+  }
+
+  /* Touche ivoire en relief : face légèrement bombée, flanc de 3 px, ombre portée sur la coque. */
+  .touche {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas: "voyant compteur" "libelle libelle";
+    align-content: center;
+    align-items: center;
+    gap: 0.25rem;
+    min-height: 2.75rem;
+    padding: 0.25rem 0.375rem;
+    border-radius: 0.5rem;
+    color: var(--color-touche-encre);
+    background: linear-gradient(180deg, #fffaf2, var(--color-touche) 55%, #ece3d3);
+    box-shadow:
+      inset 0 1px 0 #ffffff,
+      0 3px 0 var(--color-touche-flanc),
+      0 5px 6px -1px rgb(60 0 6 / 0.45);
+    transition: transform 0.1s ease-out;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .touche:active,
+  .touche[aria-current="page"] {
+    transform: translateY(2px);
+    box-shadow:
+      inset 0 1px 0 #ffffff,
+      0 1px 0 var(--color-touche-flanc),
+      0 2px 3px rgb(60 0 6 / 0.45);
+  }
+  /* Page courante : la touche reste enfoncée, sa face devient sombre et son voyant s'allume
+     (trois indices : position, contraste, voyant ; pas seulement une couleur). */
+  .touche[aria-current="page"] {
+    color: #ffffff;
+    background: linear-gradient(180deg, #3b2a2e, var(--color-touche-sombre));
+    box-shadow:
+      inset 0 2px 4px rgb(0 0 0 / 0.6),
+      0 1px 0 var(--color-touche-sombre-flanc);
+  }
+  .touche-libelle {
+    grid-area: libelle;
+    font-family: var(--font-pixel);
+    font-size: 0.75rem;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .touche-compteur {
+    grid-area: compteur;
+    justify-self: end;
+  }
+  @media (min-width: 64rem), (orientation: landscape) and (max-height: 32rem) and (min-width: 36rem) {
+    .touche {
+      grid-template-columns: auto 1fr auto;
+      grid-template-areas: "voyant libelle compteur";
+      gap: 0.625rem;
+      padding-inline: 0.75rem;
+    }
+    .touche-libelle {
+      font-size: 1rem;
+    }
+  }
+  @media (orientation: landscape) and (max-height: 32rem) and (min-width: 36rem) {
+    .touche {
+      min-height: 2.25rem;
+    }
+  }
+
+  /* Voyant : un segment rectangulaire, éteint (creux sombre) ou allumé (ambre). Il ne montre
+     qu'un état réel : la page courante. */
+  .voyant {
+    grid-area: voyant;
+    width: 0.875rem;
+    height: 0.3125rem;
+    border-radius: 1px;
+    background: #6e3b3f;
+    box-shadow: inset 0 1px 1px rgb(0 0 0 / 0.5);
+  }
+  [aria-current="page"] > .voyant {
+    background: var(--color-voyant);
+    box-shadow: 0 0 6px 1px rgb(255 197 61 / 0.7);
+  }
+
+  /* Mini-afficheur : fenêtre sombre, chiffres ambre en police pixel. */
+  .afficheur {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    min-width: 1.5rem;
+    padding: 0.1875rem 0.25rem;
+    border-radius: 0.25rem;
+    font-family: var(--font-pixel);
+    font-size: 0.75rem;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    color: var(--color-voyant);
+    background: #1a1112;
+    box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.8), 0 1px 0 rgb(255 255 255 / 0.35);
+  }
+  .segment {
+    width: 0.3125rem;
+    height: 0.5rem;
+    border-radius: 1px;
+    background: #4a3720;
+  }
+  .segment-allume {
+    background: var(--color-voyant);
+  }
+
+  /* Touches sombres : Au hasard et flèches. */
+  .touche-sombre {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: var(--fleches-h);
+    padding-inline: 0.75rem;
+    border-radius: 0.625rem;
+    color: #ffffff;
+    background: linear-gradient(180deg, #4a3539, var(--color-touche-sombre) 60%);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.22),
+      0 3px 0 var(--color-touche-sombre-flanc),
+      0 5px 6px -1px rgb(60 0 6 / 0.5);
+    transition: transform 0.1s ease-out;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .touche-sombre:active:not([aria-disabled="true"]):not(:disabled) {
+    transform: translateY(2px);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.22),
+      0 1px 0 var(--color-touche-sombre-flanc),
+      0 2px 3px rgb(60 0 6 / 0.5);
+  }
+  .touche-sombre:disabled,
+  .touche-sombre[aria-disabled="true"] {
+    color: rgb(255 255 255 / 0.35);
+    cursor: not-allowed;
+  }
+
+  /* Focus sur la coque : anneau blanc (5,2:1 sur le rouge), décollé de la touche. */
+  .touche:focus-visible,
+  .touche-sombre:focus-visible,
+  .sur-coque:focus-visible {
+    outline: 3px solid #ffffff;
+    outline-offset: 3px;
+  }
+
+  /* Logement des flèches. Le pupitre (layout) y dessine des flèches inactives ; une page qui a
+     de quoi feuilleter (accueil : pages ; fiche : Pokémon voisins) pose ses propres flèches,
+     liens réels, exactement au même endroit, par-dessus. Les deux sont en position fixe avec la
+     même géométrie (variables de :root), donc superposés au pixel près. */
+  .fleches {
+    position: fixed;
+    z-index: 1;
+    bottom: calc(var(--marge) + var(--pied-h) + var(--pad));
+    right: calc(var(--marge-x) + var(--bord) + var(--pad));
+    width: var(--fleches-l);
+    height: var(--fleches-h);
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr) 3rem;
+    gap: 0.5rem;
+  }
+  .fleches-page {
+    z-index: 2;
+  }
+  .fleches .touche-sombre {
+    padding-inline: 0;
+  }
+  .fleches .afficheur {
+    min-height: 100%;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+  }
+
+  /* Interrupteur du rétroéclairage : glissière, le curseur suit la classe `dark` (posée avant
+     l'affichage), donc il est à la bonne place dès le premier rendu. */
+  .glissiere {
+    position: relative;
+    flex: none;
+    width: 2.75rem;
+    height: 1.5rem;
+    border-radius: 0.375rem;
+    background: #1a1112;
+    box-shadow: inset 0 2px 3px rgb(0 0 0 / 0.8), 0 1px 0 rgb(255 255 255 / 0.35);
+  }
+  .curseur {
+    position: absolute;
+    top: 0.1875rem;
+    left: 0.1875rem;
+    width: 1.125rem;
+    height: 1.125rem;
+    border-radius: 0.25rem;
+    background: linear-gradient(180deg, #fffaf2, var(--color-touche));
+    box-shadow: 0 1px 0 var(--color-touche-flanc), 0 2px 3px rgb(0 0 0 / 0.5);
+    transition: transform 0.15s ease-out;
+  }
+  .dark .curseur {
+    transform: translateX(1.25rem);
+  }
+
+  /* Bandes de la coque. */
+  .tete {
+    grid-area: tete;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 3rem;
+    padding-inline: 0.25rem;
+  }
+  @media (min-width: 64rem) {
+    .tete {
+      min-height: 4rem;
+      padding-inline: 1rem;
+    }
+  }
+  @media (orientation: landscape) and (max-height: 32rem) and (min-width: 36rem) {
+    .tete {
+      min-height: 2.5rem;
+    }
+  }
+  .pied {
+    grid-area: pied;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    height: var(--pied-h);
+    padding-inline: 0.25rem;
+    overflow: hidden;
+  }
+  @media (min-width: 64rem) {
+    .pied {
+      padding-inline: 1.5rem;
+    }
+  }
+  /* Grille de haut-parleur : fentes horizontales moulées (décor). */
+  .fentes {
+    flex: none;
+    width: 3.5rem;
+    height: 0.75rem;
+    background: repeating-linear-gradient(180deg, #6d0d15 0 2px, transparent 2px 5px);
+    border-radius: 2px;
+  }
+  /* Stries de prise sous les touches (colonne de grand écran, décor). */
+  .stries {
+    min-height: 0;
+    margin-block: 0.25rem;
+    border-radius: 0.5rem;
+    background: repeating-linear-gradient(90deg, rgb(0 0 0 / 0.16) 0 3px, rgb(255 255 255 / 0.1) 3px 4px, transparent 4px 9px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .touche,
+    .touche-sombre,
+    .curseur {
+      transition: none;
+    }
+  }
+
+  /* Jauge segmentée des statistiques : rail et remplissage partagent le même motif, donc les
+     segments s'alignent ; la largeur reste calculée en style (ch. 8). En sombre, le remplissage
+     est éclairci pour rester lisible sur le rail (contrastes-console.mjs). */
+  .jauge {
+    background: repeating-linear-gradient(90deg, rgb(19 32 39 / 0.12) 0 6px, transparent 6px 8px);
+  }
+  .dark .jauge {
+    background: repeating-linear-gradient(90deg, rgb(227 239 233 / 0.14) 0 6px, transparent 6px 8px);
+  }
+  .jauge-plein {
+    background: repeating-linear-gradient(90deg, var(--teinte) 0 6px, transparent 6px 8px);
+  }
+  .dark .jauge-plein {
+    background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--teinte) 60%, white) 0 6px, transparent 6px 8px);
   }
 }
