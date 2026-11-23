@@ -3,6 +3,7 @@ import BarreRecherche from "@/components/BarreRecherche";
 import { CLASSES_CHAMP } from "@/components/classes";
 import FiltreTypes from "@/components/FiltreTypes";
 import GrillePokemons from "@/components/GrillePokemons";
+import Pagination from "@/components/Pagination";
 import Icone from "@/components/Icone";
 import SqueletteGrille from "@/components/SqueletteGrille";
 import { bornerPage, lireFiltres, PAR_PAGE, type ParametresRecherche } from "@/lib/parametres";
@@ -48,7 +49,7 @@ async function Resultats({ searchParams }: Props) {
   // Ordre des numéros conservé : aucune recherche ne trie par nom (clarification « Analyse »).
   let noms = type ? await recupererNomsParType(type) : await recupererTousLesNoms();
   if (texte) noms = noms.filter((nom) => nom.includes(texte));
-  const { pageCourante } = bornerPage(parametres.page, noms.length);
+  const { pageCourante, nombrePages } = bornerPage(parametres.page, noms.length);
   // Seuls les 24 Pokémon visibles sont chargés en détail.
   const visibles = noms.slice((pageCourante - 1) * PAR_PAGE, pageCourante * PAR_PAGE);
   const pokemons = await recupererPlusieurs(visibles);
@@ -68,6 +69,7 @@ async function Resultats({ searchParams }: Props) {
           <GrillePokemons pokemons={pokemons} />
         )}
       </div>
+      <Pagination page={pageCourante} nombrePages={nombrePages} q={q} type={type} />
     </>
   );
 }

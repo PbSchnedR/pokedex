@@ -93,3 +93,38 @@
   ch. 0 du cours), avec le compteur « 0 Pokémon ». Le compteur est formaté à la française
   (« 1 025 Pokémon »).
 - **Vérifié** : `?q=zzzz`.
+
+## Étape 14 — `Pagination` (composant serveur)
+
+- **Point du cours** : ch. 9, leçon « Pagination » — liens « Précédent » / « Suivant » qui
+  conservent `q` et `type`, `page` écrit seulement s'il vaut plus de 1, « Page X sur Y »,
+  `Math.ceil`, renvoie `null` s'il n'y a qu'une page, affiché à la fin de `Resultats`.
+- **Choix** : code du cours, plus l'ajout FR-037 : numéros de page avec `aria-current="page"`
+  sur la page courante. Avec 43 pages, on affiche la première, la dernière et les voisines de la
+  page courante, séparées par « … » (`aria-hidden`). Sur téléphone, le texte du cours
+  « Page X sur Y » remplace les numéros (ils ne tiennent pas en 375 px avec les deux boutons) ;
+  les numéros apparaissent dès `sm:`. Bouton inactif : `<span>` estompé (`opacity-40`,
+  `cursor-not-allowed`), comme dans le cours ; style de la maquette (« Suivant » plein rouge).
+- **Vérifié** (développement et production) :
+  - `/` : #001 → #024, « Précédent » inactif, numéros 1 (courant), 2, 43 ;
+  - `?page=2` : #025 → #048 (scénario 5 de US3), à 375 px en sombre « Page 2 sur 43 » ;
+  - `?page=9999` → page 43 (#1009 → #1025, 17 cartes), « Suivant » inactif ;
+  - `?page=abc` → page 1 ;
+  - `?q=a&type=water&page=2` → « Page 2 sur 4 », liens qui gardent `q` et `type` ;
+  - clic sur « Suivant » depuis `/` → `?page=2`, #025 ; clic sur « Feu » → `?type=fire` ;
+    « Précédent » du navigateur → retour à `?page=2`.
+- **Fichiers** : `components/Pagination.tsx`, `app/page.tsx`.
+
+## Point non validé : le squelette entre deux pages
+
+- **Point du cours** : liste de l'étape 14 — « Le squelette de la grille apparaît pendant le
+  chargement d'une nouvelle page ».
+- **Constat** : en cliquant sur « Suivant » vers une page **jamais chargée** (cache vide pour ces
+  24 Pokémon), aucun squelette n'apparaît, ni en développement ni en production : j'ai sondé
+  `[aria-busy=true]` toutes les 50 ms pendant 3 à 4 s après le clic (`/?page=31` → 32 en
+  développement, `/?page=36` → 37 avec `npm start`). L'ancienne grille reste affichée jusqu'à
+  l'arrivée de la nouvelle.
+- **Explication probable (non vérifiée dans le code de React)** : une navigation de Next.js est
+  une transition React ; quand le même `<Suspense>` est déjà affiché, React garde l'ancien contenu
+  au lieu de remontrer le `fallback`. Seule la première arrivée sur la page montre le squelette.
+- **Statut** : signalé au manager, non corrigé (voir le rapport de l'étape 14).

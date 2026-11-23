@@ -166,7 +166,7 @@ validé ([contracts/routes.md](./contracts/routes.md)).
 
 ⏸ **STOP étape 13**
 
-- [ ] T050 [US3] Créer `components/Pagination.tsx` (serveur) : renvoie `null` si `nombrePages <= 1` ; « Précédent » et « Suivant » en `Link`, inactifs (`<span>` estompé) en première et dernière page ; numéros de page avec la page courante indiquée (`aria-current="page"`) (FR-037) ; conserve `q` et `type`, n'écrit `page` que si > 1 ; `aria-label="Pagination"` ; l'afficher à la fin de `Resultats`
+- [X] T050 [US3] Créer `components/Pagination.tsx` (serveur) : renvoie `null` si `nombrePages <= 1` ; « Précédent » et « Suivant » en `Link`, inactifs (`<span>` estompé) en première et dernière page ; numéros de page avec la page courante indiquée (`aria-current="page"`) (FR-037) ; conserve `q` et `type`, n'écrit `page` que si > 1 ; `aria-label="Pagination"` ; l'afficher à la fin de `Resultats`
 - [ ] T051 [US3] Étape 14 : vérifier `?page=9999`, `?page=abc`, le squelette entre deux pages, US3 scénario 5 (page 2 = n° 25 à 48) ; documenter l'état dans l'adresse, la validation et la temporisation dans `docs/09-interactivite-avancee.md`
 
 ⏸ **STOP étape 14**
