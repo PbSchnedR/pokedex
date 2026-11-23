@@ -335,3 +335,62 @@
   déjà présents, donc même jeu et même style. Toujours `aria-hidden` (le texte reste le libellé).
 - **Fichiers** : `stores/sacoche.ts`, `stores/sacoche.test.ts`,
   `components/ListeSacocheReordonnable.tsx`, `components/Icone.tsx`, `app/sacoche/page.tsx`.
+
+## Bonus — types couverts et ajout rapide (FR-034, tâches T085–T086)
+
+Bonus de l'étape 16 (ch. 9 : « afficher les types couverts sous forme de badges, et un ajout
+rapide depuis les cartes de la liste ») et de l'étape 17 (ch. 10 : « un hook `useTypesCouverts()`
+qui renvoie les types présents dans la sacoche »).
+
+### Types couverts : une valeur dérivée, jamais stockée
+
+- **Choix** : fonction pure `calculerTypesCouverts(equipe)` dans `lib/types-couverts.ts`, appelée
+  par le hook `useTypesCouverts()` (`hooks/useTypesCouverts.ts`, `"use client"`), lui-même lu par
+  `components/TypesCouverts.tsx` (badges) et par le compteur de `app/sacoche/page.tsx`.
+- **Point du cours** : data-model « dérivés jamais stockés » et ch. 10 (« une valeur calculable ne
+  passe ni par un état ni par un effet ») ; le store n'est pas modifié.
+- **Piège du ch. 9 évité** : le sélecteur renvoie `etat.equipe` tel quel ; le calcul se fait
+  ensuite, pendant le rendu. Un sélecteur `(etat) => calculer(etat.equipe)` fabriquerait un
+  nouveau tableau à chaque appel et ferait tourner l'affichage en boucle.
+- **Pas de `useMemo`** : six membres au plus ; le ch. 10 demande de ne pas mémoriser par réflexe.
+  Alternative écartée : la version `useMemo` du ch. 10, inutile à cette taille.
+- **Ordre** : celui de la table `TYPES` (Normal, Feu, Eau…), pas celui des membres, pour que les
+  badges ne changent pas de place quand on réordonne l'équipe (bonus glisser-déposer). Un type
+  absent de la table n'est pas perdu : il suit, dans l'ordre d'apparition (badge gris).
+  Alternative écartée : le `new Set` du cours, dont l'ordre suit celui des membres.
+- **Affichage** : section « Types couverts » (`<h2>` sous le `<h1>`), badges `BadgeType` dans une
+  liste ; sacoche vide → « Aucun type couvert : la sacoche est vide… ». Le nombre reste dans le
+  compteur existant de la page, qui lit désormais le hook (même valeur, un seul calcul de règle).
+- **Tests** (`lib/types-couverts.test.ts`, Vitest) : sacoche vide, doublons, ordre de `TYPES`
+  indépendant de l'ordre des membres, type inconnu, entrée non modifiée.
+
+### `AjoutRapide` : un bouton par carte, hors du lien
+
+- **Choix** : composant client `components/AjoutRapide.tsx`, placé dans `CartePokemon` (serveur)
+  **à côté** du `Link`, en position absolue en haut à gauche — l'étoile est en haut à droite, le
+  numéro en filigrane en bas à droite : rien ne se chevauche.
+- **Point du cours** : ch. 9 — un bouton dans un lien pose un problème d'accessibilité et de clic
+  (même solution que `BoutonFavori`) ; frontière serveur → client : la carte ne transmet qu'un
+  objet `Pick<Membre, "id" | "nom" | "image" | "types">`, pas les statistiques.
+- **Règle FR-016** : le bouton la reflète, le store la garantit (`ajouter` refuse déjà doublon et
+  septième membre). Deux sélecteurs à valeur booléenne (`dedans`, `pleine`, dérivés) : une carte
+  ne se réaffiche que si son propre état change.
+- **États et libellés** (`aria-label`, repris en `title` pour l'infobulle à la souris) :
+  « Ajouter {nom} à la sacoche » (icône +) ; « {nom} est déjà dans la sacoche » (coche blanche sur
+  rond rouge) ; « Sacoche pleine (6/6) : impossible d'ajouter {nom} » (icône + estompée).
+- **`aria-disabled` plutôt que `disabled`** : un bouton `disabled` perd le focus au moment où il
+  se désactive (juste après l'ajout), et l'utilisateur au clavier repartirait du haut de la page.
+  Avec `aria-disabled`, le focus reste, le lecteur d'écran annonce « indisponible » et le nouveau
+  libellé ; le clic est ignoré dans le composant (et refusé par le store de toute façon).
+  Alternative écartée : `disabled`, comme `BoutonSacoche` de la fiche, où le bouton ne se
+  désactive pas sous le doigt de l'utilisateur.
+- **Type de `ajouter`** : l'action du store est typée sur `Pokemon` complet alors qu'elle ne lit
+  que `id`, `nom`, `image` et `types`. Le composant appelle `ajouter(pokemon as Pokemon)` avec un
+  commentaire ; élargir le paramètre du store à ces quatre champs supprimerait l'assertion
+  (question posée au manager, `stores/` étant hors du périmètre de ce bonus).
+- **Icônes** : ajout de `plus` et `coche` dans `Icone`, tracés exacts de Phosphor « regular »
+  (`plus.svg`, `check.svg`) extraits du paquet `@phosphor-icons/core@2.1.1`
+  (`assets/regular/`) ; le tracé `x.svg` du même paquet est identique à `croix`, déjà présent.
+- **Fichiers** : `lib/types-couverts.ts`, `lib/types-couverts.test.ts`,
+  `hooks/useTypesCouverts.ts`, `components/TypesCouverts.tsx`, `components/AjoutRapide.tsx`,
+  `components/Icone.tsx`, `components/CartePokemon.tsx`, `app/sacoche/page.tsx`.
