@@ -41,7 +41,7 @@ export default function CartePokemon({ pokemon, titre: Titre = "h2" }: { pokemon
           </span>
           <Image
             src={pokemon.image}
-            alt={pokemon.nom}
+            alt={pokemon.nomFr}
             width={160}
             height={160}
             className="relative mx-auto size-full object-contain p-4 drop-shadow-lg transition-transform duration-300 ease-out
@@ -50,7 +50,7 @@ export default function CartePokemon({ pokemon, titre: Titre = "h2" }: { pokemon
         </div>
         <div className="p-2">
           <p className="text-xs font-semibold tabular-nums text-doux dark:text-doux-sombre">{numero}</p>
-          <Titre className="truncate text-base font-bold capitalize">{pokemon.nom}</Titre>
+          <Titre className="truncate text-base font-bold">{pokemon.nomFr}</Titre>
           <div className="mt-2 flex flex-wrap gap-2">
             {pokemon.types.map((type) => (
               <BadgeType key={type} type={type} />
@@ -60,11 +60,12 @@ export default function CartePokemon({ pokemon, titre: Titre = "h2" }: { pokemon
       </Link>
       {/* ch. 9 — un bouton dans un lien pose un problème d'accessibilité et de clic : il est
           hors du Link, positionné sur la carte (relative). */}
-      <BoutonFavori nom={pokemon.nom} className="absolute right-4 top-4 z-10" />
+      <BoutonFavori nom={pokemon.nom} libelle={pokemon.nomFr} className="absolute right-4 top-4 z-10" />
       {/* Bonus FR-034 — ajout rapide, hors du Link lui aussi, à l'opposé de l'étoile. Seuls les
           champs d'un membre traversent la frontière serveur → client (pas les statistiques). */}
       <AjoutRapide
         pokemon={{ id: pokemon.id, nom: pokemon.nom, image: pokemon.image, types: pokemon.types }}
+        libelle={pokemon.nomFr}
         className="absolute left-4 top-4 z-10"
       />
     </article>

@@ -5,11 +5,17 @@ import Icone from "./Icone";
 
 // ch. 9 — la carte (serveur) ne transmet que les champs qu'un membre de la sacoche garde : des
 // données simples, sans les statistiques, qui passent la frontière serveur → client.
-type Props = { pokemon: Pick<Membre, "id" | "nom" | "image" | "types">; className?: string };
+// `libelle` : nom affiché (français, bonus FR-033), fourni par la carte serveur comme pour
+// BoutonFavori — ce composant client n'importe pas le fichier des noms (poids du JS client).
+type Props = {
+  pokemon: Pick<Membre, "id" | "nom" | "image" | "types">;
+  libelle?: string;
+  className?: string;
+};
 
 // Bonus FR-034 — ajout rapide depuis la grille, hors du Link de la carte (comme BoutonFavori).
 // Le bouton reflète la règle FR-016 ; c'est l'action `ajouter` du store qui la garantit.
-export default function AjoutRapide({ pokemon, className = "" }: Props) {
+export default function AjoutRapide({ pokemon, libelle: nomAffiche = pokemon.nom, className = "" }: Props) {
   // ch. 9 — un sélecteur par valeur simple (booléens) : la carte ne se réaffiche que si SON état change.
   const dedans = useSacoche((etat) => etat.equipe.some((m) => m.id === pokemon.id));
   const pleine = useSacoche((etat) => etat.equipe.length >= TAILLE_SACOCHE); // dérivé, jamais stocké
@@ -17,10 +23,10 @@ export default function AjoutRapide({ pokemon, className = "" }: Props) {
 
   const indisponible = dedans || pleine;
   const libelle = dedans
-    ? `${pokemon.nom} est déjà dans la sacoche`
+    ? `${nomAffiche} est déjà dans la sacoche`
     : pleine
-      ? `Sacoche pleine (${TAILLE_SACOCHE}/${TAILLE_SACOCHE}) : impossible d'ajouter ${pokemon.nom}`
-      : `Ajouter ${pokemon.nom} à la sacoche`;
+      ? `Sacoche pleine (${TAILLE_SACOCHE}/${TAILLE_SACOCHE}) : impossible d'ajouter ${nomAffiche}`
+      : `Ajouter ${nomAffiche} à la sacoche`;
 
   return (
     <button

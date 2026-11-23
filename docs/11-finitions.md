@@ -428,3 +428,109 @@ par Salamèche (données réelles de la PokéAPI) ; les deux dernières étapes 
 - En thème sombre, la silhouette noire est posée sur un fond gris clair dégradé
   (`dark:from-doux-sombre/70`) pour rester visible ; ce fond est un choix d'interface non imposé,
   soumis à validation.
+
+## Bonus — noms français (T082, T083, FR-033, research R5 et R6)
+
+### Le nom français est une donnée d'affichage, le nom de l'API reste la clé
+
+- **Point du cours** : ch. 5, « la donnée reste en anglais, on ne la traduit qu'à l'affichage »
+  (comme les types) ; ch. 7, `versPokemon` est le seul endroit qui connaît la forme de l'API.
+- **Choix** : `Pokemon` reçoit `nomFr: string` (`types/pokemon.ts`), rempli dans `versPokemon`
+  par `nomFrancais(brut.id, brut.name)` (module partagé `lib/noms-fr.ts`, fichier
+  `data/pokemons-fr.json` ; repli sur le nom de l'API pour un numéro absent, ex. une forme
+  spéciale). `nom` reste en anglais pour tout ce qui est une adresse ou une clé :
+  `/pokemon/charmander`, `/comparer?a=charmander`, `key`, favoris stockés, `generateStaticParams`.
+- **Où le nom français s'affiche** : `CartePokemon` (titre, `alt`) — donc la grille, les
+  évolutions de la fiche et les favoris ; la fiche (`h1`, `alt`) ; `generateMetadata` (titre
+  d'onglet « Salamèche · Pokédex » par le gabarit du layout, et description) ; la sacoche
+  (`alt`, libellé et texte indicatif du surnom, bouton « Retirer … ») ; les boutons « Monter /
+  Descendre » et l'annonce du glisser-déposer (`ListeSacocheReordonnable`) ; le comparateur
+  (en-têtes de colonnes, suggestions) ; le combat (`ResultatCombat` : nom du combattant, `alt`,
+  « … l'emporte »).
+- **`aria-label` du favori** : `BoutonFavori` reçoit une propriété facultative `libelle` (nom
+  français) ; `nom` reste ce qui est stocké dans `pokedex-favoris`. Aucune migration.
+- **Sacoche** : `Membre` ne stocke **pas** `nomFr` (data-model, constitution II : une valeur
+  calculable n'est pas stockée). Le nom se calcule à l'affichage par
+  `nomFrancais(membre.id, membre.nom)`. La forme de `pokedex-sacoche` est inchangée (vérifié :
+  la valeur stockée ne contient pas `nomFr`).
+- **`capitalize` retiré** là où s'affiche le nom français : la donnée est déjà écrite
+  correctement, et la classe CSS abîme les noms composés. Vu à l'écran : le texte indicatif du
+  surnom affichait « Roue-De-Fer » au lieu de « Roue-de-Fer ». Le champ du surnom garde
+  `capitalize` pour le texte saisi, mais son texte indicatif passe en `placeholder:normal-case`.
+- **Alternative écartée** : ajouter `nomFr` à `Membre` (donnée dupliquée, migration du stockage).
+
+### Recherche sur le nom français seul (clarification Q1, research R6)
+
+- **Point du cours** : ch. 9, « Chercher parmi 1 025 Pokémon » (liste complète en cache, filtrée
+  par `includes`, ordre des numéros).
+- **Choix** : dans `Resultats` (`app/page.tsx`), `normaliser(q)` est comparé à
+  `normaliser(nomFrancaisDepuisNom(nom))`, et **seulement** à lui : « bulbi » trouve
+  Bulbizarre, « BULBI » aussi, « salameche » trouve Salamèche, mais « bulbasaur » ne trouve rien.
+  La liste filtrée reste celle des noms de l'API, dans l'ordre des numéros ; le filtre par type
+  et la pagination ne changent pas. La recherche est faite sur le serveur : le fichier des noms
+  n'entre pas dans le JS client de l'accueil.
+- **Tri par nom** (« le tri par nom suit `nomFr` », T083) : le tri n'existe pas encore sur cette
+  branche (T084, livré par un autre bonus) ; à la fusion, il doit trier sur
+  `nomFrancaisDepuisNom(nom)` (avec `localeCompare(…, "fr")`).
+
+### Comparateur : suggestions et saisie en français
+
+- **Choix** : `suggerer(saisi, entrees)` compare le nom français normalisé et renvoie le nom de
+  l'API (pour le lien) ; la page lui passe `NOMS_FR` (fichier local), si bien qu'elle n'a plus
+  besoin d'appeler `recupererTousLesNoms()` quand une colonne est introuvable. `lireChoix`
+  accepte maintenant un nom français, accents et casse ignorés : « Salamèche », « SALAMECHE » →
+  `charmander`, « M. Mime » → `mr-mime`, « Nidoran♀ » → `nidoran-f`. Le nom de l'API reste
+  accepté (le lien « Comparer » de la fiche l'écrit dans `a`). Aucun nom français normalisé
+  n'est le nom de l'API d'un autre Pokémon (vérifié sur les 1 025) : les deux règles ne se
+  contredisent pas. Exemple du champ : « ex. Salamèche ».
+- **Tests** : `lib/comparaison.test.ts` (saisie française, nom de l'API toujours accepté,
+  suggestions sur le nom français, nom anglais sans suggestion) ; `lib/conversion.test.ts`
+  (nouveau : `nomFr` et son repli).
+
+### Poids ajouté au JS client (research R5) — mesuré
+
+Mesure : `npm run build` avant et après, puis somme des fichiers JS que chaque route charge
+(`entryJSFiles` du manifeste client : layout + page ; les morceaux communs du framework, qui ne
+changent pas, ne sont pas comptés), en octets bruts et après gzip -9.
+
+| Route | Avant (brut / gzip) | Après (brut / gzip) | Écart (brut / gzip) |
+|-------|---------------------|---------------------|---------------------|
+| `/` | 50 677 / 17 296 | 50 689 / 17 305 | +12 / +9 |
+| `/pokemon/[nom]` | 49 706 / 16 878 | 49 718 / 16 889 | +12 / +11 |
+| `/comparer` | 49 284 / 16 837 | 49 288 / 16 843 | +4 / +6 |
+| `/favoris` | 54 235 / 18 502 | 103 106 / 33 124 | +48 871 / +14 622 |
+| `/sacoche` | 56 589 / 19 073 | 105 450 / 33 688 | +48 861 / +14 615 |
+| `/combat` | 60 665 / 20 193 | 109 460 / 34 850 | +48 795 / +14 657 |
+
+- **Constat** : le JSON des noms finit dans **un** morceau client de 50 124 octets (15 153 après
+  gzip), partagé par les trois pages client qui appellent `versPokemon` (`chargerPokemon`) ou
+  `nomFrancais` : Favoris, Sacoche, Combat. Les pages serveur (accueil, fiche, comparateur) ne
+  chargent que la nouvelle propriété `libelle` (quelques octets). Le fichier brut fait 78 Ko (et
+  non environ 30 Ko comme le prévoyait R5) : il contient aussi `id` et `nom` pour chaque entrée.
+- **Piste si Lighthouse le demande** (non faite, `lib/noms-fr.ts` est partagé) : ne servir au
+  navigateur qu'une liste `nomFr` indexée par numéro (environ moitié moins), ou faire traduire
+  par le serveur.
+
+### Vérifié (serveur de production `next start -p 3111`, Chrome sans interface, 2026-11-23)
+
+375 px en thème sombre et 1 280 px en thème clair, captures regardées et textes relevés dans le
+DOM : grille (Bulbizarre, Herbizarre, Florizarre, Salamèche ; `aria-label` « Ajouter Bulbizarre
+aux favoris ») ; fiche Salamèche (`h1` et `alt` « Salamèche », onglet « Salamèche · Pokédex »,
+évolutions Salamèche / Reptincel / Dracaufeu avec liens `/pokemon/charmander`…) ; fiche
+Roue-de-Fer (favori « Ajouter Roue-de-Fer aux favoris ») ; `?q=bulbi` et `?q=BULBI` → 1 Pokémon,
+Bulbizarre ; `?q=bulbasaur` → « 0 Pokémon » et « Aucun Pokémon ne correspond à cette
+recherche. » ; `?q=salameche&type=fire` → Salamèche ; sacoche (libellés « Surnom de … »,
+« Retirer Salamèche de la sacoche », « Monter Salamèche », surnom « Pika » gardé, texte
+indicatif « Roue-de-Fer ») ; favoris (Salamèche, Roue-de-Fer) ; combat `?adversaire=1,7,133`
+(« Salamèche l'emporte », « Carapuce l'emporte », « Évoli l'emporte ») ; comparateur
+`?a=charmander&b=Évoli` (en-têtes Salamèche et Évoli, liens `/pokemon/eevee`), `b=rai`
+(8 suggestions françaises : Raichu, Maraiste, Rémoraid… vers `b=raichu`, `b=quagsire`…),
+`b=eeve` → « Aucun Pokémon nommé « eeve ». » sans suggestion. Aucune page ne défile en
+largeur ; console sans erreur ni avertissement d'hydratation sur toutes les vues.
+
+- **Fichiers** : `types/pokemon.ts`, `lib/conversion.ts`, `lib/conversion.test.ts`,
+  `lib/comparaison.ts`, `lib/comparaison.test.ts`, `app/page.tsx`, `app/pokemon/[nom]/page.tsx`,
+  `app/sacoche/page.tsx`, `app/comparer/page.tsx`, `components/CartePokemon.tsx`,
+  `components/BoutonFavori.tsx`, `components/ListeSacocheReordonnable.tsx`,
+  `components/ResultatCombat.tsx`, `components/TableauComparaison.tsx`,
+  `components/ChoixComparaison.tsx`.

@@ -10,6 +10,7 @@ import SqueletteGrille from "@/components/SqueletteGrille";
 import { nomFrancaisDepuisNom } from "@/lib/noms-fr";
 import { bornerPage, lireFiltres, lireTri, PAR_PAGE, type ParametresRecherche } from "@/lib/parametres";
 import { recupererNomsParType, recupererPlusieurs, recupererTousLesNoms } from "@/lib/pokeapi";
+import { normaliser } from "@/lib/texte";
 
 type Props = {
   searchParams: Promise<ParametresRecherche>;
@@ -70,10 +71,13 @@ async function ZoneResultats({ searchParams }: Props) {
 async function Resultats({ searchParams }: Props) {
   const parametres = await searchParams;
   // ch. 9 — tout ce qui vient de l'adresse est validé (lib/parametres.ts, testé).
-  const { q, texte, type } = lireFiltres(parametres);
+  const { q, type } = lireFiltres(parametres);
   // Ordre des numéros par défaut (clarification « Analyse ») ; le tri par nom est le bonus FR-036.
   let noms = type ? await recupererNomsParType(type) : await recupererTousLesNoms();
-  if (texte) noms = noms.filter((nom) => nom.includes(texte));
+  // Bonus FR-033 (clarification Q1) — recherche sur le nom français SEUL, accents et casse
+  // ignorés (« bulbi » → Bulbizarre ; « bulbasaur » → rien). Les noms filtrés restent ceux de l'API.
+  const recherche = normaliser(q);
+  if (recherche) noms = noms.filter((nom) => normaliser(nomFrancaisDepuisNom(nom)).includes(recherche));
   // Bonus FR-036 — tri par nom français, AVANT le découpage en pages. Copie d'abord : sans
   // recherche, `noms` est le tableau mis en cache par "use cache", qu'il ne faut pas modifier.
   const tri = lireTri(parametres.tri);

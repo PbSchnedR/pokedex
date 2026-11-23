@@ -8,7 +8,8 @@ export type Statistique = {
 
 export type Pokemon = {
   id: number;
-  nom: string;
+  nom: string;     // nom de l'API, en anglais : adresses et clés (/pokemon/charmander)
+  nomFr: string;   // bonus FR-033 — nom affiché (« Salamèche »)
   image: string;
   types: string[];
   taille: number;   // en mètres

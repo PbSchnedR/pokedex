@@ -57,7 +57,7 @@ async function Fiche({ params }: Props) {
           </span>
           <Image
             src={pokemon.image}
-            alt={pokemon.nom}
+            alt={pokemon.nomFr}
             width={400}
             height={400}
             loading="eager"
@@ -69,8 +69,8 @@ async function Fiche({ params }: Props) {
       <div>
         <p className="text-xs font-semibold tabular-nums text-doux dark:text-doux-sombre">#{chiffres}</p>
         <div className="flex items-center justify-between gap-4">
-          <h1 className="text-3xl font-extrabold tracking-tight capitalize font-stretch-85%">{pokemon.nom}</h1>
-          <BoutonFavori nom={pokemon.nom} />
+          <h1 className="text-3xl font-extrabold tracking-tight font-stretch-85%">{pokemon.nomFr}</h1>
+          <BoutonFavori nom={pokemon.nom} libelle={pokemon.nomFr} />
         </div>
         <div className="mt-2 flex gap-2">
           {pokemon.types.map((type) => (
@@ -117,7 +117,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { nom } = await params;
   const pokemon = await recupererPokemon(nom);
   if (!pokemon) return { title: "Pokémon introuvable" };
-  const titre = pokemon.nom.charAt(0).toUpperCase() + pokemon.nom.slice(1);
+  const titre = pokemon.nomFr; // bonus FR-033 — « Salamèche · Pokédex » (gabarit du layout)
   return {
     title: titre,
     description: `${titre} : types, statistiques et évolutions.`,

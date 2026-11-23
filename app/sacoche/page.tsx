@@ -8,6 +8,7 @@ import Icone from "@/components/Icone";
 import ListeSacocheReordonnable from "@/components/ListeSacocheReordonnable";
 import TypesCouverts from "@/components/TypesCouverts";
 import { useTypesCouverts } from "@/hooks/useTypesCouverts";
+import { nomFrancais } from "@/lib/noms-fr";
 import { LONGUEUR_SURNOM, TAILLE_SACOCHE, useSacoche } from "@/stores/sacoche";
 
 // ch. 9 — page client : la sacoche n'existe que dans le navigateur.
@@ -40,20 +41,20 @@ export default function PageSacoche() {
               <span aria-hidden="true" className="absolute -bottom-2 right-2 text-6xl leading-none font-extrabold tabular-nums font-stretch-75% text-(--teinte)/25">
                 {i + 1}
               </span>
-              <Image src={membre.image} alt={membre.nom} width={96} height={96} className="relative mx-auto size-full object-contain p-4 drop-shadow-lg" />
+              <Image src={membre.image} alt={nomFrancais(membre.id, membre.nom)} width={96} height={96} className="relative mx-auto size-full object-contain p-4 drop-shadow-lg" />
             </div>
             <div className="p-2">
               <label htmlFor={`surnom-${membre.id}`} className="text-xs font-semibold text-doux dark:text-doux-sombre">
-                Surnom de <span className="capitalize">{membre.nom}</span>
+                Surnom de {nomFrancais(membre.id, membre.nom)}
               </label>
               <input
                 id={`surnom-${membre.id}`}
                 value={membre.surnom}
                 onChange={(e) => renommer(membre.id, e.target.value)}
-                placeholder={membre.nom}
+                placeholder={nomFrancais(membre.id, membre.nom)}
                 maxLength={LONGUEUR_SURNOM}
                 className="mt-1 w-full rounded-full border border-black/10 bg-fond px-2 py-1 text-base font-bold capitalize
-                           placeholder:text-doux focus:border-pokedex focus:outline-none focus:ring-4 focus:ring-pokedex/20
+                           placeholder:text-doux placeholder:normal-case focus:border-pokedex focus:outline-none focus:ring-4 focus:ring-pokedex/20
                            dark:border-white/10 dark:bg-fond-sombre dark:placeholder:text-doux-sombre"
               />
               <div className="mt-2 flex flex-wrap gap-2">
@@ -65,7 +66,7 @@ export default function PageSacoche() {
             <button
               type="button"
               onClick={() => retirer(membre.id)}
-              aria-label={`Retirer ${membre.nom} de la sacoche`}
+              aria-label={`Retirer ${nomFrancais(membre.id, membre.nom)} de la sacoche`}
               className="absolute right-4 top-4 grid size-10 place-items-center rounded-full bg-surface text-doux shadow-sm
                          transition-transform hover:text-pokedex active:scale-90 focus-visible:outline-2 focus-visible:outline-offset-2
                          focus-visible:outline-pokedex motion-reduce:transition-none dark:bg-surface-sombre dark:text-doux-sombre dark:focus-visible:outline-pokedex-sombre
