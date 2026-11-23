@@ -1,12 +1,11 @@
 "use client";
 
-import type { CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import BadgeType from "@/components/BadgeType";
 import BoutonVider from "@/components/BoutonVider";
 import Icone from "@/components/Icone";
-import { teinteType } from "@/lib/types";
+import ListeSacocheReordonnable from "@/components/ListeSacocheReordonnable";
 import { LONGUEUR_SURNOM, TAILLE_SACOCHE, useSacoche } from "@/stores/sacoche";
 
 // ch. 9 — page client : la sacoche n'existe que dans le navigateur.
@@ -29,13 +28,11 @@ export default function PageSacoche() {
         {equipe.length} / {TAILLE_SACOCHE} Pokémon · {typesCouverts.length} type(s) couvert(s)
       </p>
 
-      <ul className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-6">
-        {equipe.map((membre, i) => (
-          <li
-            key={membre.id}
-            style={{ "--teinte": teinteType(membre.types[0]) } as CSSProperties}
-            className="relative flex flex-col rounded-2xl bg-surface p-2 shadow-sm ring-1 ring-black/5 dark:bg-surface-sombre dark:ring-white/10"
-          >
+      {/* Bonus FR-040 — la liste (cartes <li>, glisser-déposer, « Monter » / « Descendre ») est dans
+          ListeSacocheReordonnable ; le contenu de chaque carte reste écrit ici. */}
+      <ListeSacocheReordonnable
+        rendreMembre={(membre, i) => (
+          <>
             <div className="relative aspect-square overflow-hidden rounded-xl bg-radial-[at_50%_35%] from-(--teinte)/35 to-(--teinte)/10">
               <span aria-hidden="true" className="absolute -bottom-2 right-2 text-6xl leading-none font-extrabold tabular-nums font-stretch-75% text-(--teinte)/25">
                 {i + 1}
@@ -73,8 +70,9 @@ export default function PageSacoche() {
             >
               <Icone nom="croix" className="size-4" />
             </button>
-          </li>
-        ))}
+          </>
+        )}
+      >
         {/* ch. 9 — les emplacements libres sont dessinés : on voit d'un coup d'œil les places
             restantes, et chaque case vide ramène au Pokédex. */}
         {Array.from({ length: emplacementsLibres }, (_, i) => (
@@ -93,7 +91,7 @@ export default function PageSacoche() {
             </Link>
           </li>
         ))}
-      </ul>
+      </ListeSacocheReordonnable>
     </>
   );
 }

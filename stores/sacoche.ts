@@ -16,6 +16,7 @@ type EtatSacoche = {
   retirer: (id: number) => void;
   renommer: (id: number, surnom: string) => void;
   vider: () => void;
+  deplacer: (depuis: number, vers: number) => void;
 };
 
 // ch. 9 — les règles métier vivent dans les actions du store, pas dans les boutons : même si un
@@ -41,6 +42,18 @@ export const useSacoche = create<EtatSacoche>()(
           ),
         })),
       vider: () => set({ equipe: [] }),
+      // Bonus FR-040 (research R9) — nouveau tableau, comme les autres actions. Un indice hors
+      // bornes (ou égal à l'autre) laisse l'état inchangé : ni perte ni doublon possible, et
+      // le nombre de membres ne change jamais, donc les règles « 6 max » et « sans doublon » tiennent.
+      deplacer: (depuis, vers) =>
+        set((etat) => {
+          const valide = (i: number) => Number.isInteger(i) && i >= 0 && i < etat.equipe.length;
+          if (!valide(depuis) || !valide(vers) || depuis === vers) return etat;
+          const equipe = [...etat.equipe];
+          const [membre] = equipe.splice(depuis, 1);
+          equipe.splice(vers, 0, membre);
+          return { equipe };
+        }),
     }),
     { name: "pokedex-sacoche", skipHydration: true }
   )
