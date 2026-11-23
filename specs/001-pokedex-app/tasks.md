@@ -102,7 +102,7 @@ Phase 5 (US3), comme dans le cours (étape 14).
 
 ⏸ **STOP étapes 3–4**
 
-- [ ] T029 [US1] Étapes 5–6 : appliquer la direction validée (T012) à `BadgeType`, `CartePokemon` et `GrillePokemons` ; vérifier 375 px, thème sombre, réglage « réduire les animations » ; consigner les choix dans `docs/05-tailwind-interface.md` et les règles JSX/listes/clés dans `docs/04-react.md`
+- [X] T029 [US1] Étapes 5–6 : appliquer la direction validée (T012) à `BadgeType`, `CartePokemon` et `GrillePokemons` ; vérifier 375 px, thème sombre, réglage « réduire les animations » ; consigner les choix dans `docs/05-tailwind-interface.md` et les règles JSX/listes/clés dans `docs/04-react.md`
 
 ⏸ **STOP étapes 5–6**
 

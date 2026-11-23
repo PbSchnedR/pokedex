@@ -184,3 +184,47 @@ décalage) : aucun écart à justifier, et la durée reste sous 0,5 s.
   contre `setState` dans un effet).
 - **Fichiers** : `app/globals.css`, `app/layout.tsx`, `components/BoutonTheme.tsx`,
   `components/Icone.tsx`.
+
+## Étapes 5–6 : badges, carte « vignette », grille (T029)
+
+- **Points du cours** : ch. 5, étape 5 (couleurs déclarées, `BadgeType` en français, carte
+  stylisée, grille 2 → 6 colonnes, lisible en sombre) et étape 6 (teinte du type principal,
+  numéro en filigrane, ombre portée de l'image, soulèvement et image grossie au survol,
+  `animate-apparition`, rendu soigné en sombre et à 375 px, animations coupées par le réglage
+  système).
+- **`BadgeType`** : code du cours (`TYPES[type] ?? { libelle: type, classe: "bg-gray-500" }`,
+  `rounded-full`, `text-xs font-bold text-white`). Intérieur `px-2 py-0.5` (au lieu de `px-3`)
+  pour rester sur l'échelle 2/4/6/8 ; `dark:ring-1 dark:ring-white/20` pour que les badges des
+  types les plus sombres (`dark` : 1,86:1 contre la surface sombre) gardent un contour visible.
+- **`CartePokemon`** (composant serveur) :
+  - `--teinte` posée en style local par `teinteType(types[0])` (code du cours) ;
+  - vignette : cadre `rounded-2xl bg-surface p-2 shadow-sm ring-1`, champ image `rounded-xl`
+    en dégradé radial `from-(--teinte)/35 to-(--teinte)/10` (le cours : linéaire `/25` ; la
+    direction le rend radial pour centrer la lumière sur l'illustration) ;
+  - filigrane : les trois chiffres (`001`), étroits (`font-stretch-75%`), en
+    `text-(--teinte)/25`, `aria-hidden` ; le numéro lisible `#001` est sous l'image (hiérarchie :
+    image, nom, types, numéro discret) ;
+  - `next/image` 160 × 160, `drop-shadow-lg`, `group-hover:scale-110` (300 ms) ;
+  - survol et focus clavier : `-translate-y-1` + `-rotate-1` (200 ms) et ombre teintée par
+    opacité ; `animate-apparition` (0,4 s, valeur du cours) ;
+  - `motion-reduce:` sur l'apparition, le soulèvement, l'inclinaison, le zoom et les transitions ;
+  - nom en `capitalize`, tronqué s'il est trop long (`truncate`) ;
+  - tout le contenu est un `Link` vers `/pokemon/{nom}` ; la carte est `relative` pour accueillir
+    plus tard les boutons favori et sacoche **hors** du lien.
+- **`GrillePokemons`** : classes du cours `grid-cols-2 sm:grid-cols-3 md:grid-cols-4
+  lg:grid-cols-6`, `gap-4` puis `sm:gap-6`.
+- **Vérifié** (Chrome sans interface, serveur de développement, captures regardées) :
+  - 375 px clair et sombre : 2 colonnes, `scrollWidth = clientWidth = 375` (pas de défilement
+    horizontal), badges lisibles, filigrane discret ;
+  - 1 280 px : 6 colonnes ;
+  - survol (souris simulée) : `translate: 0px -4px`, `rotate: -1deg`, image `scale: 1.1`, ombre
+    visible ; animation `apparition 0.4s` ;
+  - réglage « réduire les animations » émulé : `animation: none`, `translate: 0px`,
+    `rotate: 0deg`, image `scale: 1`, `transition: none` ; l'ombre apparaît sans transition ;
+  - console : aucune erreur ; un **avertissement** de Next.js en développement suggère
+    `loading="eager"` pour l'image détectée comme LCP (voir « Point ouvert » ci-dessous).
+- **Point ouvert (performance)** : le cours ne prévoit `loading="eager"` que pour la grande image
+  de la fiche (ch. 8). Pour la grille, la question sera tranchée au moment de la mesure
+  Lighthouse (étape 18) plutôt que d'ajouter un réglage non demandé maintenant.
+- **Fichiers** : `components/BadgeType.tsx`, `components/CartePokemon.tsx`,
+  `components/GrillePokemons.tsx`, `app/globals.css` (`.carte::before`).
