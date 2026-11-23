@@ -61,3 +61,86 @@
   (ch. 9, FR-011) ne devra pas accepter `?type=constructor`. Signalé au manager ; le code du
   cours est conservé tel quel.
 - **Fichiers** : `lib/types.ts`.
+
+## Direction artistique retenue : « Album à compléter » (T012, décision Q-T012-a)
+
+- **Point du cours** : ch. 5, leçon « Design » — quatre principes (hiérarchie, espace, couleur
+  porteuse d'information, cohérence), « une couleur d'accent, plus les couleurs de type »,
+  « deux ou trois tailles de texte », mouvement < 0,5 s sur `transform` et `opacity`.
+- **Décision de l'utilisateur** (2026-11-23) : direction 2 « Album à compléter », parmi trois
+  propositions faites avec les skills impeccable et design-taste-frontend. Dossier complet :
+  `specs/001-pokedex-app/design/directions.md` ; maquette de référence :
+  `specs/001-pokedex-app/design/direction-2.html`.
+- **Ce que la direction fixe** :
+  - accent : `--color-pokedex: #d2232f`, **valeur du cours conservée** ; en thème sombre,
+    `#ff7a80` quand l'accent sert de texte ;
+  - neutres bleu-gris froids : fond `#eef1f5` / `#11141a`, surface `#ffffff` / `#1a1f27`,
+    texte `#161a22` / `#eceff4`, texte secondaire `#575f6d` / `#a1a9b6` (contrastes ≥ 4,5:1,
+    calculés dans `directions.md`) ;
+  - police : **Bricolage Grotesque** (Google Fonts, chargée par `next/font`), axes graisse,
+    largeur et taille optique ; numéros et titres en version étroite très grasse ;
+  - trois tailles de texte : `text-xs`, `text-base`, `text-3xl` (le filigrane décoratif,
+    `aria-hidden`, n'en fait pas partie) ;
+  - carte = vignette : cadre blanc `rounded-2xl` `p-2` autour d'un champ image `rounded-xl` en
+    dégradé radial de la teinte du type, numéro en filigrane étroit qui déborde en bas à droite ;
+  - en-tête collant translucide (proposition du cours), navigation en pilules `rounded-full` ;
+  - geste signature : la sacoche en 6 emplacements numérotés (étape 16) ;
+  - micro-interactions : survol de carte `-translate-y-1` + `-rotate-1` (200 ms), image
+    `scale-110` (300 ms), ombre teintée animée par son **opacité** (200 ms), étoile `scale-110`
+    puis `scale-90` à l'appui (150 ms) ; tout est coupé par `motion-reduce:`.
+- **Alternatives écartées** : direction 1 « Planche naturaliste » (accent encre bleue, la plus
+  proche de la carte du cours, jugée familière) ; direction 3 « Signalétique » (accent noir et
+  blanc discutable au regard de « une couleur d'accent », zéros barrés de la police).
+- **Inspirations citées** (aucune copiée) : albums d'autocollants à compléter (vignettes
+  numérotées, emplacements vides imprimés) ; shots Dribbble listés en section 10 de
+  `directions.md`, dont les visuels n'ont pas pu être consultés par l'agent.
+
+## Couleurs de type assombries pour le contraste (décision Q-T012-b, écart au cours)
+
+- **Point du cours** : ch. 5 donne les 18 couleurs ; ch. 11 exige un « contraste suffisant des
+  badges de type ».
+- **Constat** : les badges sont en texte blanc gras de 12 px (`text-xs`), donc soumis au seuil
+  WCAG AA de 4,5:1. 11 couleurs du cours sur 18 sont en dessous (de 3,81:1 à 4,48:1).
+- **Décision de l'utilisateur** : assombrir ces 11 couleurs, en gardant teinte et saturation, du
+  minimum nécessaire pour atteindre au moins 4,6:1. **C'est un écart au code du cours, consigné
+  ici comme correction d'accessibilité (ch. 11).** Les 7 autres sont inchangées.
+
+  | Type | Cours | Retenu | Blanc sur retenu |
+  |---|---|---|---|
+  | normal | `#7b7b6c` | `#767668` | 4,60 |
+  | fire | `#d2571c` | `#c4511a` | 4,63 |
+  | electric | `#9a7400` | `#946f00` | 4,63 |
+  | grass | `#3f8f3a` | `#3a8436` | 4,63 |
+  | ice | `#2e8f93` | `#298083` | 4,66 |
+  | ground | `#9c7a2e` | `#8f702a` | 4,65 |
+  | flying | `#5b78c9` | `#5371c6` | 4,62 |
+  | psychic | `#d43d6c` | `#d33969` | 4,61 |
+  | bug | `#7c8a1a` | `#6f7b17` | 4,64 |
+  | rock | `#8f7d35` | `#857431` | 4,63 |
+  | fairy | `#c2528f` | `#bf4a8a` | 4,60 |
+
+- **Alternatives écartées** : badges en 14 px gras (seuil 3:1, mais une taille de texte de plus) ;
+  couleurs du cours inchangées (badges non conformes AA).
+- **Fichiers** : `app/globals.css` (T013).
+
+## Icônes SVG Phosphor copiées dans le code (décision Q-T012-c)
+
+- **Point du cours** : aucun (le cours n'impose pas d'icônes ; la spec écrit « ☆ / ★ »).
+- **Décision de l'utilisateur** : quelques tracés SVG de **Phosphor Icons** (licence MIT,
+  © Phosphor Icons, https://phosphoricons.com) copiés directement dans un composant, **sans
+  dépendance npm**. L'étoile des favoris reste une étoile vide / pleine (SVG au lieu des
+  caractères « ☆ / ★ » de T054), avec `aria-pressed` et `aria-label` inchangés.
+- **Alternatives écartées** : caractères Unicode (rendu inégal selon les polices) ; dépendance
+  `@phosphor-icons/react` (hors pile du cours).
+
+## Recommandations des skills écartées (cours et constitution prioritaires)
+
+Le détail est dans la section 9 de `directions.md`. En résumé : pas de bibliothèque d'animation
+(Motion, GSAP), pas d'animation d'ombre, de flou ou de couleur (seules `transform` et `opacity`),
+pas de thème selon `prefers-color-scheme` par défaut (FR-023), rail gris des barres de stats
+conservé (ch. 8), pas de dépendance d'icônes, en-tête translucide du cours conservé malgré le
+conseil « pas de verre » d'impeccable.
+
+Un réglage de la maquette **n'est pas repris** : elle raccourcit `animate-apparition` à 0,32 s
+avec un décalage par carte. L'application garde la définition du cours (0,4 s, `ease-out`, sans
+décalage) : aucun écart à justifier, et la durée reste sous 0,5 s.
