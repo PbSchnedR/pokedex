@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import BadgeType from "@/components/BadgeType";
@@ -90,8 +91,15 @@ async function Fiche({ params }: Props) {
         <div className="mt-2">
           <BarresStats stats={pokemon.stats} />
         </div>
-        <div className="mt-6">
+        <div className="mt-6 flex flex-wrap gap-3">
           <BoutonSacoche pokemon={pokemon} />
+          {/* FR-035 — un lien (navigation), pas un bouton ; contour, comme le prévoit la direction « Album ». */}
+          <Link
+            href={`/comparer?a=${pokemon.nom}`}
+            className="rounded-full border-2 border-pokedex px-4 py-2 text-base font-bold text-pokedex transition-transform hover:bg-pokedex/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokedex active:scale-95 motion-reduce:transition-none dark:border-pokedex-sombre dark:text-pokedex-sombre dark:focus-visible:outline-pokedex-sombre"
+          >
+            Comparer
+          </Link>
         </div>
       </div>
 
