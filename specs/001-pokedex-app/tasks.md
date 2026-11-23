@@ -132,12 +132,12 @@ fiches pré-générées.
 
 **Independent Test**: [quickstart.md › US2](./quickstart.md)
 
-- [ ] T036 [US2] Dans `lib/pokeapi.ts` : type `Maillon` (`species.name`, `evolves_to: Maillon[]`), `aplatir` **récursive**, `recupererEvolutions(id)` (espèce → `evolution_chain.url` → chaîne) en `"use cache"` + `cacheLife("days")`
-- [ ] T037 [US2] Exporter `aplatir` (export nommé) dans `lib/pokeapi.ts` et écrire `lib/pokeapi.test.ts` (simuler `next/cache` avec `vi.mock`) : chaîne linéaire (charmander → 3 noms dans l'ordre), arbre ramifié (eevee → base + toutes les branches), maillon sans évolution (1 seul nom)
-- [ ] T038 [US2] Dans `lib/pokeapi.ts` : `export const TOTAL_POKEMONS = 1025` et `recupererTousLesNoms()` (`/pokemon?limit=1025`, lève une erreur si la liste manque) en cache
-- [ ] T039 [P] [US2] Créer `components/BarresStats.tsx` : `<dl>`, libellés français (`hp` PV, `attack` Attaque, `defense` Défense, `special-attack` Attaque Spé., `special-defense` Défense Spé., `speed` Vitesse), largeur de barre par `style` (seul usage légitime de `style`, ch. 8), échelle reprise du cours
-- [ ] T040 [US2] Créer `app/pokemon/[nom]/page.tsx` : la page n'est **pas** async et passe la promesse `params` à `Fiche` sous `<Suspense>` ; `Fiche` fait `await params`, `recupererPokemon`, `notFound()` si `null`, image `next/image` 400×400 `loading="eager"`, numéro, types, taille (m) et poids (kg), `BarresStats`, section « Évolutions » avec `GrillePokemons` des évolutions (chacune cliquable)
-- [ ] T041 [US2] Dans `app/pokemon/[nom]/page.tsx` : `generateMetadata` (titre = nom capitalisé, description « … : types, statistiques et évolutions. », `openGraph.images`, « Pokémon introuvable » si `null`)
+- [X] T036 [US2] Dans `lib/pokeapi.ts` : type `Maillon` (`species.name`, `evolves_to: Maillon[]`), `aplatir` **récursive**, `recupererEvolutions(id)` (espèce → `evolution_chain.url` → chaîne) en `"use cache"` + `cacheLife("days")`
+- [X] T037 [US2] Exporter `aplatir` (export nommé) dans `lib/pokeapi.ts` et écrire `lib/pokeapi.test.ts` (simuler `next/cache` avec `vi.mock`) : chaîne linéaire (charmander → 3 noms dans l'ordre), arbre ramifié (eevee → base + toutes les branches), maillon sans évolution (1 seul nom)
+- [X] T038 [US2] Dans `lib/pokeapi.ts` : `export const TOTAL_POKEMONS = 1025` et `recupererTousLesNoms()` (`/pokemon?limit=1025`, lève une erreur si la liste manque) en cache
+- [X] T039 [P] [US2] Créer `components/BarresStats.tsx` : `<dl>`, libellés français (`hp` PV, `attack` Attaque, `defense` Défense, `special-attack` Attaque Spé., `special-defense` Défense Spé., `speed` Vitesse), largeur de barre par `style` (seul usage légitime de `style`, ch. 8), échelle reprise du cours
+- [X] T040 [US2] Créer `app/pokemon/[nom]/page.tsx` : la page n'est **pas** async et passe la promesse `params` à `Fiche` sous `<Suspense>` ; `Fiche` fait `await params`, `recupererPokemon`, `notFound()` si `null`, image `next/image` 400×400 `loading="eager"`, numéro, types, taille (m) et poids (kg), `BarresStats`, section « Évolutions » avec `GrillePokemons` des évolutions (chacune cliquable)
+- [X] T041 [US2] Dans `app/pokemon/[nom]/page.tsx` : `generateMetadata` (titre = nom capitalisé, description « … : types, statistiques et évolutions. », `openGraph.images`, « Pokémon introuvable » si `null`)
 
 ⏸ **STOP étape 11**
 

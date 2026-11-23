@@ -35,3 +35,37 @@ export async function recupererListe(limite = 24, decalage = 0): Promise<Pokemon
   );
   return page ? recupererPlusieurs(page.results.map((p) => p.name)) : [];
 }
+
+// ch. 8 — la chaîne d'évolution est un arbre : chaque maillon contient d'autres maillons de même
+// forme, sur une profondeur inconnue.
+type Maillon = {
+  species: { name: string };
+  evolves_to: Maillon[];
+};
+
+// ch. 8 — récursion : le nom du maillon, puis la même fonction appliquée à chaque branche.
+// Export nommé pour être testée (lib/pokeapi.test.ts, décision Q-3) ; le cours la garde privée.
+export function aplatir(maillon: Maillon): string[] {
+  return [maillon.species.name, ...maillon.evolves_to.flatMap(aplatir)];
+}
+
+export async function recupererEvolutions(id: number): Promise<string[]> {
+  "use cache";
+  cacheLife("days");
+  // Deux appels : l'espèce donne l'adresse de la chaîne, puis la chaîne elle-même.
+  const espece = await appeler<{ evolution_chain: { url: string } }>(`/pokemon-species/${id}`);
+  if (!espece) return [];
+  const chaine = await appeler<{ chain: Maillon }>(espece.evolution_chain.url);
+  return chaine ? aplatir(chaine.chain) : [];
+}
+
+export const TOTAL_POKEMONS = 1025;
+
+export async function recupererTousLesNoms(): Promise<string[]> {
+  "use cache";
+  cacheLife("days");
+  const page = await appeler<{ results: { name: string }[] }>(`/pokemon?limit=${TOTAL_POKEMONS}`);
+  // Sans cette liste, ni recherche ni pré-génération : c'est une panne, pas un « introuvable ».
+  if (!page) throw new Error("La liste des Pokémon est introuvable");
+  return page.results.map((p) => p.name);
+}
