@@ -1,36 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import GrillePokemons from "@/components/GrillePokemons";
-import { chargerPokemon } from "@/lib/pokeapi-client";
+import { usePokemons } from "@/hooks/usePokemons";
 import { useFavoris } from "@/stores/favoris";
-import type { Pokemon } from "@/types/pokemon";
 
 const TEXTE = "py-8 text-center text-base text-doux dark:text-doux-sombre";
 
 // ch. 9 — le serveur ne connaît pas les favoris (ils sont dans le navigateur) : la page charge
-// ses données côté navigateur, sur le modèle du ch. 4 (effet + annulation).
+// ses données côté navigateur, par le hook usePokemons (ch. 10).
 export default function PageFavoris() {
   const noms = useFavoris((etat) => etat.noms);
-  const [pokemons, setPokemons] = useState<Pokemon[]>([]);
-  const [etat, setEtat] = useState<"chargement" | "pret" | "erreur">("chargement");
-
-  useEffect(() => {
-    let annule = false; // ignore une réponse arrivée après un nouveau changement de favoris
-    Promise.all(noms.map(chargerPokemon))
-      .then((resultats) => {
-        if (annule) return;
-        setPokemons(resultats.filter((p): p is Pokemon => p !== null));
-        setEtat("pret");
-      })
-      .catch(() => {
-        if (!annule) setEtat("erreur");
-      });
-    return () => {
-      annule = true;
-    };
-  }, [noms]);
+  const { pokemons, etat } = usePokemons(noms); // ch. 10 — plus de useEffect dans la page
 
   return (
     <>

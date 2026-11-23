@@ -1,7 +1,10 @@
 import Link from "next/link";
+import { Suspense } from "react";
+import BoutonHasard from "./BoutonHasard";
 import BoutonTheme from "./BoutonTheme";
 import CompteurFavoris from "./CompteurFavoris";
 import IndicateurSacoche from "./IndicateurSacoche";
+import LienNav from "./LienNav";
 
 const LIEN_NAV =
   "rounded-full px-2 py-2 text-base font-semibold hover:bg-fond focus-visible:outline-2 " +
@@ -12,21 +15,33 @@ const LIEN_NAV =
 export default function EnTete() {
   return (
     <header className="sticky top-0 z-10 border-b border-black/5 bg-surface/85 backdrop-blur dark:border-white/10 dark:bg-surface-sombre/85">
-      <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-2 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-2">
         <Link
           href="/"
-          className="self-start rounded-full py-2 text-base font-extrabold tracking-tight font-stretch-85% focus-visible:outline-2 focus-visible:outline-pokedex sm:self-auto dark:focus-visible:outline-pokedex-sombre"
+          className="rounded-full py-2 text-base font-extrabold tracking-tight font-stretch-85% focus-visible:outline-2 focus-visible:outline-pokedex dark:focus-visible:outline-pokedex-sombre"
         >
           Mon Pokédex
         </Link>
-        <div className="flex items-center justify-between gap-2">
-          <nav aria-label="Navigation principale" className="flex items-center gap-2">
-            <Link href="/" className={LIEN_NAV}>Pokédex</Link>
-            <Link href="/favoris" className={`${LIEN_NAV} inline-flex items-center gap-2`}>
-              Favoris <CompteurFavoris />
-            </Link>
-            <IndicateurSacoche className={LIEN_NAV} />
-          </nav>
+        <nav aria-label="Navigation principale" className="order-last flex w-full items-center gap-2 lg:order-none lg:ml-auto lg:w-auto">
+            {/* ch. 10 — usePathname dans un composant client : chaque lien sous <Suspense>, avec
+                son texte en repli. */}
+            <Suspense fallback={<span className={LIEN_NAV}>Pokédex</span>}>
+              <LienNav href="/" className={LIEN_NAV}>Pokédex</LienNav>
+            </Suspense>
+            <Suspense fallback={<span className={LIEN_NAV}>Favoris</span>}>
+              <LienNav href="/favoris" className={`${LIEN_NAV} inline-flex items-center gap-2`}>
+                Favoris <CompteurFavoris />
+              </LienNav>
+            </Suspense>
+            <Suspense fallback={<span className={LIEN_NAV}>Sacoche</span>}>
+              <IndicateurSacoche className={LIEN_NAV} />
+            </Suspense>
+        </nav>
+        {/* Ordre du DOM = ordre visuel sur grand écran (titre, navigation, boutons) : c'est l'ordre
+            de la touche Tab. Sous lg, la navigation passe en 2e ligne (order-last) : avec « Au hasard »,
+            tout ne tient sur une seule ligne qu'à partir de 1 024 px. */}
+        <div className="flex items-center gap-2">
+          <BoutonHasard />
           <BoutonTheme />
         </div>
       </div>

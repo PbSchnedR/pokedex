@@ -68,7 +68,7 @@ export default function PageSacoche() {
               aria-label={`Retirer ${membre.nom} de la sacoche`}
               className="absolute right-4 top-4 grid size-10 place-items-center rounded-full bg-surface text-doux shadow-sm
                          transition-transform hover:text-pokedex active:scale-90 focus-visible:outline-2 focus-visible:outline-offset-2
-                         focus-visible:outline-pokedex motion-reduce:transition-none dark:bg-surface-sombre dark:text-doux-sombre
+                         focus-visible:outline-pokedex motion-reduce:transition-none dark:bg-surface-sombre dark:text-doux-sombre dark:focus-visible:outline-pokedex-sombre
                          dark:hover:text-pokedex-sombre"
             >
               <Icone nom="croix" className="size-4" />
@@ -83,7 +83,7 @@ export default function PageSacoche() {
               href="/"
               className="relative grid h-full min-h-48 place-items-center rounded-2xl border-2 border-dashed border-doux/40
                          text-doux hover:border-pokedex hover:text-pokedex focus-visible:outline-2 focus-visible:outline-offset-2
-                         focus-visible:outline-pokedex dark:border-doux-sombre/40 dark:text-doux-sombre
+                         focus-visible:outline-pokedex dark:border-doux-sombre/40 dark:text-doux-sombre dark:focus-visible:outline-pokedex-sombre
                          dark:hover:border-pokedex-sombre dark:hover:text-pokedex-sombre"
             >
               <span aria-hidden="true" className="text-6xl leading-none font-extrabold tabular-nums opacity-30 font-stretch-75%">

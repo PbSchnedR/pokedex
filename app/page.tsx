@@ -37,7 +37,7 @@ function ChampInactif() {
       <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-doux dark:text-doux-sombre">
         <Icone nom="loupe" className="size-4" />
       </span>
-      <input disabled placeholder="Rechercher un Pokémon" aria-label="Rechercher un Pokémon" className={CLASSES_CHAMP} />
+      <input disabled placeholder="Rechercher (touche /)" aria-label="Rechercher un Pokémon" className={CLASSES_CHAMP} />
     </div>
   );
 }

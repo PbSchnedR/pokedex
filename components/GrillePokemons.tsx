@@ -1,7 +1,7 @@
 import type { Pokemon } from "@/types/pokemon";
 import CartePokemon from "./CartePokemon";
 
-export default function GrillePokemons({ pokemons }: { pokemons: Pokemon[] }) {
+export default function GrillePokemons({ pokemons, titre }: { pokemons: Pokemon[]; titre?: "h2" | "h3" }) {
   // ch. 4 — vraie comparaison : `pokemons.length && …` afficherait « 0 ».
   if (pokemons.length === 0) {
     return <p className="py-8 text-center text-base text-doux dark:text-doux-sombre">Aucun Pokémon à afficher.</p>;
@@ -12,7 +12,7 @@ export default function GrillePokemons({ pokemons }: { pokemons: Pokemon[] }) {
       {pokemons.map((pokemon) => (
         // ch. 4 — clé stable : l'identifiant, pas l'index (la liste sera filtrée).
         <li key={pokemon.id}>
-          <CartePokemon pokemon={pokemon} />
+          <CartePokemon pokemon={pokemon} titre={titre} />
         </li>
       ))}
     </ul>

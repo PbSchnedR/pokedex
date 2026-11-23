@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { TAILLE_SACOCHE, useSacoche } from "@/stores/sacoche";
+import LienNav from "./LienNav";
 
 type Props = { className: string };
 
@@ -11,7 +11,7 @@ type Props = { className: string };
 export default function IndicateurSacoche({ className }: Props) {
   const nombre = useSacoche((etat) => etat.equipe.length);
   return (
-    <Link
+    <LienNav
       href="/sacoche"
       aria-label={`Sacoche : ${nombre} Pokémon sur ${TAILLE_SACOCHE}`}
       className={`${className} inline-flex items-center gap-2`}
@@ -25,10 +25,10 @@ export default function IndicateurSacoche({ className }: Props) {
         {Array.from({ length: TAILLE_SACOCHE }, (_, i) => (
           <span
             key={i}
-            className={`size-2 rounded-full ${i < nombre ? "bg-pokedex dark:bg-pokedex-sombre" : "bg-doux/30 dark:bg-doux-sombre/40"}`}
+            className={`size-2 rounded-full ${i < nombre ? "bg-pokedex in-aria-[current=page]:bg-white dark:bg-pokedex-sombre" : "bg-doux/30 in-aria-[current=page]:bg-white/40 dark:bg-doux-sombre/40"}`}
           />
         ))}
       </span>
-    </Link>
+    </LienNav>
   );
 }
