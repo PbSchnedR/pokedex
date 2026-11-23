@@ -57,7 +57,7 @@ export default function ChoixComparaison() {
           type="search"
           value={texte}
           onChange={(e) => setTexte(e.target.value)}
-          placeholder="ex. raichu"
+          placeholder="ex. Salamèche"
           autoComplete="off"
           className={CLASSES_CHAMP}
         />

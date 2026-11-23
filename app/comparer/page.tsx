@@ -11,7 +11,8 @@ import {
   type Choix,
   type ParametresComparaison,
 } from "@/lib/comparaison";
-import { recupererPokemon, recupererTousLesNoms } from "@/lib/pokeapi";
+import { NOMS_FR } from "@/lib/noms-fr";
+import { recupererPokemon } from "@/lib/pokeapi";
 import type { Pokemon } from "@/types/pokemon";
 
 type Props = {
@@ -49,7 +50,7 @@ function ChampInactif() {
         <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-doux dark:text-doux-sombre">
           <Icone nom="loupe" className="size-4" />
         </span>
-        <input disabled placeholder="ex. raichu" aria-label="Second Pokémon" className={CLASSES_CHAMP} />
+        <input disabled placeholder="ex. Salamèche" aria-label="Second Pokémon" className={CLASSES_CHAMP} />
       </div>
     </div>
   );
@@ -61,13 +62,13 @@ async function chercher(choix: Choix): Promise<Pokemon | null> {
   return choix.etat === "nom" ? recupererPokemon(choix.nom) : null; // invalide → aucune requête
 }
 
-// Q-C1 — colonne introuvable : suggestions prises dans la liste complète (en cache, ordre des
-// numéros), chacune en lien qui conserve l'autre côté de la comparaison.
-function versColonne(choix: Choix, pokemon: Pokemon | null, cote: "a" | "b", autre: Choix, noms: string[]): Colonne {
+// Q-C1 — colonne introuvable : suggestions prises dans la liste des noms français (bonus FR-033,
+// fichier local, ordre des numéros), chacune en lien qui conserve l'autre côté de la comparaison.
+function versColonne(choix: Choix, pokemon: Pokemon | null, cote: "a" | "b", autre: Choix): Colonne {
   if (pokemon) return { etat: "trouve", pokemon };
   if (choix.etat === "vide") return { etat: "vide" };
   const saisi = choix.etat === "nom" ? choix.nom : choix.saisi;
-  const suggestions = suggerer(saisi, noms).map((nom) => ({ nom, lien: lienComparaison(cote, nom, valeurChoix(autre)) }));
+  const suggestions = suggerer(saisi, NOMS_FR).map((nom) => ({ nom, lien: lienComparaison(cote, nom, valeurChoix(autre)) }));
   return { etat: "introuvable", saisi, suggestions };
 }
 
@@ -76,13 +77,10 @@ async function Comparaison({ searchParams }: Props) {
   const { a, b } = lireComparaison(await searchParams);
   // ch. 7 — les deux appels partent ensemble.
   const [pokemonA, pokemonB] = await Promise.all([chercher(a), chercher(b)]);
-  // La liste des noms n'est lue que si une saisie n'a rien donné.
-  const manque = (choix: Choix, pokemon: Pokemon | null) => choix.etat !== "vide" && !pokemon;
-  const noms = manque(a, pokemonA) || manque(b, pokemonB) ? await recupererTousLesNoms() : [];
   return (
     <TableauComparaison
-      a={versColonne(a, pokemonA, "a", b, noms)}
-      b={versColonne(b, pokemonB, "b", a, noms)}
+      a={versColonne(a, pokemonA, "a", b)}
+      b={versColonne(b, pokemonB, "b", a)}
     />
   );
 }

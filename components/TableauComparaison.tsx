@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import BadgeType from "@/components/BadgeType";
 import { meilleuresValeurs, type Gagnant } from "@/lib/comparaison";
+import { nomFrancaisDepuisNom } from "@/lib/noms-fr";
 import { teinteType } from "@/lib/types";
 import type { Pokemon } from "@/types/pokemon";
 
@@ -84,9 +85,9 @@ function EnTeteColonne({ colonne, cote }: { colonne: Colonne; cote: "a" | "b" })
         </p>
         <Link
           href={`/pokemon/${pokemon.nom}`}
-          className="block truncate text-base font-extrabold capitalize hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokedex dark:focus-visible:outline-pokedex-sombre"
+          className="block truncate text-base font-extrabold hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokedex dark:focus-visible:outline-pokedex-sombre"
         >
-          {pokemon.nom}
+          {pokemon.nomFr}
         </Link>
         <div className="mt-1 flex flex-wrap justify-center gap-1">
           {pokemon.types.map((type) => (
@@ -115,9 +116,9 @@ function EnTeteColonne({ colonne, cote }: { colonne: Colonne; cote: "a" | "b" })
                     <li key={s.nom}>
                       <Link
                         href={s.lien}
-                        className="inline-block rounded-full border border-black/15 px-2 py-0.5 font-semibold capitalize text-encre hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokedex dark:border-white/20 dark:text-encre-sombre dark:hover:bg-white/10 dark:focus-visible:outline-pokedex-sombre"
+                        className="inline-block rounded-full border border-black/15 px-2 py-0.5 font-semibold text-encre hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokedex dark:border-white/20 dark:text-encre-sombre dark:hover:bg-white/10 dark:focus-visible:outline-pokedex-sombre"
                       >
-                        {s.nom}
+                        {nomFrancaisDepuisNom(s.nom)}
                       </Link>
                     </li>
                   ))}

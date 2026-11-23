@@ -1,4 +1,6 @@
 import type { Statistique } from "@/types/pokemon";
+import { NOMS_FR, type EntreeNomFr } from "./noms-fr";
+import { normaliser } from "./texte";
 
 // ch. 9 — « Tout ce qui vient de l'adresse est saisi par l'utilisateur, donc non fiable. »
 // Même style que lib/parametres.ts : fonctions pures, testées (lib/comparaison.test.ts).
@@ -21,9 +23,18 @@ export type Choix =
   | { etat: "invalide"; saisi: string }
   | { etat: "nom"; nom: string };
 
+// Bonus FR-033 — nom français normalisé → nom de l'API (« salameche » → « charmander »).
+// Aucun nom français normalisé n'est le nom API d'un autre Pokémon (vérifié sur les 1 025) :
+// l'ordre des deux règles ci-dessous ne change donc rien pour un nom API.
+const PAR_NOM_FR = new Map(NOMS_FR.map((p) => [normaliser(p.nomFr), p.nom]));
+
 export function lireChoix(valeur: Valeur): Choix {
   const saisi = premiere(valeur).trim();
   if (!saisi) return { etat: "vide" };
+  // Saisie française (accents et casse ignorés) : le champ du comparateur attend un nom français ;
+  // l'adresse garde aussi les noms de l'API, écrits par le lien « Comparer » de la fiche.
+  const nomApi = PAR_NOM_FR.get(normaliser(saisi));
+  if (nomApi) return { etat: "nom", nom: nomApi };
   const nom = saisi.toLowerCase(); // même règle que la fiche : insensible à la casse
   return FORME_NOM.test(nom) ? { etat: "nom", nom } : { etat: "invalide", saisi };
 }
@@ -46,14 +57,23 @@ export function meilleuresValeurs(a: Statistique[], b: Statistique[]): Record<st
   return resultat;
 }
 
-// Q-C1 (choix de l'utilisateur : option C) — nom introuvable → noms de l'API qui contiennent la
-// saisie, dans l'ordre des numéros (ordre de `noms`), au plus `limite`. Saisie vide → aucune.
+// Q-C1 (choix de l'utilisateur : option C) — nom introuvable → Pokémon dont le nom français
+// contient la saisie (bonus FR-033 : accents et casse ignorés, nom anglais non cherché), dans
+// l'ordre des numéros (ordre de `entrees`), au plus `limite`. Renvoie les noms de l'API, pour
+// les liens. Saisie vide → aucune.
 export const LIMITE_SUGGESTIONS = 8;
 
-export function suggerer(saisi: string, noms: string[], limite = LIMITE_SUGGESTIONS): string[] {
-  const texte = saisi.trim().toLowerCase();
+export function suggerer(
+  saisi: string,
+  entrees: Pick<EntreeNomFr, "nom" | "nomFr">[],
+  limite = LIMITE_SUGGESTIONS
+): string[] {
+  const texte = normaliser(saisi);
   if (!texte) return [];
-  return noms.filter((nom) => nom.includes(texte)).slice(0, limite);
+  return entrees
+    .filter((entree) => normaliser(entree.nomFr).includes(texte))
+    .slice(0, limite)
+    .map((entree) => entree.nom);
 }
 
 // Valeur à recopier dans l'adresse pour l'autre côté (null : rien à recopier).

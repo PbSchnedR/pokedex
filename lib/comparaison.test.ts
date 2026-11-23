@@ -22,9 +22,21 @@ describe("lireChoix (ch. 9 — l'adresse est non fiable)", () => {
   });
 
   it("caractères impossibles → invalide, sans requête : chemin, accents, espaces", () => {
-    for (const saisi of ["../type/fire", "pikachu?x=1", "salamèche", "mr mime", "a".repeat(41)]) {
+    for (const saisi of ["../type/fire", "pikachu?x=1", "salamèchu", "mr mime", "a".repeat(41)]) {
       expect(lireChoix(saisi)).toEqual({ etat: "invalide", saisi });
     }
+  });
+
+  it("bonus FR-033 : nom français → nom de l'API, accents, casse et espaces ignorés", () => {
+    expect(lireChoix("Salamèche")).toEqual({ etat: "nom", nom: "charmander" });
+    expect(lireChoix("  SALAMECHE ")).toEqual({ etat: "nom", nom: "charmander" });
+    expect(lireChoix("évoli")).toEqual({ etat: "nom", nom: "eevee" });
+    expect(lireChoix("M. Mime")).toEqual({ etat: "nom", nom: "mr-mime" });
+    expect(lireChoix("Nidoran♀")).toEqual({ etat: "nom", nom: "nidoran-f" });
+  });
+
+  it("bonus FR-033 : le nom de l'API reste accepté (lien « Comparer » de la fiche)", () => {
+    expect(lireChoix("charmander")).toEqual({ etat: "nom", nom: "charmander" });
   });
 
   it("paramètre répété (?b=raichu&b=mew) → le premier", () => {
@@ -59,22 +71,35 @@ describe("meilleuresValeurs", () => {
   });
 });
 
-describe("suggerer (Q-C1)", () => {
-  const noms = ["pikachu", "raichu", "raticate", "raichu-alola", "rattata"];
+describe("suggerer (Q-C1, sur le nom français : bonus FR-033)", () => {
+  const noms = [
+    { nom: "pikachu", nomFr: "Pikachu" },
+    { nom: "raichu", nomFr: "Raichu" },
+    { nom: "raticate", nomFr: "Rattatac" },
+    { nom: "charmander", nomFr: "Salamèche" },
+    { nom: "rattata", nomFr: "Rattata" },
+  ];
 
-  it("noms qui contiennent la saisie, dans l'ordre de la liste", () => {
-    expect(suggerer("rai", noms)).toEqual(["raichu", "raichu-alola"]);
-    expect(suggerer("chu", noms)).toEqual(["pikachu", "raichu", "raichu-alola"]);
+  it("Pokémon dont le nom français contient la saisie, dans l'ordre de la liste, nom de l'API renvoyé", () => {
+    expect(suggerer("rai", noms)).toEqual(["raichu"]);
+    expect(suggerer("chu", noms)).toEqual(["pikachu", "raichu"]);
+    expect(suggerer("ratta", noms)).toEqual(["raticate", "rattata"]);
   });
 
-  it("insensible à la casse et aux espaces autour", () => {
-    expect(suggerer("  RAI ", noms)).toEqual(["raichu", "raichu-alola"]);
+  it("insensible à la casse, aux accents et aux espaces autour", () => {
+    expect(suggerer("  RAI ", noms)).toEqual(["raichu"]);
+    expect(suggerer("salame", noms)).toEqual(["charmander"]);
+    expect(suggerer("MÈCHE", noms)).toEqual(["charmander"]);
+  });
+
+  it("le nom anglais ne donne rien (clarification Q1)", () => {
+    expect(suggerer("charman", noms)).toEqual([]);
   });
 
   it("limité à 8 par défaut, ou à la limite donnée", () => {
-    const beaucoup = Array.from({ length: 20 }, (_, i) => `nom-${i}`);
-    expect(suggerer("nom", beaucoup)).toEqual(beaucoup.slice(0, 8));
-    expect(suggerer("nom", beaucoup, 3)).toEqual(["nom-0", "nom-1", "nom-2"]);
+    const beaucoup = Array.from({ length: 20 }, (_, i) => ({ nom: `api-${i}`, nomFr: `Nom ${i}` }));
+    expect(suggerer("nom", beaucoup)).toEqual(beaucoup.slice(0, 8).map((e) => e.nom));
+    expect(suggerer("nom", beaucoup, 3)).toEqual(["api-0", "api-1", "api-2"]);
   });
 
   it("saisie vide → aucune suggestion (pas toute la liste)", () => {
