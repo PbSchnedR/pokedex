@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import BoutonTheme from "./BoutonTheme";
 import CompteurFavoris from "./CompteurFavoris";
 import IndicateurSacoche from "./IndicateurSacoche";
+import LienNav from "./LienNav";
 
 const LIEN_NAV =
   "rounded-full px-2 py-2 text-base font-semibold hover:bg-fond focus-visible:outline-2 " +
@@ -21,11 +23,19 @@ export default function EnTete() {
         </Link>
         <div className="flex items-center justify-between gap-2">
           <nav aria-label="Navigation principale" className="flex items-center gap-2">
-            <Link href="/" className={LIEN_NAV}>Pokédex</Link>
-            <Link href="/favoris" className={`${LIEN_NAV} inline-flex items-center gap-2`}>
-              Favoris <CompteurFavoris />
-            </Link>
-            <IndicateurSacoche className={LIEN_NAV} />
+            {/* ch. 10 — usePathname dans un composant client : chaque lien sous <Suspense>, avec
+                son texte en repli. */}
+            <Suspense fallback={<span className={LIEN_NAV}>Pokédex</span>}>
+              <LienNav href="/" className={LIEN_NAV}>Pokédex</LienNav>
+            </Suspense>
+            <Suspense fallback={<span className={LIEN_NAV}>Favoris</span>}>
+              <LienNav href="/favoris" className={`${LIEN_NAV} inline-flex items-center gap-2`}>
+                Favoris <CompteurFavoris />
+              </LienNav>
+            </Suspense>
+            <Suspense fallback={<span className={LIEN_NAV}>Sacoche</span>}>
+              <IndicateurSacoche className={LIEN_NAV} />
+            </Suspense>
           </nav>
           <BoutonTheme />
         </div>

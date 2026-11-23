@@ -225,11 +225,11 @@ accessibilité complète.
 
 **Independent Test**: [quickstart.md › US6](./quickstart.md)
 
-- [ ] T066 [P] [US6] Créer `hooks/usePokemons.ts` (`"use client"`, renvoie `{ pokemons, etat }`) et réécrire `app/favoris/page.tsx` pour qu'il ne contienne plus de `useEffect`
-- [ ] T067 [P] [US6] Créer `hooks/useRappelTemporise.ts` (`useRef` pour le minuteur et le dernier rappel, `useEffect` de nettoyage, `useCallback` stable)
-- [ ] T068 [US6] Réécrire `components/BarreRecherche.tsx` (version finale du ch. 10) : `useRappelTemporise` appelé depuis `onChange`, `useTransition` + indicateur « Recherche… », plus aucun `useEffect` ; vérifier que « Précédent » revient bien à l'écran d'avant
-- [ ] T069 [P] [US6] Créer `hooks/useRaccourci.ts` et l'utiliser dans `components/BarreRecherche.tsx` avec `useRef` : la touche « / » place le curseur dans le champ, sauf si l'utilisateur écrit déjà dans un `INPUT`/`TEXTAREA`
-- [ ] T070 [P] [US6] Créer `components/LienNav.tsx` (`usePathname`, `aria-current="page"` sur la page courante) ; dans `components/EnTete.tsx`, chaque `LienNav` sous un `<Suspense>` avec le texte du lien en fallback
+- [X] T066 [P] [US6] Créer `hooks/usePokemons.ts` (`"use client"`, renvoie `{ pokemons, etat }`) et réécrire `app/favoris/page.tsx` pour qu'il ne contienne plus de `useEffect`
+- [X] T067 [P] [US6] Créer `hooks/useRappelTemporise.ts` (`useRef` pour le minuteur et le dernier rappel, `useEffect` de nettoyage, `useCallback` stable)
+- [X] T068 [US6] Réécrire `components/BarreRecherche.tsx` (version finale du ch. 10) : `useRappelTemporise` appelé depuis `onChange`, `useTransition` + indicateur « Recherche… », plus aucun `useEffect` ; vérifier que « Précédent » revient bien à l'écran d'avant
+- [X] T069 [P] [US6] Créer `hooks/useRaccourci.ts` et l'utiliser dans `components/BarreRecherche.tsx` avec `useRef` : la touche « / » place le curseur dans le champ, sauf si l'utilisateur écrit déjà dans un `INPUT`/`TEXTAREA`
+- [X] T070 [P] [US6] Créer `components/LienNav.tsx` (`usePathname`, `aria-current="page"` sur la page courante) ; dans `components/EnTete.tsx`, chaque `LienNav` sous un `<Suspense>` avec le texte du lien en fallback
 
 ⏸ **STOP étape 17**
 
