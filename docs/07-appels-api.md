@@ -131,3 +131,27 @@
     « Réessayer » : la grille revient (24 cartes), sans recharger la page.
 - **Fichiers** : `components/SqueletteGrille.tsx`, `app/loading.tsx`, `app/error.tsx`,
   `app/page.tsx`.
+
+## Clé de cache de `recupererPlusieurs` : défaut supposé, non confirmé par la mesure
+
+- **Hypothèse** (revue de l'étape 14) : `noms.map(recupererPokemon)` passe aussi l'index et le
+  tableau à `recupererPokemon`. La documentation de Next.js 16.4 (`use-cache.md`,
+  « Cache keys ») dit que la clé de `"use cache"` contient les arguments sérialisés ; la grille
+  (`("ursaring", 0, […])`) et la fiche (`("ursaring")`) n'auraient donc pas partagé le cache.
+- **Mesure** (production, `npm start` après un build neuf, chaque appel à la PokéAPI journalisé
+  temporairement dans `appeler`) : visite de `/?page=10` puis de `/pokemon/ursaring` (hors des 151
+  fiches pré-générées), puis seconde visite de la fiche.
+
+  | Code | Appels après la grille | Après la fiche | `/pokemon/ursaring` appelé | Seconde visite |
+  |---|---|---|---|---|
+  | du cours `noms.map(recupererPokemon)` | 25 | 29 | 1 fois | +0 |
+  | corrigé `noms.map((nom) => recupererPokemon(nom))` | 25 | 29 | 1 fois | +0 |
+
+  Les 4 appels de la fiche sont l'espèce, la chaîne d'évolution, Teddiursa et Ursaluna : la fiche
+  réutilise bien le résultat de la grille pour Ursaring, **avec le code du cours**.
+- **Conclusion** : aucun appel en double constaté ; le code du cours est **conservé** et la
+  correction acceptée en revue n'a pas été appliquée (elle n'aurait rien changé de mesurable).
+  Cause non vérifiée : le compilateur de Next.js transmet peut-être seulement les paramètres
+  déclarés de la fonction. En développement, le comptage n'est pas fiable (le cache est vidé à
+  chaque rechargement à chaud et la page est rendue plusieurs fois).
+- **Fichiers** : `lib/pokeapi.ts` (inchangé, journal de mesure retiré).

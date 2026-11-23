@@ -115,16 +115,27 @@
     « Précédent » du navigateur → retour à `?page=2`.
 - **Fichiers** : `components/Pagination.tsx`, `app/page.tsx`.
 
-## Point non validé : le squelette entre deux pages
+## Squelette entre deux pages : `<Suspense>` à clé (décision Q-14, écart au cours)
 
 - **Point du cours** : liste de l'étape 14 — « Le squelette de la grille apparaît pendant le
   chargement d'une nouvelle page ».
-- **Constat** : en cliquant sur « Suivant » vers une page **jamais chargée** (cache vide pour ces
-  24 Pokémon), aucun squelette n'apparaît, ni en développement ni en production : j'ai sondé
-  `[aria-busy=true]` toutes les 50 ms pendant 3 à 4 s après le clic (`/?page=31` → 32 en
-  développement, `/?page=36` → 37 avec `npm start`). L'ancienne grille reste affichée jusqu'à
-  l'arrivée de la nouvelle.
-- **Explication probable (non vérifiée dans le code de React)** : une navigation de Next.js est
-  une transition React ; quand le même `<Suspense>` est déjà affiché, React garde l'ancien contenu
-  au lieu de remontrer le `fallback`. Seule la première arrivée sur la page montre le squelette.
-- **Statut** : signalé au manager, non corrigé (voir le rapport de l'étape 14).
+- **Constat avant correction** : en cliquant sur « Suivant » vers une page jamais chargée, aucun
+  squelette n'apparaissait, ni en développement ni en production (`[aria-busy=true]` sondé
+  toutes les 50 ms) : l'ancienne grille restait affichée jusqu'à l'arrivée de la nouvelle. Une
+  navigation de Next.js est une transition React, et React n'y remontre pas le `fallback` d'un
+  `<Suspense>` déjà affiché (explication tirée de la documentation de React, non vérifiée dans
+  son code).
+- **Décision du manager (Q-14, option A)** : la plus petite correction possible. Un composant
+  serveur `ZoneResultats`, lui-même sous le `<Suspense>` du cours, lit les paramètres validés et
+  entoure `Resultats` d'un second `<Suspense key={q|type|page}>`. Une nouvelle clé = une nouvelle
+  zone, qui montre son squelette. Le reste de la structure du cours est inchangé.
+- **Vérifié en production** (`npm start`, page 20 → 21 jamais chargée, 1 280 px) : le squelette
+  apparaît 1,55 s après le clic (en même temps que la nouvelle adresse), la nouvelle grille à
+  2,35 s. La recherche continue de fonctionner (« mew » → Mewtwo #150 puis Mew #151, champ
+  conservé).
+- **Limite constatée en développement** (`npm run dev`, page 40 → 41) : l'adresse et la nouvelle
+  grille arrivent ensemble 4,2 s après le clic ; le squelette n'est présent qu'un instant (vu dans
+  une seule mutation du DOM). Le serveur de développement semble attendre la réponse complète
+  avant d'afficher la nouvelle page ; je ne l'ai pas cherché plus loin. Le critère est rempli dans
+  la version de production.
+- **Fichiers** : `app/page.tsx`.

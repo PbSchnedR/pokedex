@@ -167,7 +167,7 @@ validé ([contracts/routes.md](./contracts/routes.md)).
 ⏸ **STOP étape 13**
 
 - [X] T050 [US3] Créer `components/Pagination.tsx` (serveur) : renvoie `null` si `nombrePages <= 1` ; « Précédent » et « Suivant » en `Link`, inactifs (`<span>` estompé) en première et dernière page ; numéros de page avec la page courante indiquée (`aria-current="page"`) (FR-037) ; conserve `q` et `type`, n'écrit `page` que si > 1 ; `aria-label="Pagination"` ; l'afficher à la fin de `Resultats`
-- [ ] T051 [US3] Étape 14 : vérifier `?page=9999`, `?page=abc`, le squelette entre deux pages, US3 scénario 5 (page 2 = n° 25 à 48) ; documenter l'état dans l'adresse, la validation et la temporisation dans `docs/09-interactivite-avancee.md`
+- [X] T051 [US3] Étape 14 : vérifier `?page=9999`, `?page=abc`, le squelette entre deux pages, US3 scénario 5 (page 2 = n° 25 à 48) ; documenter l'état dans l'adresse, la validation et la temporisation dans `docs/09-interactivite-avancee.md`
 
 ⏸ **STOP étape 14**
 
@@ -237,6 +237,7 @@ accessibilité complète.
 - [ ] T072 [US6] Créer `components/BoutonHasard.tsx` : `fetch("/api/aleatoire")`, `router.push("/pokemon/" + nom)`, désactivé et « Tirage… » pendant l'appel, `finally` ; l'ajouter dans `components/EnTete.tsx`
 - [ ] T073 [US6] Passer la liste de contrôle d'accessibilité du ch. 11 sur toutes les pages : clavier (Tab, Entrée), `focus-visible` partout, `alt` et libellés, un seul `<h1>` puis `<h2>` dans l'ordre, contraste des badges, `<button>` pour les actions et lien pour la navigation, `motion-reduce` ; corriger dans `app/**` et `components/**`, ajuster `--color-type-*` dans `app/globals.css` si un badge manque de contraste
   - *Note (décision du manager, 2026-11-23)* : `app/error.tsx` : titre en `<h1>` « Le Pokédex ne répond plus », texte français générique pour l'utilisateur, détail technique (`error.message`) non affiché.
+  - *Note (décision du manager, 2026-11-23)* : fiche `app/pokemon/[nom]/page.tsx` — dans la section « Évolutions » (`<h2>`), chaque `CartePokemon` porte aussi un `<h2>` : corriger la hiérarchie des titres.
 - [ ] T074 [US6] Documenter les hooks (règles, ordre d'appel, choix de chaque hook, pourquoi pas `useEffect` pour une saisie) dans `docs/10-hooks.md` ; Route Handler, `connection()`, variables d'environnement (`.env.local` jamais commité, `NEXT_PUBLIC_`) et accessibilité dans `docs/11-finitions.md`
 
 **Checkpoint**: critère « Qualité de l'interface » prêt pour l'audit.

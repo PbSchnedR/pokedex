@@ -24,8 +24,8 @@ export default function Accueil({ searchParams }: Props) {
           <BarreRecherche />
         </Suspense>
       </div>
-      <Suspense fallback={<div className="mt-6"><SqueletteGrille /></div>}>
-        <Resultats searchParams={searchParams} />
+      <Suspense fallback={<Squelette />}>
+        <ZoneResultats searchParams={searchParams} />
       </Suspense>
     </>
   );
@@ -39,6 +39,29 @@ function ChampInactif() {
       </span>
       <input disabled placeholder="Rechercher un Pokémon" aria-label="Rechercher un Pokémon" className={CLASSES_CHAMP} />
     </div>
+  );
+}
+
+function Squelette() {
+  return (
+    <div className="mt-6">
+      <SqueletteGrille />
+    </div>
+  );
+}
+
+// Q-14 (décision du manager, écart au cours) — une navigation est une transition React : sans
+// clé, le même <Suspense> garde l'ancienne grille au lieu de remontrer le squelette quand on
+// change de page. Une clé tirée de l'adresse fait de chaque recherche, type ou page une nouvelle
+// zone, qui affiche donc son squelette (liste de l'étape 14). docs/09.
+async function ZoneResultats({ searchParams }: Props) {
+  const parametres = await searchParams;
+  const { texte, type } = lireFiltres(parametres);
+  const cle = [texte, type, String(parametres.page ?? "1")].join("|");
+  return (
+    <Suspense key={cle} fallback={<Squelette />}>
+      <Resultats searchParams={searchParams} />
+    </Suspense>
   );
 }
 
