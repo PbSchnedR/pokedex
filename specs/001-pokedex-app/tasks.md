@@ -58,7 +58,7 @@ couche d'accès aux données. Bloque toutes les stories.
 
 **⚠️ CRITICAL**: aucune story ne commence avant la fin de cette phase.
 
-- [ ] T009 Étape 2 : créer `types/pokemon.ts` avec `Statistique` (`nom`, `valeur`), `Pokemon` (`id`, `nom`, `image`, `types: string[]`, `taille` en mètres, `poids` en kilogrammes, `stats`) et `PokemonApi` (`id`, `name`, `height` en dm, `weight` en hg, `types`, `stats`, `sprites.other["official-artwork"].front_default: string | null`), en `type` et non `interface` ; comparer avec https://pokeapi.co/api/v2/pokemon/pikachu ; expliquer les deux types dans `docs/03-typescript.md`
+- [X] T009 Étape 2 : créer `types/pokemon.ts` avec `Statistique` (`nom`, `valeur`), `Pokemon` (`id`, `nom`, `image`, `types: string[]`, `taille` en mètres, `poids` en kilogrammes, `stats`) et `PokemonApi` (`id`, `name`, `height` en dm, `weight` en hg, `types`, `stats`, `sprites.other["official-artwork"].front_default: string | null`), en `type` et non `interface` ; comparer avec https://pokeapi.co/api/v2/pokemon/pikachu ; expliquer les deux types dans `docs/03-typescript.md`
 
 ⏸ **STOP étape 2**
 
