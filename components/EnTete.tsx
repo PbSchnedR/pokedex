@@ -22,7 +22,7 @@ export default function EnTete() {
         >
           Mon Pokédex
         </Link>
-        <nav aria-label="Navigation principale" className="order-last flex w-full items-center gap-2 lg:order-none lg:ml-auto lg:w-auto">
+        <nav aria-label="Navigation principale" className="order-last flex w-full flex-wrap items-center gap-x-2 gap-y-1 lg:order-none lg:ml-auto lg:w-auto">
             {/* ch. 10 — usePathname dans un composant client : chaque lien sous <Suspense>, avec
                 son texte en repli. */}
             <Suspense fallback={<span className={LIEN_NAV}>Pokédex</span>}>
@@ -35,6 +35,14 @@ export default function EnTete() {
             </Suspense>
             <Suspense fallback={<span className={LIEN_NAV}>Sacoche</span>}>
               <IndicateurSacoche className={LIEN_NAV} />
+            </Suspense>
+            {/* Bonus (T095) — combat de sacoches et quiz, mêmes liens surlignés que le reste. Le
+                comparateur reste accessible depuis chaque fiche (bouton « Comparer »). */}
+            <Suspense fallback={<span className={LIEN_NAV}>Combat</span>}>
+              <LienNav href="/combat" className={LIEN_NAV}>Combat</LienNav>
+            </Suspense>
+            <Suspense fallback={<span className={LIEN_NAV}>Quiz</span>}>
+              <LienNav href="/quiz" className={LIEN_NAV}>Quiz</LienNav>
             </Suspense>
         </nav>
         {/* Ordre du DOM = ordre visuel sur grand écran (titre, navigation, boutons) : c'est l'ordre
