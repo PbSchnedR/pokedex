@@ -287,3 +287,49 @@
   sacoche n'est pas vide ; 1er clic « Confirmer ? », 2e clic vide ; l'état « à confirmer » reste
   dans un `useState` (il ne concerne que ce bouton), remis à zéro quand le bouton perd le focus.
 - **Fichiers** : `components/BoutonVider.tsx`.
+
+## Bonus — glisser-déposer (FR-040, research R9, tâches T089–T090)
+
+### `deplacer(depuis, vers)` : la règle reste dans le store
+
+- **Point du cours** : ch. 9, « c'est le store qui fait respecter les règles » et mises à jour
+  immuables (nouveau tableau). L'action copie `equipe`, retire le membre à `depuis` (`splice`) et
+  le réinsère à `vers`. Indice hors bornes, non entier ou égal à l'autre → **l'état est renvoyé
+  tel quel** (comme un refus de `ajouter`). Le nombre de membres ne change jamais : les règles
+  « 6 au plus » et « sans doublon » restent vraies sans code supplémentaire.
+- **Persistance** : rien à ajouter, `persist` enregistre le nouvel ordre sous `pokedex-sacoche` ;
+  la forme du contrat (`{ state: { equipe }, version: 0 }`) ne change pas — vérifié par un test.
+- **Tests** (`stores/sacoche.test.ts`, Vitest) : en tête, en fin, au milieu dans les deux sens,
+  nouveau tableau, hors bornes (−1, 4, 1,5, NaN), même indice, surnom conservé, règles 6 / sans
+  doublon après déplacements, forme stockée. Vitest tourne sans `localStorage` : le test en
+  fournit un en mémoire (`vi.hoisted` + `vi.stubGlobal`) **avant** d'importer le store, car
+  `persist` cherche le stockage à la création.
+
+### `ListeSacocheReordonnable` : deux chemins, une seule action
+
+- **Choix imposé (R9)** : API HTML5 native, **aucune bibliothèque** — `draggable` sur la carte,
+  `onDragStart` (indice mémorisé, `effectAllowed = "move"`, `setData` requis par Firefox,
+  `setDragImage` sur toute la carte même quand on saisit l'illustration), `onDragOver`
+  (`preventDefault` pour autoriser le dépôt, ignoré si rien n'est tenu dans la page), `onDrop`,
+  `onDragEnd`. Glisser depuis le champ du surnom ne soulève pas la carte (sélection du texte).
+- **Retour visuel** : la carte tenue passe en `opacity-40` (transition d'opacité de 150 ms,
+  `motion-reduce:transition-none`) ; la carte survolée reçoit un contour en tirets couleur Pokédex
+  (contour statique, pas d'animation).
+- **Alternative clavier et tactile (FR-040)** : boutons « Monter » / « Descendre » sur chaque
+  carte (le glisser HTML5 ne fonctionne pas au doigt). Texte accessible « Monter {surnom ou nom} »
+  (`sr-only`), flèche visible décorative (`aria-hidden`). Désactivés aux extrémités. Après un
+  clic, **le focus reste sur le membre déplacé** : un `useRef` (ch. 10) garde la carte et le
+  bouton à refocaliser, un `useEffect` sur `equipe` le refocalise — ou l'autre bouton si le
+  premier vient d'être désactivé (membre arrivé en tête ou en fin).
+- **Annonce** (ch. 11, accessibilité) : un paragraphe `aria-live="polite"` (`sr-only`), toujours
+  présent dans la page, reçoit « {nom} est maintenant en position n sur N. Nouvel ordre : … ».
+- **État local** : membre tenu, carte survolée et texte annoncé ne concernent que la liste →
+  `useState` (ch. 9), pas le store.
+- **Intégration minimale** dans `app/sacoche/page.tsx` : le contenu des cartes (image, numéro,
+  surnom, types, retirer) reste écrit dans la page et est passé par `rendreMembre` ; les
+  emplacements libres sont passés en `children` ; `BoutonVider` et le compteur n'ont pas bougé.
+- **Écart** : la consigne demandait les icônes du composant `Icone`, qui n'a pas de flèche, et
+  `components/Icone.tsx` était hors du périmètre de ce bonus → caractères « ↑ » / « ↓ »
+  décoratifs en attendant (question posée au manager).
+- **Fichiers** : `stores/sacoche.ts`, `stores/sacoche.test.ts`,
+  `components/ListeSacocheReordonnable.tsx`, `app/sacoche/page.tsx`.
