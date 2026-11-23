@@ -1,14 +1,13 @@
-import GrillePokemons from "@/components/GrillePokemons";
-import { exemples } from "@/data/exemples";
+import CartePokemon from "@/components/CartePokemon";
+import { recupererPokemon } from "@/lib/pokeapi";
 
-// Étapes 3–4 (temporaire) : la grille affiche des données écrites à la main.
-export default function Accueil() {
+// Étape 8 (temporaire) : une seule carte, chargée depuis l'API par la couche d'accès aux données.
+export default async function Accueil() {
+  const pikachu = await recupererPokemon("pikachu");
+  if (!pikachu) return <p>Pokémon introuvable.</p>;
   return (
-    <>
-      <h1 className="text-3xl font-extrabold tracking-tight font-stretch-85%">Pokédex</h1>
-      <div className="mt-6">
-        <GrillePokemons pokemons={exemples} />
-      </div>
-    </>
+    <div className="w-48">
+      <CartePokemon pokemon={pikachu} />
+    </div>
   );
 }

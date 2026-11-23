@@ -49,3 +49,29 @@
   `filter((p): p is Pokemon => p !== null)` écarte les `null` et le dit à TypeScript. Si un seul
   appel échoue, tout échoue : « mieux vaut une erreur claire qu'une grille à trous ».
 - **Fichiers** : `lib/pokeapi.ts`.
+
+## Étape 8 — de vraies données
+
+- **Point du cours** : ch. 7, étape 8 — la page d'accueil affiche la carte de Pikachu chargée par
+  `recupererPokemon("pikachu")`, « Pokémon introuvable » pour un nom inexistant ; retirer
+  `"use cache"` un instant et lire le message de Next.js ; supprimer `data/exemples.ts`.
+- **Vérifié** :
+  - `/` sert la carte de Pikachu (`alt="pikachu"` dans le HTML), en clair et en sombre à 375 px ;
+  - avec `recupererPokemon("pikachuu")` (modification temporaire), la page affiche
+    « Pokémon introuvable. » : le 404 de l'API devient `null`, pas une erreur.
+- **Message de Next.js sans `"use cache"`** (deux essais, puis fichier restauré à l'identique,
+  `git diff` vide) :
+  1. Retirer **seulement** la directive laisse `cacheLife("days")` hors cache ; Next.js 16.4
+     s'arrête d'abord sur cette erreur (page en 500) :
+     `` Route "/": `cacheLife()` can only be called inside a `"use cache"` or `"use cache: private"` function. ``
+  2. En retirant aussi `cacheLife`, on obtient le message visé par le cours (page servie, erreur
+     dans le terminal et la console) :
+     `Route "/": Next.js encountered uncached data during prerendering.` puis
+     `` `fetch(...)` or `connection()` accessed outside of `<Suspense>` prevents the route from
+     being prerendered, blocking the page load […] `` et trois solutions : `[stream]` un
+     `<Suspense fallback>`, `[cache]` `"use cache"`, `[block]` `export const instant = false`.
+  C'est la règle de Next.js 16 rappelée par le cours : une donnée lue sur le serveur est soit en
+  cache, soit sous un `<Suspense>`.
+- **Écart d'ordre** : `data/exemples.ts` est supprimé dès l'étape 8, comme le demande la liste de
+  l'étape 8 du cours (la tâche T031 le plaçait à l'étape 9) ; plus aucun fichier ne l'importait.
+- **Fichiers** : `app/page.tsx`, `data/exemples.ts` (supprimé).

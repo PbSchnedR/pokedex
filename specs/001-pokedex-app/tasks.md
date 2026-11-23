@@ -106,7 +106,7 @@ Phase 5 (US3), comme dans le cours (étape 14).
 
 ⏸ **STOP étapes 5–6**
 
-- [ ] T030 [US1] Étape 8 : `app/page.tsx` affiche la carte de Pikachu chargée par `recupererPokemon("pikachu")`, et « Pokémon introuvable » pour un nom inexistant ; retirer `"use cache"` un instant, lire le message de Next.js, le remettre ; noter le message dans `docs/07-appels-api.md`
+- [X] T030 [US1] Étape 8 : `app/page.tsx` affiche la carte de Pikachu chargée par `recupererPokemon("pikachu")`, et « Pokémon introuvable » pour un nom inexistant ; retirer `"use cache"` un instant, lire le message de Next.js, le remettre ; noter le message dans `docs/07-appels-api.md`
 
 ⏸ **STOP étape 8**
 
