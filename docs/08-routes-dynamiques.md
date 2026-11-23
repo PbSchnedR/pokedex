@@ -91,3 +91,36 @@
 - **Point du cours** : ch. 8, « Générer des pages à l'avance » — `/pokemon?limit=1025`, en cache ;
   si la liste manque, **erreur** (et non `[]`) : sans elle, ni recherche ni pré-génération.
 - **Fichiers** : `lib/pokeapi.ts`.
+
+## Étape 12 — fiches pré-générées : `generateStaticParams`
+
+- **Point du cours** : ch. 8, « Générer des pages à l'avance » et étape 12 — les 151 premiers
+  noms de `recupererTousLesNoms()` ; « npm run build réussit et liste les pages générées » ;
+  comparer `npm start` et `npm run dev`.
+- **Choix** : code du cours.
+- **Vérifié** :
+  - `npm run build` : « Generating static pages (158/158) in 45s », la liste affiche
+    `○ /pokemon/bulbasaur 1d 1w` et `[+149 more paths]` ; `.next/server/app/pokemon/` contient
+    151 fichiers HTML de fiche (+ la coque `[nom].html`) : `mew.html` (n° 151) y est,
+    `chikorita.html` (n° 152) non ;
+  - temps de réponse mesurés avec `curl` :
+
+    | Adresse | `npm start` | `npm run dev` |
+    |---|---|---|
+    | `/pokemon/pikachu` (pré-générée) | 0,27 s | 1,58 s puis 0,88 s |
+    | `/pokemon/eevee` (pré-générée) | 0,28 s | — |
+    | `/pokemon/chikorita` (non pré-générée) | 1,25 s, puis 0,02 s | 1,54 s |
+
+    En production, une fiche hors des 151 est construite à la première visite puis gardée ;
+  - `npm start` : onglet « Pikachu · Pokédex », console vide (375 px, sombre).
+- **Constat sur le code HTTP d'un nom inconnu** (production) : à la **première** visite de
+  `/pokemon/zzzinconnu`, le serveur répond **200** : la fiche est lue sous `<Suspense>`, l'en-tête
+  HTTP est déjà parti quand `notFound()` est appelé. La page affichée est bien la 404 et porte
+  `<meta name="robots" content="noindex">`. Aux visites suivantes, la réponse est **404**. Le
+  cours ne traite pas du code HTTP ; à garder en tête pour l'audit de référencement (étape 18).
+- **Fichiers** : `app/pokemon/[nom]/page.tsx`.
+
+## Récapitulatif de l'étape 12 (T043)
+
+- « Pikachu · Pokédex » : vu. `/pokemon/eevee` : toutes les branches, chacune cliquable : vu.
+  `/pokemon/pikachuu` → page 404 du layout : vu. 151 fiches générées : compté.

@@ -11,6 +11,7 @@ import {
   recupererEvolutions,
   recupererPlusieurs,
   recupererPokemon,
+  recupererTousLesNoms,
 } from "@/lib/pokeapi";
 
 type Props = {
@@ -108,3 +109,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+
+// ch. 8, étape 12 — les 151 premiers Pokémon sont construits au build.
+export async function generateStaticParams() {
+  const noms = await recupererTousLesNoms();
+  return noms.slice(0, 151).map((nom) => ({ nom }));
+}

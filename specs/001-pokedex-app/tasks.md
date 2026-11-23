@@ -141,8 +141,8 @@ fiches pré-générées.
 
 ⏸ **STOP étape 11**
 
-- [ ] T042 [US2] Dans `app/pokemon/[nom]/page.tsx` : `generateStaticParams` qui renvoie les 151 premiers `{ nom }` de `recupererTousLesNoms()`
-- [ ] T043 [US2] Étape 12 : `npm run build` liste les pages générées ; `npm start` comparé à `npm run dev` ; vérifier « Pikachu · Pokédex », `/pokemon/eevee` (branches), `/pokemon/pikachuu` → 404 ; documenter dans `docs/08-routes-dynamiques.md` (params promesse, `notFound()` vs `error.tsx`, récursion, pré-génération)
+- [X] T042 [US2] Dans `app/pokemon/[nom]/page.tsx` : `generateStaticParams` qui renvoie les 151 premiers `{ nom }` de `recupererTousLesNoms()`
+- [X] T043 [US2] Étape 12 : `npm run build` liste les pages générées ; `npm start` comparé à `npm run dev` ; vérifier « Pikachu · Pokédex », `/pokemon/eevee` (branches), `/pokemon/pikachuu` → 404 ; documenter dans `docs/08-routes-dynamiques.md` (params promesse, `notFound()` vs `error.tsx`, récursion, pré-génération)
 
 ⏸ **STOP étape 12**
 
