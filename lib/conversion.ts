@@ -1,4 +1,5 @@
 import type { Pokemon, PokemonApi } from "@/types/pokemon";
+import { nomFrancais } from "./noms-fr";
 
 export const API = "https://pokeapi.co/api/v2";
 
@@ -8,6 +9,7 @@ export function versPokemon(brut: PokemonApi): Pokemon {
   return {
     id: brut.id,
     nom: brut.name,
+    nomFr: nomFrancais(brut.id, brut.name), // bonus FR-033 — repli sur le nom de l'API
     image:
       brut.sprites.other["official-artwork"].front_default ??
       `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${brut.id}.png`,
