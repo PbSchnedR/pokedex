@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Planche naturaliste</title>
+<meta name="description" content="Maquette T012, direction 1 : Planche naturaliste.">
+<script>
+  // Même contrat que le futur script de layout.tsx (research R7) : "clair" | "sombre", absent = clair.
+  try { if (localStorage.getItem("pokedex-theme") === "sombre" || location.search.includes("theme=sombre")) document.documentElement.classList.add("dark"); } catch (e) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400..800&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3"></script>
+<style type="text/tailwindcss">
+@custom-variant dark (&:where(.dark, .dark *));
+@theme static {
+  --font-sans: "Schibsted Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --color-pokedex: #1d4f91;
+  --color-pokedex-sombre: #93b6ea;
+  --color-sur-accent: #ffffff;
+  --color-sur-accent-sombre: #0f1a2e;
+  --color-fond: #f2f5f3;
+  --color-fond-sombre: #111613;
+  --color-surface: #ffffff;
+  --color-surface-sombre: #18201b;
+  --color-encre: #17201c;
+  --color-encre-sombre: #e6ece8;
+  --color-doux: #52605a;
+  --color-doux-sombre: #9aa9a1;
+  --color-ligne: #dbe2de;
+  --color-ligne-sombre: #2b3630;
+  --color-type-normal: #767668;
+  --color-type-fire: #c4511a;
+  --color-type-water: #2f6fd0;
+  --color-type-electric: #946f00;
+  --color-type-grass: #3a8436;
+  --color-type-ice: #298083;
+  --color-type-fighting: #a8322a;
+  --color-type-poison: #8a3fa0;
+  --color-type-ground: #8f702a;
+  --color-type-flying: #5371c6;
+  --color-type-psychic: #d33969;
+  --color-type-bug: #6f7b17;
+  --color-type-rock: #857431;
+  --color-type-ghost: #5a4a8c;
+  --color-type-dragon: #5a3fd6;
+  --color-type-dark: #50433a;
+  --color-type-steel: #6d6d85;
+  --color-type-fairy: #bf4a8a;
+  --animate-apparition: apparition 0.32s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  @keyframes apparition {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+}
+
+/* L'étoile pleine ne s'affiche que si aria-pressed="true" : l'état visuel suit l'état accessible. */
+.etoile .etoile-pleine { display: none; }
+.etoile[aria-pressed="true"] .etoile-pleine { display: block; }
+.etoile[aria-pressed="true"] .etoile-vide { display: none; }
+/* Ombre au survol animée par opacité seulement (ch. 5 : transform et opacity). */
+.carte::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  box-shadow: 0 16px 32px -12px color-mix(in oklab, var(--teinte) 45%, transparent);
+  opacity: 0; transition: opacity 0.2s ease-out;
+}
+.carte:hover::before, .carte:focus-within::before { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .carte::before { transition: none; } }
+::selection { background: color-mix(in oklab, var(--color-pokedex) 25%, transparent); }
+
+/* Signature : la règle graduée. Une graduation tous les 50 points sur le rail des statistiques. */
+.regle { background-image: repeating-linear-gradient(to right, transparent 0 calc(19.6% - 1px), color-mix(in oklab, currentColor 25%, transparent) calc(19.6% - 1px) 19.6%); }
+
+</style>
+</head>
+<body class="min-h-dvh bg-fond font-sans text-encre antialiased dark:bg-fond-sombre dark:text-encre-sombre">
+  <a href="#contenu" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-20 focus:rounded-lg focus:bg-pokedex focus:px-4 focus:py-2 focus:text-sur-accent">Aller au contenu</a>
+  <header class="sticky top-0 z-10 border-b border-ligne bg-surface/85 backdrop-blur dark:border-ligne-sombre dark:bg-surface-sombre/85">
+    <div class="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex items-center justify-between gap-4">
+        <a href="#" class="rounded-lg text-base font-extrabold tracking-tight focus-visible:outline-2 focus-visible:outline-pokedex dark:focus-visible:outline-pokedex-sombre">Mon Pokédex</a>
+        <div class="flex items-center gap-2 sm:hidden">
+          <a href="#fiche" class="inline-flex items-center gap-2 rounded-lg bg-pokedex px-4 py-2 text-base font-semibold text-sur-accent transition-transform active:scale-95 motion-reduce:transition-none dark:bg-pokedex-sombre dark:text-sur-accent-sombre"><svg aria-hidden="true" focusable="false" class="size-4" viewBox="0 0 256 256" fill="currentColor"><path d="M237.66,178.34a8,8,0,0,1,0,11.32l-24,24a8,8,0,0,1-11.32-11.32L212.69,192H200.94a72.12,72.12,0,0,1-58.59-30.15l-41.72-58.4A56.1,56.1,0,0,0,55.06,80H32a8,8,0,0,1,0-16H55.06a72.12,72.12,0,0,1,58.59,30.15l41.72,58.4A56.1,56.1,0,0,0,200.94,176h11.75l-10.35-10.34a8,8,0,0,1,11.32-11.32ZM143,107a8,8,0,0,0,11.16-1.86l1.2-1.67A56.1,56.1,0,0,1,200.94,80h11.75L202.34,90.34a8,8,0,0,0,11.32,11.32l24-24a8,8,0,0,0,0-11.32l-24-24a8,8,0,0,0-11.32,11.32L212.69,64H200.94a72.12,72.12,0,0,0-58.59,30.15l-1.2,1.67A8,8,0,0,0,143,107Zm-30,42a8,8,0,0,0-11.16,1.86l-1.2,1.67A56.1,56.1,0,0,1,55.06,176H32a8,8,0,0,0,0,16H55.06a72.12,72.12,0,0,0,58.59-30.15l1.2-1.67A8,8,0,0,0,113,149Z"/></svg>Au hasard</a>
+          <button type="button" data-bouton-theme class="grid size-10 place-items-center rounded-lg border border-ligne hover:bg-fond focus-visible:outline-2 focus-visible:outline-pokedex dark:border-ligne-sombre dark:hover:bg-fond-sombre"><svg aria-hidden="true" focusable="false" class="size-5 dark:hidden" viewBox="0 0 256 256" fill="currentColor"><path d="M233.54,142.23a8,8,0,0,0-8-2,88.08,88.08,0,0,1-109.8-109.8,8,8,0,0,0-10-10,104.84,104.84,0,0,0-52.91,37A104,104,0,0,0,136,224a103.09,103.09,0,0,0,62.52-20.88,104.84,104.84,0,0,0,37-52.91A8,8,0,0,0,233.54,142.23ZM188.9,190.34A88,88,0,0,1,65.66,67.11a89,89,0,0,1,31.4-26A106,106,0,0,0,96,56,104.11,104.11,0,0,0,200,160a106,106,0,0,0,14.92-1.06A89,89,0,0,1,188.9,190.34Z"/></svg><svg aria-hidden="true" focusable="false" class="size-5 hidden dark:block" viewBox="0 0 256 256" fill="currentColor"><path d="M120,40V16a8,8,0,0,1,16,0V40a8,8,0,0,1-16,0Zm72,88a64,64,0,1,1-64-64A64.07,64.07,0,0,1,192,128Zm-16,0a48,48,0,1,0-48,48A48.05,48.05,0,0,0,176,128ZM58.34,69.66A8,8,0,0,0,69.66,58.34l-16-16A8,8,0,0,0,42.34,53.66Zm0,116.68-16,16a8,8,0,0,0,11.32,11.32l16-16a8,8,0,0,0-11.32-11.32ZM192,72a8,8,0,0,0,5.66-2.34l16-16a8,8,0,0,0-11.32-11.32l-16,16A8,8,0,0,0,192,72Zm5.66,114.34a8,8,0,0,0-11.32,11.32l16,16a8,8,0,0,0,11.32-11.32ZM48,128a8,8,0,0,0-8-8H16a8,8,0,0,0,0,16H40A8,8,0,0,0,48,128Zm80,80a8,8,0,0,0-8,8v24a8,8,0,0,0,16,0V216A8,8,0,0,0,128,208Zm112-88H216a8,8,0,0,0,0,16h24a8,8,0,0,0,0-16Z"/></svg></button>
+        </div>
+      </div>
+      <nav aria-label="Navigation principale" class="flex items-center gap-4 sm:gap-6">
+        <a href="#" aria-current="page" class="border-b-2 border-transparent py-2 text-base font-semibold aria-[current=page]:border-pokedex aria-[current=page]:text-pokedex dark:aria-[current=page]:border-pokedex-sombre dark:aria-[current=page]:text-pokedex-sombre focus-visible:outline-2 focus-visible:outline-pokedex">Pokédex</a>
+        <a href="#" class="border-b-2 border-transparent py-2 text-base hover:border-ligne focus-visible:outline-2 focus-visible:outline-pokedex dark:hover:border-ligne-sombre">Favoris <span class="tabular-nums text-doux dark:text-doux-sombre" data-compteur-favoris>3</span></a>
+        <a href="#sacoche" class="border-b-2 border-transparent py-2 text-base hover:border-ligne focus-visible:outline-2 focus-visible:outline-pokedex dark:hover:border-ligne-sombre">Sacoche <span class="tabular-nums text-doux dark:text-doux-sombre">3/6</span></a>
+        <span class="hidden items-center gap-2 sm:flex">
+          <a href="#fiche" class="inline-flex items-center gap-2 rounded-lg bg-pokedex px-4 py-2 text-base font-semibold text-sur-accent transition-transform hover:brightness-110 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokedex motion-reduce:transition-none dark:bg-pokedex-sombre dark:text-sur-accent-sombre"><svg aria-hidden="true" focusable="false" class="size-4" viewBox="0 0 256 256" fill="currentColor"><path d="M237.66,178.34a8,8,0,0,1,0,11.32l-24,24a8,8,0,0,1-11.32-11.32L212.69,192H200.94a72.12,72.12,0,0,1-58.59-30.15l-41.72-58.4A56.1,56.1,0,0,0,55.06,80H32a8,8,0,0,1,0-16H55.06a72.12,72.12,0,0,1,58.59,30.15l41.72,58.4A56.1,56.1,0,0,0,200.94,176h11.75l-10.35-10.34a8,8,0,0,1,11.32-11.32ZM143,107a8,8,0,0,0,11.16-1.86l1.2-1.67A56.1,56.1,0,0,1,200.94,80h11.75L202.34,90.34a8,8,0,0,0,11.32,11.32l24-24a8,8,0,0,0,0-11.32l-24-24a8,8,0,0,0-11.32,11.32L212.69,64H200.94a72.12,72.12,0,0,0-58.59,30.15l-1.2,1.67A8,8,0,0,0,143,107Zm-30,42a8,8,0,0,0-11.16,1.86l-1.2,1.67A56.1,56.1,0,0,1,55.06,176H32a8,8,0,0,0,0,16H55.06a72.12,72.12,0,0,0,58.59-30.15l1.2-1.67A8,8,0,0,0,113,149Z"/></svg>Au hasard</a>
+          <button type="button" data-bouton-theme class="grid size-10 place-items-center rounded-lg border border-ligne hover:bg-fond focus-visible:outline-2 focus-visible:outline-pokedex dark:border-ligne-sombre dark:hover:bg-fond-sombre"><svg aria-hidden="true" focusable="false" class="size-5 dark:hidden" viewBox="0 0 256 256" fill="currentColor"><path d="M233.54,142.23a8,8,0,0,0-8-2,88.08,88.08,0,0,1-109.8-109.8,8,8,0,0,0-10-10,104.84,104.84,0,0,0-52.91,37A104,104,0,0,0,136,224a103.09,103.09,0,0,0,62.52-20.88,104.84,104.84,0,0,0,37-52.91A8,8,0,0,0,233.54,142.23ZM188.9,190.34A88,88,0,0,1,65.66,67.11a89,89,0,0,1,31.4-26A106,106,0,0,0,96,56,104.11,104.11,0,0,0,200,160a106,106,0,0,0,14.92-1.06A89,89,0,0,1,188.9,190.34Z"/></svg><svg aria-hidden="true" focusable="false" class="size-5 hidden dark:block" viewBox="0 0 256 256" fill="currentColor"><path d="M120,40V16a8,8,0,0,1,16,0V40a8,8,0,0,1-16,0Zm72,88a64,64,0,1,1-64-64A64.07,64.07,0,0,1,192,128Zm-16,0a48,48,0,1,0-48,48A48.05,48.05,0,0,0,176,128ZM58.34,69.66A8,8,0,0,0,69.66,58.34l-16-16A8,8,0,0,0,42.34,53.66Zm0,116.68-16,16a8,8,0,0,0,11.32,11.32l16-16a8,8,0,0,0-11.32-11.32ZM192,72a8,8,0,0,0,5.66-2.34l16-16a8,8,0,0,0-11.32-11.32l-16,16A8,8,0,0,0,192,72Zm5.66,114.34a8,8,0,0,0-11.32,11.32l16,16a8,8,0,0,0,11.32-11.32ZM48,128a8,8,0,0,0-8-8H16a8,8,0,0,0,0,16H40A8,8,0,0,0,48,128Zm80,80a8,8,0,0,0-8,8v24a8,8,0,0,0,16,0V216A8,8,0,0,0,128,208Zm112-88H216a8,8,0,0,0,0,16h24a8,8,0,0,0,0-16Z"/></svg></button>
+        </span>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenu" class="mx-auto max-w-6xl px-4 py-6">
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <h1 class="text-2xl font-extrabold tracking-tight">Pokédex</h1>
+        <p class="mt-2 text-base text-doux dark:text-doux-sombre">1 025 Pokémon, page 1 sur 43</p>
+      </div>
+      <div class="relative sm:w-80">
+        <label for="recherche" class="sr-only">Rechercher un Pokémon</label>
+        <span class="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-doux dark:text-doux-sombre"><svg aria-hidden="true" focusable="false" class="size-4" viewBox="0 0 256 256" fill="currentColor"><path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"/></svg></span>
+        <input id="recherche" type="search" placeholder="Rechercher (touche /)" class="w-full rounded-lg border border-ligne bg-surface py-2 pl-8 pr-4 text-base placeholder:text-doux focus:border-pokedex focus:outline-none focus:ring-4 focus:ring-pokedex/20 dark:border-ligne-sombre dark:bg-surface-sombre dark:placeholder:text-doux-sombre dark:focus:border-pokedex-sombre">
+      </div>
+    </div>
+    <nav aria-label="Filtrer par type" class="-mx-4 mt-4 overflow-x-auto px-4">
+      <ul class="flex gap-2 pb-2">
+        <li><a href="#" aria-current="true" class="block whitespace-nowrap rounded-full border border-ligne px-4 py-2 text-xs font-semibold aria-[current=true]:border-encre aria-[current=true]:bg-encre aria-[current=true]:text-surface dark:border-ligne-sombre dark:aria-[current=true]:border-encre-sombre dark:aria-[current=true]:bg-encre-sombre dark:aria-[current=true]:text-fond-sombre">Tous</a></li>
+        <li><a href="#" style="--teinte: var(--color-type-fire);" class="block whitespace-nowrap rounded-full border border-(--teinte)/40 bg-(--teinte)/10 px-4 py-2 text-xs font-semibold hover:bg-(--teinte)/20">Feu</a></li><li><a href="#" style="--teinte: var(--color-type-water);" class="block whitespace-nowrap rounded-full border border-(--teinte)/40 bg-(--teinte)/10 px-4 py-2 text-xs font-semibold hover:bg-(--teinte)/20">Eau</a></li><li><a href="#" style="--teinte: var(--color-type-grass);" class="block whitespace-nowrap rounded-full border border-(--teinte)/40 bg-(--teinte)/10 px-4 py-2 text-xs font-semibold hover:bg-(--teinte)/20">Plante</a></li><li><a href="#" style="--teinte: var(--color-type-electric);" class="block whitespace-nowrap rounded-full border border-(--teinte)/40 bg-(--teinte)/10 px-4 py-2 text-xs font-semibold hover:bg-(--teinte)/20">Électrik</a></li><li><a href="#" style="--teinte: var(--color-type-psychic);" class="block whitespace-nowrap rounded-full border border-(--teinte)/40 bg-(--teinte)/10 px-4 py-2 text-xs font-semibold hover:bg-(--teinte)/20">Psy</a></li><li><a href="#" style="--teinte: var(--color-type-dragon);" class="block whitespace-nowrap rounded-full border border-(--teinte)/40 bg-(--teinte)/10 px-4 py-2 text-xs font-semibold hover:bg-(--teinte)/20">Dragon</a></li><li><a href="#" style="--teinte: var(--color-type-ghost);" class="block whitespace-nowrap rounded-full border border-(--teinte)/40 bg-(--teinte)/10 px-4 py-2 text-xs font-semibold hover:bg-(--teinte)/20">Spectre</a></li><li><a href="#" style="--teinte: var(--color-type-fairy);" class="block whitespace-nowrap rounded-full border border-(--teinte)/40 bg-(--teinte)/10 px-4 py-2 text-xs font-semibold hover:bg-(--teinte)/20">Fée</a></li>
+      </ul>
+    </nav>
+
+    <ul class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+      <li class="animate-apparition motion-reduce:animate-none" style="animation-delay: 0ms">
+        <article style="--teinte: var(--color-type-grass);" class="carte group relative h-full rounded-xl border border-ligne bg-surface shadow-sm transition-transform duration-200 ease-out hover:-translate-y-1 focus-within:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:focus-within:translate-y-0 dark:border-ligne-sombre dark:bg-surface-sombre">
+          <a href="#fiche" class="block h-full rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokedex dark:focus-visible:outline-pokedex-sombre">
+            <div class="relative aspect-square overflow-hidden rounded-t-xl bg-linear-to-b from-(--teinte)/25 to-(--teinte)/5">
+              <span aria-hidden="true" class="absolute right-2 top-2 text-5xl font-extrabold leading-none tabular-nums text-(--teinte)/20">001</span>
+              <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png" alt="Bulbizarre" width="160" height="160" loading="lazy" class="relative mx-auto size-full object-contain p-4 drop-shadow-lg transition-transform duration-300 ease-out group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100">
+            </div>
+            <div class="border-t border-ligne p-4 dark:border-ligne-sombre">
+              <div class="flex items-baseline justify-between gap-2">
+                <h2 class="truncate text-base font-semibold">Bulbizarre</h2>
+                <span class="text-xs tabular-nums text-doux dark:text-doux-sombre">#001</span>
+              </div>
+              <div class="mt-2 flex flex-wrap gap-2"><span class="rounded-full px-2 py-0.5 text-xs font-bold text-white bg-type-grass dark:ring-1 dark:ring-white/20">Plante</span><span class="rounded-full px-2 py-0.5 text-xs font-bold text-white bg-type-poison dark:ring-1 dark:ring-white/20">Poison</span></div>
+            </div>
+          </a>
+          <button type="button" data-favori data-nom="Bulbizarre" aria-pressed="false" aria-label="Ajouter Bulbizarre aux favoris" class="etoile absolute left-2 top-2 grid size-10 place-items-center rounded-full bg-surface/80 text-encre transition-transform duration-150 hover:scale-110 active:scale-95 focus-visible:outline-2 focus-visible:outline-pokedex motion-reduce:transition-none dark:bg-surface-sombre/80 dark:text-encre-sombre dark:focus-visible:outline-pokedex-sombre [&[aria-pressed=true]]:text-pokedex dark:[&[aria-pressed=true]]:text-pokedex-sombre"><svg aria-hidden="true" focusable="false" class="size-5 etoile-vide" viewBox="0 0 256 256" fill="currentColor"><path d="M239.18,97.26A16.38,16.38,0,0,0,224.92,86l-59-4.76L143.14,26.15a16.36,16.36,0,0,0-30.27,0L90.11,81.23,31.08,86a16.46,16.46,0,0,0-9.37,28.86l45,38.83L53,211.75a16.38,16.38,0,0,0,24.5,17.82L128,198.49l50.53,31.08A16.4,16.4,0,0,0,203,211.75l-13.76-58.07,45-38.83A16.43,16.43,0,0,0,239.18,97.26Zm-15.34,5.47-48.7,42a8,8,0,0,0-2.56,7.91l14.88,62.8a.37.37,0,0,1-.17.48c-.18.14-.23.11-.38,0l-54.72-33.65a8,8,0,0,0-8.38,0L69.09,215.94c-.15.09-.19.12-.38,0a.37.37,0,0,1-.17-.48l14.88-62.8a8,8,0,0,0-2.56-7.91l-48.7-42c-.12-.1-.23-.19-.13-.5s.18-.27.33-.29l63.92-5.16A8,8,0,0,0,103,91.86l24.62-59.61c.08-.17.11-.25.35-.25s.27.08.35.25L153,91.86a8,8,0,0,0,6.75,4.92l63.92,5.16c.15,0,.24,0,.33.29S224,102.63,223.84,102.73Z"/></svg><svg aria-hidden="true" focusable="false" class="size-5 etoile-pleine" viewBox="0 0 256 256" fill="currentColor"><path d="M234.29,114.85l-45,38.83L203,211.75a16.4,16.4,0,0,1-24.5,17.82L128,198.49,77.47,229.57A16.4,16.4,0,0,1,53,211.75l13.76-58.07-45-38.83A16.46,16.46,0,0,1,31.08,86l59-4.76,22.76-55.08a16.36,16.36,0,0,1,30.27,0l22.75,55.08,59,4.76a16.46,16.46,0,0,1,9.37,28.86Z"/></svg></button>
+        </article>
+      </li>
+      <li class="animate-apparition motion-reduce:animate-none" style="animation-delay: 30ms">
+        <article style="--teinte: var(--color-type-fire);" class="carte group relative h-full rounded-xl border border-ligne bg-surface shadow-sm transition-transform duration-200 ease-out hover:-translate-y-1 focus-within:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:focus-within:translate-y-0 dark:border-ligne-sombre dark:bg-surface-sombre">
+          <a href="#fiche" class="block h-full rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokedex dark:focus-visible:outline-pokedex-sombre">
+            <div class="relative aspect-square overflow-hidden rounded-t-xl bg-linear-to-b from-(--teinte)/25 to-(--teinte)/5">
+              <span aria-hidden="true" class="absolute right-2 top-2 text-5xl font-extrabold leading-none tabular-nums text-(--teinte)/20">004</span>
+              <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png" alt="Salamèche" width="160" height="160" loading="lazy" class="relative mx-auto size-full object-contain p-4 drop-shadow-lg transition-transform duration-300 ease-out group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100">
+            </div>
+            <div class="border-t border-ligne p-4 dark:border-ligne-sombre">
+              <div class="flex items-baseline justify-between gap-2">
+                <h2 class="truncate text-base font-semibold">Salamèche</h2>
+                <span class="text-xs tabular-nums text-doux dark:text-doux-sombre">#004</span>
+              </div>
+              <div class="mt-2 flex flex-wrap gap-2"><span class="rounded-full px-2 py-0.5 text-xs font-bold text-white bg-type-fire dark:ring-1 dark:ring-white/20">Feu</span></div>
+            </div>
+          </a>
+          <button type="button" data-favori data-nom="Salamèche" aria-pressed="false" aria-label="Ajouter Salamèche aux favoris" class="etoile absolute left-2 top-2 grid size-10 place-items-center rounded-full bg-surface/80 text-encre transition-transform duration-150 hover:scale-110 active:scale-95 focus-visible:outline-2 focus-visible:outline-pokedex motion-reduce:transition-none dark:bg-surface-sombre/80 dark:text-encre-sombre dark:focus-visible:outline-pokedex-sombre [&[aria-pressed=true]]:text-pokedex dark:[&[aria-pressed=true]]:text-pokedex-sombre"><svg aria-hidden="true" focusable="false" class="size-5 etoile-vide" viewBox="0 0 256 256" fill="currentColor"><path d="M239.18,97.26A16.38,16.38,0,0,0,224.92,86l-59-4.76L143.14,26.15a16.36,16.36,0,0,0-30.27,0L90.11,81.23,31.08,86a16.46,16.46,0,0,0-9.37,28.86l45,38.83L53,211.75a16.38,16.38,0,0,0,24.5,17.82L128,198.49l50.53,31.08A16.4,16.4,0,0,0,203,211.75l-13.76-58.07,45-38.83A16.43,16.43,0,0,0,239.18,97.26Zm-15.34,5.47-48.7,42a8,8,0,0,0-2.56,7.91l14.88,62.8a.37.37,0,0,1-.17.48c-.18.14-.23.11-.38,0l-54.72-33.65a8,8,0,0,0-8.38,0L69.09,215.94c-.15.09-.19.12-.38,0a.37.37,0,0,1-.17-.48l14.88-62.8a8,8,0,0,0-2.56-7.91l-48.7-42c-.12-.1-.23-.19-.13-.5s.18-.27.33-.29l63.92-5.16A8,8,0,0,0,103,91.86l24.62-59.61c.08-.17.11-.25.35-.25s.27.08.35.25L153,91.86a8,8,0,0,0,6.75,4.92l63.92,5.16c.15,0,.24,0,.33.29S224,102.63,223.84,102.73Z"/></svg><svg aria-hidden="true" focusable="false" class="size-5 etoile-pleine" viewBox="0 0 256 256" fill="currentColor"><path d="M234.29,114.85l-45,38.83L203,211.75a16.4,16.4,0,0,1-24.5,17.82L128,198.49,77.47,229.57A16.4,16.4,0,0,1,53,211.75l13.76-58.07-45-38.83A16.46,16.46,0,0,1,31.08,86l59-4.76,22.76-55.08a16.36,16.36,0,0,1,30.27,0l22.75,55.08,59,4.76a16.46,16.46,0,0,1,9.37,28.86Z"/></svg></button>
+        </article>
+      </li>
+      <li class="animate-apparition motion-reduce:animate-none" style="animation-delay: 60ms">
+        <article style="--teinte: var(--color-type-water);" class="carte group relative h-full rounded-xl border border-ligne bg-surface shadow-sm transition-transform duration-200 ease-out hover:-translate-y-1 focus-within:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:focus-within:translate-y-0 dark:border-ligne-sombre dark:bg-surface-sombre">
+          <a href="#fiche" class="block h-full rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokedex dark:focus-visible:outline-pokedex-sombre">
+            <div class="relative aspect-square overflow-hidden rounded-t-xl bg-linear-to-b from-(--teinte)/25 to-(--teinte)/5">
+              <span aria-hidden="true" class="absolute right-2 top-2 text-5xl font-extrabold leading-none tabular-nums text-(--teinte)/20">007</span>
+              <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png" alt="Carapuce" width="160" height="160" loading="lazy" class="relative mx-auto size-full object-contain p-4 drop-shadow-lg transition-transform duration-300 ease-out group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100">
+            </div>
+            <div class="border-t border-ligne p-4 dark:border-ligne-sombre">
+              <div class="flex items-baseline justify-between gap-2">
+                <h2 class="truncate text-base font-semibold">Carapuce</h2>
+                <span class="text-xs tabular-nums text-doux dark:text-doux-sombre">#007</span>
+              </div>
+              <div class="mt-2 flex flex-wrap gap-2"><span class="rounded-full px-2 py-0.5 text-xs font-bold text-white bg-type-water dark:ring-1 dark:ring-white/20">Eau</span></div>
+            </div>
+          </a>
+          <button type="button" data-favori data-nom="Carapuce" aria-pressed="false" aria-label="Ajouter Carapuce aux favoris" class="etoile absolute left-2 top-2 grid size-10 place-items-center rounded-full bg-surface/80 text-encre transition-transform duration-150 hover:scale-110 active:scale-95 focus-visible:outline-2 focus-visible:outline-pokedex motion-reduce:transition-none dark:bg-surface-sombre/80 dark:text-encre-sombre dark:focus-visible:outline-pokedex-sombre [&[aria-pressed=true]]:text-pokedex dark:[&[aria-pressed=true]]:text-pokedex-sombre"><svg aria-hidden="true" focusable="false" class="size-5 etoile-vide" viewBox="0 0 256 256" fill="currentColor"><path d="M239.18,97.26A16.38,16.38,0,0,0,224.92,86l-59-4.76L143.14,26.15a16.36,16.36,0,0,0-30.27,0L90.11,81.23,31.08,86a16.46,16.46,0,0,0-9.37,28.86l45,38.83L53,211.75a16.38,16.38,0,0,0,24.5,17.82L128,198.49l50.53,31.08A16.4,16.4,0,0,0,203,211.75l-13.76-58.07,45-38.83A16.43,16.43,0,0,0,239.18,97.26Zm-15.34,5.47-48.7,42a8,8,0,0,0-2.56,7.91l14.88,62.8a.37.37,0,0,1-.17.48c-.18.14-.23.11-.38,0l-54.72-33.65a8,8,0,0,0-8.38,0L69.09,215.94c-.15.09-.19.12-.38,0a.37.37,0,0,1-.17-.48l14.88-62.8a8,8,0,0,0-2.56-7.91l-48.7-42c-.12-.1-.23-.19-.13-.5s.18-.27.33-.29l63.92-5.16A8,8,0,0,0,103,91.86l24.62-59.61c.08-.17.11-.25.35-.25s.27.08.35.25L153,91.86a8,8,0,0,0,6.75,4.92l63.92,5.16c.15,0,.24,0,.33.29S224,102.63,223.84,102.73Z"/></svg><svg aria-hidden="true" focusable="false" class="size-5 etoile-pleine" viewBox="0 0 256 256" fill="currentColor"><path d="M234.29,114.85l-45,38.83L203,211.75a16.4,16.4,0,0,1-24.5,17.82L128,198.49,77.47,229.57A16.4,16.4,0,0,1,53,211.75l13.76-58.07-45-38.83A16.46,16.46,0,0,1,31.08,86l59-4.76,22.76-55.08a16.36,16.36,0,0,1,30.27,0l22.75,55.08,59,4.76a16.46,16.46,0,0,1,9.37,28.86Z"/></svg></button>
+        </article>
+      </li>
+      <li class="animate-apparition motion-reduce:animate-none" style="animation-delay: 90ms">
+        <article style="--teinte: var(--color-type-electric);" class="carte group relative h-full rounded-xl border border-ligne bg-surface shadow-sm transition-transform duration-200 ease-out hover:-translate-y-1 focus-within:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:focus-within:translate-y-0 dark:border-ligne-sombre dark:bg-surface-sombre">
+          <a href="#fiche" class="block h-full rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokedex dark:focus-visible:outline-pokedex-sombre">
+            <div class="relative aspect-square overflow-hidden rounded-t-xl bg-linear-to-b from-(--teinte)/25 to-(--teinte)/5">
+              <span aria-hidden="true" class="absolute right-2 top-2 text-5xl font-extrabold leading-none tabular-nums text-(--teinte)/20">025</span>
+              <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" alt="Pikachu" width="160" height="160" loading="lazy" class="relative mx-auto size-full object-contain p-4 drop-shadow-lg transition-transform duration-300 ease-out group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100">
+            </div>
+            <div class="border-t border-ligne p-4 dark:border-ligne-sombre">
+              <div class="flex items-baseline justify-between gap-2">
+                <h2 class="truncate text-base font-semibold">Pikachu</h2>
+                <span class="text-xs tabular-nums text-doux dark:text-doux-sombre">#025</span>
+              </div>
+              <div class="mt-2 flex flex-wrap gap-2"><span class="rounded-full px-2 py-0.5 text-xs font-bold text-white bg-type-electric dark:ring-1 dark:ring-white/20">Électrik</span></div>
+            </div>
+          </a>
+          <button type="button" data-favori data-nom="Pikachu" aria-pressed="true" aria-label="Retirer Pikachu des favoris" class="etoile absolute left-2 top-2 grid size-10 place-items-center rounded-full bg-surface/80 text-encre transition-transform duration-150 hover:scale-110 active:scale-95 focus-visible:outline-2 focus-visible:outline-pokedex motion-reduce:transition-none dark:bg-surface-sombre/80 dark:text-encre-sombre dark:focus-visible:outline-pokedex-sombre [&[aria-pressed=true]]:text-pokedex dark:[&[aria-pressed=true]]:text-pokedex-sombre"><svg aria-hidden="true" focusable="false" class="size-5 etoile-vide" viewBox="0 0 256 256" fill="currentColor"><path d="M239.18,97.26A16.38,16.38,0,0,0,224.92,86l-59-4.76L143.14,26.15a16.36,16.36,0,0,0-30.27,0L90.11,81.23,31.08,86a16.46,16.46,0,0,0-9.37,28.86l45,38.83L53,211.75a16.38,16.38,0,0,0,24.5,17.82L128,198.49l50.53,31.08A16.4,16.4,0,0,0,203,211.75l-13.76-58.07,45-38.83A16.43,16.43,0,0,0,239.18,97.26Zm-15.34,5.47-48.7,42a8,8,0,0,0-2.56,7.91l14.88,62.8a.37.37,0,0,1-.17.48c-.18.14-.23.11-.38,0l-54.72-33.65a8,8,0,0,0-8.38,0L69.09,215.94c-.15.09-.19.12-.38,0a.37.37,0,0,1-.17-.48l14.88-62.8a8,8,0,0,0-2.56-7.91l-48.7-42c-.12-.1-.23-.19-.13-.5s.18-.27.33-.29l63.92-5.16A8,8,0,0,0,103,91.86l24.62-59.61c.08-.17.11-.25.35-.25s.27.08.35.25L153,91.86a8,8,0,0,0,6.75,4.92l63.92,5.16c.15,0,.24,0,.33.29S224,102.63,223.84,102.73Z"/></svg><svg aria-hidden="true" focusable="false" class="size-5 etoile-pleine" viewBox="0 0 256 256" fill="currentColor"><path d="M234.29,114.85l-45,38.83L203,211.75a16.4,16.4,0,0,1-24.5,17.82L128,198.49,77.47,229.57A16.4,16.4,0,0,1,53,211.75l13.76-58.07-45-38.83A16.46,16.46,0,0,1,31.08,86l59-4.76,22.76-55.08a16.36,16.36,0,0,1,30.27,0l22.75,55.08,59,4.76a16.46,16.46,0,0,1,9.37,28.86Z"/></svg></button>
+        </article>
+      </li>
+      <li class="animate-apparition motion-reduce:animate-none" style="animation-delay: 120ms">
+        <article style="--teinte: var(--color-type-ghost);" class="carte group relative h-full rounded-xl border border-ligne bg-surface shadow-sm transition-transform duration-200 ease-out hover:-translate-y-1 focus-within:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:focus-within:translate-y-0 dark:border-ligne-sombre dark:bg-surface-sombre">
+          <a href="#fiche" class="block h-full rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokedex dark:focus-visible:outline-pokedex-sombre">
+            <div class="relative aspect-square overflow-hidden rounded-t-xl bg-linear-to-b from-(--teinte)/25 to-(--teinte)/5">
+              <span aria-hidden="true" class="absolute right-2 top-2 text-5xl font-extrabold leading-none tabular-nums text-(--teinte)/20">094</span>
+              <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/94.png" alt="Ectoplasma" width="160" height="160" loading="lazy" class="relative mx-auto size-full object-contain p-4 drop-shadow-lg transition-transform duration-300 ease-out group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100">
+            </div>
+            <div class="border-t border-ligne p-4 dark:border-ligne-sombre">
+              <div class="flex items-baseline justify-between gap-2">
+                <h2 class="truncate text-base font-semibold">Ectoplasma</h2>
+                <span class="text-xs tabular-nums text-doux dark:text-doux-sombre">#094</span>
+              </div>
+              <div class="mt-2 flex flex-wrap gap-2"><span class="rounded-full px-2 py-0.5 text-xs font-bold text-white bg-type-ghost dark:ring-1 dark:ring-white/20">Spectre</span><span class="rounded-full px-2 py-0.5 text-xs font-bold text-white bg-type-poison dark:ring-1 dark:ring-white/20">Poison</span></div>
+            </div>
+          </a>
+          <button type="button" data-favori data-nom="Ectoplasma" aria-pressed="true" aria-label="Retirer Ectoplasma des favoris" class="etoile absolute left-2 top-2 grid size-10 place-items-center rounded-full bg-surface/80 text-encre transition-transform duration-150 hover:scale-110 active:scale-95 focus-visible:outline-2 focus-visible:outline-pokedex motion-reduce:transition-none dark:bg-surface-sombre/80 dark:text-encre-sombre dark:focus-visible:outline-pokedex-sombre [&[aria-pressed=true]]:text-pokedex dark:[&[aria-pressed=true]]:text-pokedex-sombre"><svg aria-hidden="true" focusable="false" class="size-5 etoile-vide" viewBox="0 0 256 256" fill="currentColor"><path d="M239.18,97.26A16.38,16.38,0,0,0,224.92,86l-59-4.76L143.14,26.15a16.36,16.36,0,0,0-30.27,0L90.11,81.23,31.08,86a16.46,16.46,0,0,0-9.37,28.86l45,38.83L53,211.75a16.38,16.38,0,0,0,24.5,17.82L128,198.49l50.53,31.08A16.4,16.4,0,0,0,203,211.75l-13.76-58.07,45-38.83A16.43,16.43,0,0,0,239.18,97.26Zm-15.34,5.47-48.7,42a8,8,0,0,0-2.56,7.91l14.88,62.8a.37.37,0,0,1-.17.48c-.18.14-.23.11-.38,0l-54.72-33.65a8,8,0,0,0-8.38,0L69.09,215.94c-.15.09-.19.12-.38,0a.37.37,0,0,1-.17-.48l14.88-62.8a8,8,0,0,0-2.56-7.91l-48.7-42c-.12-.1-.23-.19-.13-.5s.18-.27.33-.29l63.92-5.16A8,8,0,0,0,103,91.86l24.62-59.61c.08-.17.11-.25.35-.25s.27.08.35.25L153,91.86a8,8,0,0,0,6.75,4.92l63.92,5.16c.15,0,.24,0,.33.29S224,102.63,223.84,102.73Z"/></svg><svg aria-hidden="true" focusable="false" class="size-5 etoile-pleine" viewBox="0 0 256 256" fill="currentColor"><path d="M234.29,114.85l-45,38.83L203,211.75a16.4,16.4,0,0,1-24.5,17.82L128,198.49,77.47,229.57A16.4,16.4,0,0,1,53,211.75l13.76-58.07-45-38.83A16.46,16.46,0,0,1,31.08,86l59-4.76,22.76-55.08a16.36,16.36,0,0,1,30.27,0l22.75,55.08,59,4.76a16.46,16.46,0,0,1,9.37,28.86Z"/></svg></button>
+        </article>
+      </li>
+      <li class="animate-apparition motion-reduce:animate-none" style="animation-delay: 150ms">
+        <article style="--teinte: var(--color-type-water);" class="carte group relative h-full rounded-xl border border-ligne bg-surface shadow-sm transition-transform duration-200 ease-out hover:-translate-y-1 focus-within:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:focus-within:translate-y-0 dark:border-ligne-sombre dark:bg-surface-sombre">
+          <a href="#fiche" class="block h-full rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokedex dark:focus-visible:outline-pokedex-sombre">
+            <div class="relative aspect-square overflow-hidden rounded-t-xl bg-linear-to-b from-(--teinte)/25 to-(--teinte)/5">
+              <span aria-hidden="true" class="absolute right-2 top-2 text-5xl font-extrabold leading-none tabular-nums text-(--teinte)/20">130</span>
+              <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/130.png" alt="Léviator" width="160" height="160" loading="lazy" class="relative mx-auto size-full object-contain p-4 drop-shadow-lg transition-transform duration-300 ease-out group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100">
+            </div>
+            <div class="border-t border-ligne p-4 dark:border-ligne-sombre">
+              <div class="flex items-baseline justify-between gap-2">
+                <h2 class="truncate text-base font-semibold">Léviator</h2>
+                <span class="text-xs tabular-nums text-doux dark:text-doux-sombre">#130</span>
+              </div>
+              <div class="mt-2 flex flex-wrap gap-2"><span class="rounded-full px-2 py-0.5 text-xs font-bold text-white bg-type-water dark:ring-1 dark:ring-white/20">Eau</span><span class="rounded-full px-2 py-0.5 text-xs font-bold text-white bg-type-flying dark:ring-1 dark:ring-white/20">Vol</span></div>
+            </div>
+          </a>
+          <button type="button" data-favori data-nom="Léviator" aria-pressed="false" aria-label="Ajouter Léviator aux favoris" class="etoile absolute left-2 top-2 grid size-10 place-items-center rounded-full bg-surface/80 text-encre transition-transform duration-150 hover:scale-110 active:scale-95 focus-visible:outline-2 focus-visible:outline-pokedex motion-reduce:transition-none dark:bg-surface-sombre/80 dark:text-encre-sombre dark:focus-visible:outline-pokedex-sombre [&[aria-pressed=true]]:text-pokedex dark:[&[aria-pressed=true]]:text-pokedex-sombre"><svg aria-hidden="true" focusable="false" class="size-5 etoile-vide" viewBox="0 0 256 256" fill="currentColor"><path d="M239.18,97.26A16.38,16.38,0,0,0,224.92,86l-59-4.76L143.14,26.15a16.36,16.36,0,0,0-30.27,0L90.11,81.23,31.08,86a16.46,16.46,0,0,0-9.37,28.86l45,38.83L53,211.75a16.38,16.38,0,0,0,24.5,17.82L128,198.49l50.53,31.08A16.4,16.4,0,0,0,203,211.75l-13.76-58.07,45-38.83A16.43,16.43,0,0,0,239.18,97.26Zm-15.34,5.47-48.7,42a8,8,0,0,0-2.56,7.91l14.88,62.8a.37.37,0,0,1-.17.48c-.18.14-.23.11-.38,0l-54.72-33.65a8,8,0,0,0-8.38,0L69.09,215.94c-.15.09-.19.12-.38,0a.37.37,0,0,1-.17-.48l14.88-62.8a8,8,0,0,0-2.56-7.91l-48.7-42c-.12-.1-.23-.19-.13-.5s.18-.27.33-.29l63.92-5.16A8,8,0,0,0,103,91.86l24.62-59.61c.08-.17.11-.25.35-.25s.27.08.35.25L153,91.86a8,8,0,0,0,6.75,4.92l63.92,5.16c.15,0,.24,0,.33.29S224,102.63,223.84,102.73Z"/></svg><svg aria-hidden="true" focusable="false" class="size-5 etoile-pleine" viewBox="0 0 256 256" fill="currentColor"><path d="M234.29,114.85l-45,38.83L203,211.75a16.4,16.4,0,0,1-24.5,17.82L128,198.49,77.47,229.57A16.4,16.4,0,0,1,53,211.75l13.76-58.07-45-38.83A16.46,16.46,0,0,1,31.08,86l59-4.76,22.76-55.08a16.36,16.36,0,0,1,30.27,0l22.75,55.08,59,4.76a16.46,16.46,0,0,1,9.37,28.86Z"/></svg></button>
+        </article>
+      </li>
+      <li class="animate-apparition motion-reduce:animate-none" style="animation-delay: 150ms">
+        <article style="--teinte: var(--color-type-dragon);" class="carte group relative h-full rounded-xl border border-ligne bg-surface shadow-sm transition-transform duration-200 ease-out hover:-translate-y-1 focus-within:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:focus-within:translate-y-0 dark:border-ligne-sombre dark:bg-surface-sombre">
+          <a href="#fiche" class="block h-full rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokedex dark:focus-visible:outline-pokedex-sombre">
+            <div class="relative aspect-square overflow-hidden rounded-t-xl bg-linear-to-b from-(--teinte)/25 to-(--teinte)/5">
+              <span aria-hidden="true" class="absolute right-2 top-2 text-5xl font-extrabold leading-none tabular-nums text-(--teinte)/20">149</span>
+              <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/149.png" alt="Dracolosse" width="160" height="160" loading="lazy" class="relative mx-auto size-full object-contain p-4 drop-shadow-lg transition-transform duration-300 ease-out group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100">
+            </div>
+            <div class="border-t border-ligne p-4 dark:border-ligne-sombre">
+              <div class="flex items-baseline justify-between gap-2">
+                <h2 class="truncate text-base font-semibold">Dracolosse</h2>
+                <span class="text-xs tabular-nums text-doux dark:text-doux-sombre">#149</span>
+              </div>
+              <div class="mt-2 flex flex-wrap gap-2"><span class="rounded-full px-2 py-0.5 text-xs font-bold text-white bg-type-dragon dark:ring-1 dark:ring-white/20">Dragon</span><span class="rounded-full px-2 py-0.5 text-xs font-bold text-white bg-type-flying dark:ring-1 dark:ring-white/20">Vol</span></div>
+            </div>
+          </a>
+          <button type="button" data-favori data-nom="Dracolosse" aria-pressed="true" aria-label="Retirer Dracolosse des favoris" class="etoile absolute left-2 top-2 grid size-10 place-items-center rounded-full bg-surface/80 text-encre transition-transform duration-150 hover:scale-110 active:scale-95 focus-visible:outline-2 focus-visible:outline-pokedex motion-reduce:transition-none dark:bg-surface-sombre/80 dark:text-encre-sombre dark:focus-visible:outline-pokedex-sombre [&[aria-pressed=true]]:text-pokedex dark:[&[aria-pressed=true]]:text-pokedex-sombre"><svg aria-hidden="true" focusable="false" class="size-5 etoile-vide" viewBox="0 0 256 256" fill="currentColor"><path d="M239.18,97.26A16.38,16.38,0,0,0,224.92,86l-59-4.76L143.14,26.15a16.36,16.36,0,0,0-30.27,0L90.11,81.23,31.08,86a16.46,16.46,0,0,0-9.37,28.86l45,38.83L53,211.75a16.38,16.38,0,0,0,24.5,17.82L128,198.49l50.53,31.08A16.4,16.4,0,0,0,203,211.75l-13.76-58.07,45-38.83A16.43,16.43,0,0,0,239.18,97.26Zm-15.34,5.47-48.7,42a8,8,0,0,0-2.56,7.91l14.88,62.8a.37.37,0,0,1-.17.48c-.18.14-.23.11-.38,0l-54.72-33.65a8,8,0,0,0-8.38,0L69.09,215.94c-.15.09-.19.12-.38,0a.37.37,0,0,1-.17-.48l14.88-62.8a8,8,0,0,0-2.56-7.91l-48.7-42c-.12-.1-.23-.19-.13-.5s.18-.27.33-.29l63.92-5.16A8,8,0,0,0,103,91.86l24.62-59.61c.08-.17.11-.25.35-.25s.27.08.35.25L153,91.86a8,8,0,0,0,6.75,4.92l63.92,5.16c.15,0,.24,0,.33.29S224,102.63,223.84,102.73Z"/></svg><svg aria-hidden="true" focusable="false" class="size-5 etoile-pleine" viewBox="0 0 256 256" fill="currentColor"><path d="M234.29,114.85l-45,38.83L203,211.75a16.4,16.4,0,0,1-24.5,17.82L128,198.49,77.47,229.57A16.4,16.4,0,0,1,53,211.75l13.76-58.07-45-38.83A16.46,16.46,0,0,1,31.08,86l59-4.76,22.76-55.08a16.36,16.36,0,0,1,30.27,0l22.75,55.08,59,4.76a16.46,16.46,0,0,1,9.37,28.86Z"/></svg></button>
+        </article>
+      </li>
+      <li class="animate-apparition motion-reduce:animate-none" style="animation-delay: 150ms">
+        <article style="--teinte: var(--color-type-psychic);" class="carte group relative h-full rounded-xl border border-ligne bg-surface shadow-sm transition-transform duration-200 ease-out hover:-translate-y-1 focus-within:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:focus-within:translate-y-0 dark:border-ligne-sombre dark:bg-surface-sombre">
+          <a href="#fiche" class="block h-full rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokedex dark:focus-visible:outline-pokedex-sombre">
+            <div class="relative aspect-square overflow-hidden rounded-t-xl bg-linear-to-b from-(--teinte)/25 to-(--teinte)/5">
+              <span aria-hidden="true" class="absolute right-2 top-2 text-5xl font-extrabold leading-none tabular-nums text-(--teinte)/20">150</span>
+              <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/150.png" alt="Mewtwo" width="160" height="160" loading="lazy" class="relative mx-auto size-full object-contain p-4 drop-shadow-lg transition-transform duration-300 ease-out group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100">
+            </div>
+            <div class="border-t border-ligne p-4 dark:border-ligne-sombre">
+              <div class="flex items-baseline justify-between gap-2">
+                <h2 class="truncate text-base font-semibold">Mewtwo</h2>
+                <span class="text-xs tabular-nums text-doux dark:text-doux-sombre">#150</span>
+              </div>
+              <div class="mt-2 flex flex-wrap gap-2"><span class="rounded-full px-2 py-0.5 text-xs font-bold text-white bg-type-psychic dark:ring-1 dark:ring-white/20">Psy</span></div>
+            </div>
+          </a>
+          <button type="button" data-favori data-nom="Mewtwo" aria-pressed="false" aria-label="Ajouter Mewtwo aux favoris" class="etoile absolute left-2 top-2 grid size-10 place-items-center rounded-full bg-surface/80 text-encre transition-transform duration-150 hover:scale-110 active:scale-95 focus-visible:outline-2 focus-visible:outline-pokedex motion-reduce:transition-none dark:bg-surface-sombre/80 dark:text-encre-sombre dark:focus-visible:outline-pokedex-sombre [&[aria-pressed=true]]:text-pokedex dark:[&[aria-pressed=true]]:text-pokedex-sombre"><svg aria-hidden="true" focusable="false" class="size-5 etoile-vide" viewBox="0 0 256 256" fill="currentColor"><path d="M239.18,97.26A16.38,16.38,0,0,0,224.92,86l-59-4.76L143.14,26.15a16.36,16.36,0,0,0-30.27,0L90.11,81.23,31.08,86a16.46,16.46,0,0,0-9.37,28.86l45,38.83L53,211.75a16.38,16.38,0,0,0,24.5,17.82L128,198.49l50.53,31.08A16.4,16.4,0,0,0,203,211.75l-13.76-58.07,45-38.83A16.43,16.43,0,0,0,239.18,97.26Zm-15.34,5.47-48.7,42a8,8,0,0,0-2.56,7.91l14.88,62.8a.37.37,0,0,1-.17.48c-.18.14-.23.11-.38,0l-54.72-33.65a8,8,0,0,0-8.38,0L69.09,215.94c-.15.09-.19.12-.38,0a.37.37,0,0,1-.17-.48l14.88-62.8a8,8,0,0,0-2.56-7.91l-48.7-42c-.12-.1-.23-.19-.13-.5s.18-.27.33-.29l63.92-5.16A8,8,0,0,0,103,91.86l24.62-59.61c.08-.17.11-.25.35-.25s.27.08.35.25L153,91.86a8,8,0,0,0,6.75,4.92l63.92,5.16c.15,0,.24,0,.33.29S224,102.63,223.84,102.73Z"/></svg><svg aria-hidden="true" focusable="false" class="size-5 etoile-pleine" viewBox="0 0 256 256" fill="currentColor"><path d="M234.29,114.85l-45,38.83L203,211.75a16.4,16.4,0,0,1-24.5,17.82L128,198.49,77.47,229.57A16.4,16.4,0,0,1,53,211.75l13.76-58.07-45-38.83A16.46,16.46,0,0,1,31.08,86l59-4.76,22.76-55.08a16.36,16.36,0,0,1,30.27,0l22.75,55.08,59,4.76a16.46,16.46,0,0,1,9.37,28.86Z"/></svg></button>
+        </article>
+      </li>
+    </ul>
+
+    <nav aria-label="Pagination" class="mt-8 flex items-center justify-between gap-4">
+      <button disabled class="rounded-lg border border-ligne px-4 py-2 text-base font-semibold disabled:cursor-not-allowed disabled:opacity-40 dark:border-ligne-sombre">Précédent</button>
+      <span class="text-base tabular-nums text-doux dark:text-doux-sombre">Page 1 sur 43</span>
+      <a href="#" class="rounded-lg border border-ligne px-4 py-2 text-base font-semibold hover:bg-surface focus-visible:outline-2 focus-visible:outline-pokedex dark:border-ligne-sombre dark:hover:bg-surface-sombre">Suivant</a>
+    </nav>
+
+    <section id="fiche" aria-labelledby="titre-fiche" style="--teinte: var(--color-type-electric);" class="mt-8 rounded-xl border border-ligne bg-surface p-4 sm:p-6 dark:border-ligne-sombre dark:bg-surface-sombre">
+      <p class="text-xs text-doux dark:text-doux-sombre">Aperçu de la fiche (dans l'application, c'est une page avec son propre h1)</p>
+      <div class="mt-4 grid gap-6 md:grid-cols-2">
+        <div class="relative overflow-hidden rounded-xl bg-linear-to-b from-(--teinte)/25 to-(--teinte)/5">
+          <span aria-hidden="true" class="absolute right-4 top-2 text-8xl font-extrabold leading-none tabular-nums text-(--teinte)/20">025</span>
+          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" alt="Pikachu" width="400" height="400" class="relative mx-auto aspect-square w-full max-w-sm object-contain p-6 drop-shadow-xl">
+        </div>
+        <div>
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <p class="text-xs tabular-nums text-doux dark:text-doux-sombre">#025</p>
+              <h2 id="titre-fiche" class="text-2xl font-extrabold tracking-tight">Pikachu</h2>
+            </div>
+            <button type="button" data-favori data-nom="Pikachu" aria-pressed="true" aria-label="Retirer Pikachu des favoris" class="etoile grid size-10 place-items-center rounded-lg border border-ligne hover:bg-fond focus-visible:outline-2 focus-visible:outline-pokedex dark:border-ligne-sombre [&[aria-pressed=true]]:text-pokedex dark:[&[aria-pressed=true]]:text-pokedex-sombre"><svg aria-hidden="true" focusable="false" class="size-5 etoile-vide" viewBox="0 0 256 256" fill="currentColor"><path d="M239.18,97.26A16.38,16.38,0,0,0,224.92,86l-59-4.76L143.14,26.15a16.36,16.36,0,0,0-30.27,0L90.11,81.23,31.08,86a16.46,16.46,0,0,0-9.37,28.86l45,38.83L53,211.75a16.38,16.38,0,0,0,24.5,17.82L128,198.49l50.53,31.08A16.4,16.4,0,0,0,203,211.75l-13.76-58.07,45-38.83A16.43,16.43,0,0,0,239.18,97.26Zm-15.34,5.47-48.7,42a8,8,0,0,0-2.56,7.91l14.88,62.8a.37.37,0,0,1-.17.48c-.18.14-.23.11-.38,0l-54.72-33.65a8,8,0,0,0-8.38,0L69.09,215.94c-.15.09-.19.12-.38,0a.37.37,0,0,1-.17-.48l14.88-62.8a8,8,0,0,0-2.56-7.91l-48.7-42c-.12-.1-.23-.19-.13-.5s.18-.27.33-.29l63.92-5.16A8,8,0,0,0,103,91.86l24.62-59.61c.08-.17.11-.25.35-.25s.27.08.35.25L153,91.86a8,8,0,0,0,6.75,4.92l63.92,5.16c.15,0,.24,0,.33.29S224,102.63,223.84,102.73Z"/></svg><svg aria-hidden="true" focusable="false" class="size-5 etoile-pleine" viewBox="0 0 256 256" fill="currentColor"><path d="M234.29,114.85l-45,38.83L203,211.75a16.4,16.4,0,0,1-24.5,17.82L128,198.49,77.47,229.57A16.4,16.4,0,0,1,53,211.75l13.76-58.07-45-38.83A16.46,16.46,0,0,1,31.08,86l59-4.76,22.76-55.08a16.36,16.36,0,0,1,30.27,0l22.75,55.08,59,4.76a16.46,16.46,0,0,1,9.37,28.86Z"/></svg></button>
+          </div>
+          <div class="mt-2 flex gap-2"><span class="rounded-full px-2 py-0.5 text-xs font-bold text-white bg-type-electric dark:ring-1 dark:ring-white/20">Électrik</span></div>
+          <dl class="mt-4 grid grid-cols-2 overflow-hidden rounded-lg border border-ligne dark:border-ligne-sombre">
+            <div class="p-4"><dt class="text-xs text-doux dark:text-doux-sombre">Taille</dt><dd class="text-base font-semibold">0,4 m</dd></div>
+            <div class="border-l border-ligne p-4 dark:border-ligne-sombre"><dt class="text-xs text-doux dark:text-doux-sombre">Poids</dt><dd class="text-base font-semibold">6 kg</dd></div>
+          </dl>
+          <h3 class="mt-6 text-base font-semibold">Statistiques de base</h3>
+          <dl class="mt-2 grid gap-2">
+              <div class="grid grid-cols-[7rem_2rem_1fr] items-center gap-2">
+                <dt class="text-xs text-doux dark:text-doux-sombre">PV</dt>
+                <dd class="text-right text-xs font-semibold tabular-nums">35</dd>
+                <dd class="regle h-2 overflow-hidden rounded-full bg-ligne dark:bg-ligne-sombre"><div class="h-2 rounded-full bg-(--teinte)" style="width: 13.7%"></div></dd>
+              </div>
+              <div class="grid grid-cols-[7rem_2rem_1fr] items-center gap-2">
+                <dt class="text-xs text-doux dark:text-doux-sombre">Attaque</dt>
+                <dd class="text-right text-xs font-semibold tabular-nums">55</dd>
+                <dd class="regle h-2 overflow-hidden rounded-full bg-ligne dark:bg-ligne-sombre"><div class="h-2 rounded-full bg-(--teinte)" style="width: 21.6%"></div></dd>
+              </div>
+              <div class="grid grid-cols-[7rem_2rem_1fr] items-center gap-2">
+                <dt class="text-xs text-doux dark:text-doux-sombre">Défense</dt>
+                <dd class="text-right text-xs font-semibold tabular-nums">40</dd>
+                <dd class="regle h-2 overflow-hidden rounded-full bg-ligne dark:bg-ligne-sombre"><div class="h-2 rounded-full bg-(--teinte)" style="width: 15.7%"></div></dd>
+              </div>
+              <div class="grid grid-cols-[7rem_2rem_1fr] items-center gap-2">
+                <dt class="text-xs text-doux dark:text-doux-sombre">Attaque spé.</dt>
+                <dd class="text-right text-xs font-semibold tabular-nums">50</dd>
+                <dd class="regle h-2 overflow-hidden rounded-full bg-ligne dark:bg-ligne-sombre"><div class="h-2 rounded-full bg-(--teinte)" style="width: 19.6%"></div></dd>
+              </div>
+              <div class="grid grid-cols-[7rem_2rem_1fr] items-center gap-2">
+                <dt class="text-xs text-doux dark:text-doux-sombre">Défense spé.</dt>
+                <dd class="text-right text-xs font-semibold tabular-nums">50</dd>
+                <dd class="regle h-2 overflow-hidden rounded-full bg-ligne dark:bg-ligne-sombre"><div class="h-2 rounded-full bg-(--teinte)" style="width: 19.6%"></div></dd>
+              </div>
+              <div class="grid grid-cols-[7rem_2rem_1fr] items-center gap-2">
+                <dt class="text-xs text-doux dark:text-doux-sombre">Vitesse</dt>
+                <dd class="text-right text-xs font-semibold tabular-nums">90</dd>
+                <dd class="regle h-2 overflow-hidden rounded-full bg-ligne dark:bg-ligne-sombre"><div class="h-2 rounded-full bg-(--teinte)" style="width: 35.3%"></div></dd>
+              </div>
+          </dl>
+          <div class="mt-6 flex flex-wrap gap-2">
+            <button type="button" class="inline-flex items-center gap-2 rounded-lg bg-pokedex px-4 py-2 text-base font-semibold text-sur-accent transition-transform hover:brightness-110 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokedex motion-reduce:transition-none dark:bg-pokedex-sombre dark:text-sur-accent-sombre"><svg aria-hidden="true" focusable="false" class="size-4" viewBox="0 0 256 256" fill="currentColor"><path d="M168,40.58V32A24,24,0,0,0,144,8H112A24,24,0,0,0,88,32v8.58A56.09,56.09,0,0,0,40,96V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V96A56.09,56.09,0,0,0,168,40.58ZM112,24h32a8,8,0,0,1,8,8v8H104V32A8,8,0,0,1,112,24Zm56,136H88v-8a8,8,0,0,1,8-8h64a8,8,0,0,1,8,8ZM88,176h48v8a8,8,0,0,0,16,0v-8h16v40H88Zm112,40H184V152a24,24,0,0,0-24-24H96a24,24,0,0,0-24,24v64H56V96A40,40,0,0,1,96,56h64a40,40,0,0,1,40,40V216ZM152,88a8,8,0,0,1-8,8H112a8,8,0,0,1,0-16h32A8,8,0,0,1,152,88Z"/></svg>Ajouter à la sacoche</button>
+            <a href="#" class="rounded-lg border border-ligne px-4 py-2 text-base font-semibold hover:bg-fond dark:border-ligne-sombre dark:hover:bg-fond-sombre">Comparer</a>
+          </div>
+        </div>
+      </div>
+      <h3 class="mt-6 text-base font-semibold">Évolutions</h3>
+      <ol class="mt-2 flex flex-wrap items-center gap-2">
+              
+              <li><a href="#fiche"  class="flex flex-col items-center gap-2 rounded-lg p-2 hover:bg-fond focus-visible:outline-2 focus-visible:outline-pokedex aria-[current=page]:bg-(--teinte)/15 dark:hover:bg-fond-sombre dark:focus-visible:outline-pokedex-sombre">
+                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/172.png" alt="" width="64" height="64" class="size-16 object-contain">
+                <span class="text-xs font-semibold">Pichu</span></a></li>
+              <li aria-hidden="true" class="text-doux dark:text-doux-sombre"><svg aria-hidden="true" focusable="false" class="size-4 rotate-180" viewBox="0 0 256 256" fill="currentColor"><path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z"/></svg></li>
+              <li><a href="#fiche" aria-current="page" class="flex flex-col items-center gap-2 rounded-lg p-2 hover:bg-fond focus-visible:outline-2 focus-visible:outline-pokedex aria-[current=page]:bg-(--teinte)/15 dark:hover:bg-fond-sombre dark:focus-visible:outline-pokedex-sombre">
+                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" alt="" width="64" height="64" class="size-16 object-contain">
+                <span class="text-xs font-semibold">Pikachu</span></a></li>
+              <li aria-hidden="true" class="text-doux dark:text-doux-sombre"><svg aria-hidden="true" focusable="false" class="size-4 rotate-180" viewBox="0 0 256 256" fill="currentColor"><path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z"/></svg></li>
+              <li><a href="#fiche"  class="flex flex-col items-center gap-2 rounded-lg p-2 hover:bg-fond focus-visible:outline-2 focus-visible:outline-pokedex aria-[current=page]:bg-(--teinte)/15 dark:hover:bg-fond-sombre dark:focus-visible:outline-pokedex-sombre">
+                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/26.png" alt="" width="64" height="64" class="size-16 object-contain">
+                <span class="text-xs font-semibold">Raichu</span></a></li>
+      </ol>
+    </section>
+
+    <section id="sacoche" aria-labelledby="titre-sacoche" class="mt-8">
+      <div class="flex items-baseline justify-between gap-4">
+        <h2 id="titre-sacoche" class="text-2xl font-extrabold tracking-tight">Sacoche <span class="text-base font-semibold tabular-nums text-doux dark:text-doux-sombre">3/6</span></h2>
+        <button type="button" class="rounded-lg px-4 py-2 text-base font-semibold text-pokedex hover:bg-pokedex/10 dark:text-pokedex-sombre">Vider</button>
+      </div>
+      <ul class="mt-4 grid grid-cols-3 gap-4 sm:grid-cols-6"><li style="--teinte: var(--color-type-electric);" class="flex flex-col items-center gap-2 rounded-xl border border-ligne bg-linear-to-b from-(--teinte)/25 to-transparent p-2 dark:border-ligne-sombre">
+              <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" alt="" width="64" height="64" class="size-16 object-contain drop-shadow">
+              <span class="text-xs font-semibold">Pika</span></li><li style="--teinte: var(--color-type-water);" class="flex flex-col items-center gap-2 rounded-xl border border-ligne bg-linear-to-b from-(--teinte)/25 to-transparent p-2 dark:border-ligne-sombre">
+              <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png" alt="" width="64" height="64" class="size-16 object-contain drop-shadow">
+              <span class="text-xs font-semibold">Carapuce</span></li><li style="--teinte: var(--color-type-dragon);" class="flex flex-col items-center gap-2 rounded-xl border border-ligne bg-linear-to-b from-(--teinte)/25 to-transparent p-2 dark:border-ligne-sombre">
+              <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/149.png" alt="" width="64" height="64" class="size-16 object-contain drop-shadow">
+              <span class="text-xs font-semibold">Dracolosse</span></li><li class="grid aspect-square place-items-center rounded-xl border-2 border-dashed border-ligne text-xs text-doux dark:border-ligne-sombre dark:text-doux-sombre">Libre</li><li class="grid aspect-square place-items-center rounded-xl border-2 border-dashed border-ligne text-xs text-doux dark:border-ligne-sombre dark:text-doux-sombre">Libre</li><li class="grid aspect-square place-items-center rounded-xl border-2 border-dashed border-ligne text-xs text-doux dark:border-ligne-sombre dark:text-doux-sombre">Libre</li>
+      </ul>
+    </section>
+  </main>
+  <footer class="mx-auto max-w-6xl px-4 py-8 text-xs text-doux dark:text-doux-sombre">
+    Données : <a href="https://pokeapi.co" class="underline underline-offset-4">PokéAPI</a>. Maquette statique, direction 1 sur 3. Couleurs de type : valeurs ajustées pour le contraste (voir directions.md).
+  </footer>
+</body>
+<script>
+  // Bascule de thème (futur BoutonTheme, client) et étoiles de favoris : démonstration seulement.
+  const racine = document.documentElement;
+  const majTheme = () => {
+    const sombre = racine.classList.contains("dark");
+    document.querySelectorAll("[data-bouton-theme]").forEach((b) => {
+      b.setAttribute("aria-pressed", String(sombre));
+      b.setAttribute("aria-label", sombre ? "Passer au thème clair" : "Passer au thème sombre");
+    });
+  };
+  document.querySelectorAll("[data-bouton-theme]").forEach((b) => b.addEventListener("click", () => {
+    const sombre = racine.classList.toggle("dark");
+    try { localStorage.setItem("pokedex-theme", sombre ? "sombre" : "clair"); } catch (e) {}
+    majTheme();
+  }));
+  majTheme();
+  const compteur = () => {
+    const n = new Set([...document.querySelectorAll('[data-favori][aria-pressed="true"]')].map((b) => b.dataset.nom)).size;
+    document.querySelectorAll("[data-compteur-favoris]").forEach((c) => (c.textContent = n));
+  };
+  document.querySelectorAll("[data-favori]").forEach((b) => b.addEventListener("click", () => {
+    const actif = b.getAttribute("aria-pressed") !== "true";
+    document.querySelectorAll('[data-favori][data-nom="' + b.dataset.nom + '"]').forEach((x) => {
+      x.setAttribute("aria-pressed", String(actif));
+      x.setAttribute("aria-label", (actif ? "Retirer " : "Ajouter ") + x.dataset.nom + (actif ? " des favoris" : " aux favoris"));
+    });
+    compteur();
+  }));
+  compteur();
+</script>
+</html>
