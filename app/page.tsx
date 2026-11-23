@@ -6,8 +6,10 @@ import GrillePokemons from "@/components/GrillePokemons";
 import Pagination from "@/components/Pagination";
 import Icone from "@/components/Icone";
 import SqueletteGrille from "@/components/SqueletteGrille";
+import { nomFrancaisDepuisNom } from "@/lib/noms-fr";
 import { bornerPage, lireFiltres, PAR_PAGE, type ParametresRecherche } from "@/lib/parametres";
 import { recupererNomsParType, recupererPlusieurs, recupererTousLesNoms } from "@/lib/pokeapi";
+import { normaliser } from "@/lib/texte";
 
 type Props = {
   searchParams: Promise<ParametresRecherche>;
@@ -68,10 +70,13 @@ async function ZoneResultats({ searchParams }: Props) {
 async function Resultats({ searchParams }: Props) {
   const parametres = await searchParams;
   // ch. 9 — tout ce qui vient de l'adresse est validé (lib/parametres.ts, testé).
-  const { q, texte, type } = lireFiltres(parametres);
+  const { q, type } = lireFiltres(parametres);
   // Ordre des numéros conservé : aucune recherche ne trie par nom (clarification « Analyse »).
   let noms = type ? await recupererNomsParType(type) : await recupererTousLesNoms();
-  if (texte) noms = noms.filter((nom) => nom.includes(texte));
+  // Bonus FR-033 (clarification Q1) — recherche sur le nom français SEUL, accents et casse
+  // ignorés (« bulbi » → Bulbizarre ; « bulbasaur » → rien). Les noms filtrés restent ceux de l'API.
+  const recherche = normaliser(q);
+  if (recherche) noms = noms.filter((nom) => normaliser(nomFrancaisDepuisNom(nom)).includes(recherche));
   const { pageCourante, nombrePages } = bornerPage(parametres.page, noms.length);
   // Seuls les 24 Pokémon visibles sont chargés en détail.
   const visibles = noms.slice((pageCourante - 1) * PAR_PAGE, pageCourante * PAR_PAGE);
