@@ -10,7 +10,8 @@ import "./globals.css";
 const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
   variable: "--font-bricolage",
-  axes: ["opsz", "wdth"],
+  // T076 — axe wdth seul (numéros étroits) : sans opsz, le fichier de police est plus léger.
+  axes: ["wdth"],
 });
 
 export const metadata: Metadata = {

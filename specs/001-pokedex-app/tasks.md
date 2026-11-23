@@ -250,7 +250,7 @@ accessibilité complète.
 
 **Independent Test**: [quickstart.md › US7](./quickstart.md)
 
-- [ ] T075 [US7] Écrire `README.md` : description du projet, captures d'écran, lancement (`npm install`, `npm run dev`), déploiement, lien vers `docs/`
+- [X] T075 [US7] Écrire `README.md` : description du projet, captures d'écran, lancement (`npm install`, `npm run dev`), déploiement, lien vers `docs/`
 - [ ] T076 [US7] `npm run lint` et `npm run build` sans erreur ; `npm start` + Lighthouse (performance, accessibilité, bonnes pratiques, référencement) : chaque score > 90, sinon corriger (`next/image`, `loading="eager"`, cache, composants client) ; consigner les scores et le First Contentful Paint (cible < 1 s, SC-003) dans `docs/11-finitions.md`
 - [ ] T077 [US7] **Avec l'utilisateur** (action publique, son compte) : créer le dépôt GitHub, `git push`, importer le projet sur Vercel avec les réglages proposés ; noter l'adresse publique dans `README.md`
 - [ ] T078 [US7] Étape 18 : Lighthouse sur **l'adresse Vercel** (4 catégories > 90, SC-004), scores consignés dans `docs/11-finitions.md` ; tester le site en ligne sur un téléphone ; favoris et sacoche persistants en ligne ; remplir dans `docs/11-finitions.md` l'auto-évaluation des 8 critères de la grille (20 pts) avec la preuve de chacun ; vérifier que `docs/00` à `docs/11` sont complets

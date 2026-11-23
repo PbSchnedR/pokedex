@@ -42,7 +42,7 @@ export default function Pagination(props: Props) {
           Précédent
         </Link>
       ) : (
-        <span className={`${BOUTON} cursor-not-allowed bg-surface opacity-40 dark:bg-surface-sombre`}>Précédent</span>
+        <span aria-disabled="true" className={`${BOUTON} cursor-not-allowed bg-surface opacity-40 dark:bg-surface-sombre`}>Précédent</span>
       )}
 
       {/* Téléphone : le texte du cours. À partir de sm : les numéros de page. */}
@@ -75,7 +75,7 @@ export default function Pagination(props: Props) {
           Suivant
         </Link>
       ) : (
-        <span className={`${BOUTON} cursor-not-allowed bg-pokedex text-white opacity-40`}>Suivant</span>
+        <span aria-disabled="true" className={`${BOUTON} cursor-not-allowed bg-pokedex text-white opacity-40`}>Suivant</span>
       )}
     </nav>
   );
