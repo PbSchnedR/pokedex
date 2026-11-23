@@ -95,3 +95,20 @@
   `cacheComponents` : la page `/` est toujours pré-rendue en statique (`○ /` au build), et la
   console du navigateur reste vide en développement.
 - **Fichiers** : `app/layout.tsx`.
+
+## Complément de l'étape 7 : pages provisoires `/favoris` et `/sacoche`
+
+- **Point du cours** : ch. 6, exercice « Deux nouvelles pages » (`app/favoris/page.tsx` :
+  `<h1>Mes favoris</h1>`), « Titre et description des pages »
+  (`export const metadata = { title: "Favoris" }`) et liste de l'étape 7 (« La navigation entre
+  « Tous » et « Favoris » ne recharge pas la page »).
+- **Constat** : sans ces pages, le préchargement des liens de l'en-tête (`Link`) provoquait en
+  production une erreur 404 dans la console sur chaque page.
+- **Décision du manager** : créer la page du cours pour `/favoris` et une page de même forme
+  pour `/sacoche` (`<h1>Ma sacoche</h1>`, titre « Sacoche »). Elles seront remplacées aux étapes
+  15 et 16 ; leur `metadata` passera alors dans un `layout.tsx` serveur, puisque les pages
+  deviendront des composants client.
+- **Vérifié** (`npm start`) : onglets « Favoris · Pokédex » et « Sacoche · Pokédex », console
+  vide sur ces pages. Restent les 404 de préchargement des fiches `/pokemon/{nom}`, qui
+  disparaîtront à l'étape 11.
+- **Fichiers** : `app/favoris/page.tsx`, `app/sacoche/page.tsx`.

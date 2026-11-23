@@ -187,6 +187,7 @@ validé ([contracts/routes.md](./contracts/routes.md)).
 - [ ] T055 [P] [US4] Créer `components/CompteurFavoris.tsx` (client, sélecteur `etat.noms.length`) et l'afficher dans `components/EnTete.tsx` à côté du lien Favoris
 - [ ] T056 [P] [US4] Créer `lib/pokeapi-client.ts` : `chargerPokemon(nom)` pour le navigateur (404 → `null`, autre échec → erreur), réutilise `versPokemon`
 - [ ] T057 [US4] Créer `app/favoris/page.tsx` (`"use client"`, version du ch. 9 avec `useEffect` + annulation) : états chargement, erreur, liste vide (« Aucun favori pour le moment… »), grille ; créer `app/favoris/layout.tsx` (serveur) avec `metadata = { title: "Favoris" }` ([contracts/routes.md](./contracts/routes.md))
+  - *Note (décision du manager, 2026-11-23)* : une page provisoire `app/favoris/page.tsx` (code du ch. 6 : `<h1>Mes favoris</h1>` + `metadata`) existe depuis le complément de l'étape 7 ; elle est remplacée ici et sa `metadata` passe dans `app/favoris/layout.tsx`, puisque la page devient client.
 - [ ] T058 [US4] Étape 15 : rechargement, fermeture du navigateur, aucune erreur d'hydratation ; documenter store, sélecteurs, `persist`, piège de l'hydratation, Context vs Zustand dans `docs/09-interactivite-avancee.md`
 
 ⏸ **STOP étape 15**
@@ -207,6 +208,7 @@ confirmé, persistance.
 - [ ] T061 [P] [US5] Créer `components/BoutonSacoche.tsx` : « Ajouter à la sacoche » / « Retirer de la sacoche » sur la fiche ; désactivé quand la sacoche est pleine avec le message « Sacoche pleine (6/6) » (dérivé `equipe.length >= TAILLE_SACOCHE`) ; l'intégrer dans `app/pokemon/[nom]/page.tsx`
 - [ ] T062 [P] [US5] Créer `components/IndicateurSacoche.tsx` : six pastilles pleines ou vides, sélecteur sur `etat.equipe.length`, lien vers `/sacoche` ; l'afficher dans `components/EnTete.tsx`
 - [ ] T063 [US5] Créer `app/sacoche/page.tsx` (`"use client"`) : membres avec image, surnom modifiable (`<input maxLength={12}>` avec libellé), types et bouton retirer ; emplacements libres **dessinés** et menant à `/` ; créer `app/sacoche/layout.tsx` avec `metadata = { title: "Sacoche" }`
+  - *Note (décision du manager, 2026-11-23)* : une page provisoire `app/sacoche/page.tsx` (`<h1>Ma sacoche</h1>` + `metadata`) existe depuis le complément de l'étape 7 ; elle est remplacée ici et sa `metadata` passe dans `app/sacoche/layout.tsx`, puisque la page devient client.
 - [ ] T064 [P] [US5] Créer `components/BoutonVider.tsx` : affiché seulement si la sacoche contient au moins 1 Pokémon ; 1er clic « Confirmer ? », 2e clic vide ; état « à confirmer » dans un `useState` (pas dans le store) ; l'intégrer dans `app/sacoche/page.tsx`
 - [ ] T065 [US5] Étape 16 : 7ᵉ ajout refusé, doublon refusé, surnom persistant, rechargement sans erreur d'hydratation ; documenter « la règle vit dans le store », `Pick`, valeurs dérivées dans `docs/09-interactivite-avancee.md`
 
@@ -234,6 +236,7 @@ accessibilité complète.
 - [ ] T071 [US6] Créer `app/api/aleatoire/route.ts` selon [contracts/api-aleatoire.md](./contracts/api-aleatoire.md) : `await connection()`, id aléatoire dans 1–`TOTAL_POKEMONS`, 200 avec le `Pokemon`, 404 `{ erreur: "Pokémon introuvable" }`
 - [ ] T072 [US6] Créer `components/BoutonHasard.tsx` : `fetch("/api/aleatoire")`, `router.push("/pokemon/" + nom)`, désactivé et « Tirage… » pendant l'appel, `finally` ; l'ajouter dans `components/EnTete.tsx`
 - [ ] T073 [US6] Passer la liste de contrôle d'accessibilité du ch. 11 sur toutes les pages : clavier (Tab, Entrée), `focus-visible` partout, `alt` et libellés, un seul `<h1>` puis `<h2>` dans l'ordre, contraste des badges, `<button>` pour les actions et lien pour la navigation, `motion-reduce` ; corriger dans `app/**` et `components/**`, ajuster `--color-type-*` dans `app/globals.css` si un badge manque de contraste
+  - *Note (décision du manager, 2026-11-23)* : `app/error.tsx` : titre en `<h1>` « Le Pokédex ne répond plus », texte français générique pour l'utilisateur, détail technique (`error.message`) non affiché.
 - [ ] T074 [US6] Documenter les hooks (règles, ordre d'appel, choix de chaque hook, pourquoi pas `useEffect` pour une saisie) dans `docs/10-hooks.md` ; Route Handler, `connection()`, variables d'environnement (`.env.local` jamais commité, `NEXT_PUBLIC_`) et accessibilité dans `docs/11-finitions.md`
 
 **Checkpoint**: critère « Qualité de l'interface » prêt pour l'audit.
