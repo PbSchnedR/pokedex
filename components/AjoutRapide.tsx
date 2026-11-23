@@ -1,7 +1,6 @@
 "use client";
 
 import { TAILLE_SACOCHE, useSacoche, type Membre } from "@/stores/sacoche";
-import type { Pokemon } from "@/types/pokemon";
 import Icone from "./Icone";
 
 // ch. 9 — la carte (serveur) ne transmet que les champs qu'un membre de la sacoche garde : des
@@ -32,9 +31,9 @@ export default function AjoutRapide({ pokemon, className = "" }: Props) {
       aria-disabled={indisponible}
       onClick={() => {
         if (indisponible) return;
-        // `ajouter` est typée sur Pokemon, mais le store ne lit que id, nom, image et types
-        // (stores/sacoche.ts) : les autres champs ne sont pas transmis à ce composant client.
-        ajouter(pokemon as Pokemon);
+        // `ajouter` ne demande que id, nom, image et types (Pick dans stores/sacoche.ts) : le reste
+        // du Pokémon (statistiques…) ne traverse pas la frontière serveur → client (ch. 6).
+        ajouter(pokemon);
       }}
       aria-label={libelle}
       title={libelle}

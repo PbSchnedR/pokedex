@@ -12,7 +12,7 @@ export type Membre = Pick<Pokemon, "id" | "nom" | "image" | "types"> & { surnom:
 
 type EtatSacoche = {
   equipe: Membre[];
-  ajouter: (pokemon: Pokemon) => void;
+  ajouter: (pokemon: Pick<Pokemon, "id" | "nom" | "image" | "types">) => void; // type = exactement ce que l'action lit
   retirer: (id: number) => void;
   renommer: (id: number, surnom: string) => void;
   vider: () => void;
