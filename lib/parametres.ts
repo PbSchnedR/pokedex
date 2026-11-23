@@ -31,3 +31,19 @@ export function bornerPage(page: Valeur, nombreResultats: number) {
   const pageCourante = Math.min(Math.max(1, demandee), nombrePages);
   return { pageCourante, nombrePages };
 }
+
+// Bonus FR-039 — `/combat?adversaire=25,6,94` (contracts/routes.md) : 1 à 6 numéros entiers,
+// uniques, entre 1 et 1 025. Tout écart rend la liste entière invalide (`null`) : la page tire
+// alors une nouvelle sacoche adverse, plutôt que de combattre une sacoche à moitié devinée.
+export const TAILLE_MAX_ADVERSAIRE = 6;
+export const NUMERO_MAX = 1025;
+
+export function lireAdversaire(valeur: Valeur): number[] | null {
+  const morceaux = premiere(valeur).split(",");
+  if (morceaux.length > TAILLE_MAX_ADVERSAIRE) return null;
+  // /^\d+$/ avant Number : Number accepte aussi "", " 7", "1e2", "0x10" ou "2.0".
+  if (!morceaux.every((morceau) => /^\d+$/.test(morceau))) return null;
+  const ids = morceaux.map(Number);
+  if (ids.some((id) => id < 1 || id > NUMERO_MAX)) return null;
+  return new Set(ids).size === ids.length ? ids : null;
+}

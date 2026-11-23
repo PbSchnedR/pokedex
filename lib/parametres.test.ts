@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { bornerPage, lireFiltres } from "@/lib/parametres";
+import { bornerPage, lireAdversaire, lireFiltres } from "@/lib/parametres";
 
 describe("lireFiltres (ch. 9 — l'adresse est non fiable)", () => {
   it("type connu gardé", () => {
@@ -57,5 +57,48 @@ describe("bornerPage (ch. 9 — Math.ceil et bornes)", () => {
 
   it("42 résultats → 2 pages (exemple du cours)", () => {
     expect(bornerPage(undefined, 42).nombrePages).toBe(2);
+  });
+});
+
+describe("lireAdversaire (bonus FR-039 — ?adversaire= est non fiable)", () => {
+  it("liste valide → numéros dans l'ordre", () => {
+    expect(lireAdversaire("25,6,94")).toEqual([25, 6, 94]);
+  });
+
+  it("un seul numéro, et les bornes 1 et 1 025 acceptées", () => {
+    expect(lireAdversaire("1")).toEqual([1]);
+    expect(lireAdversaire("1025,1")).toEqual([1025, 1]);
+  });
+
+  it("six numéros acceptés, sept refusés", () => {
+    expect(lireAdversaire("1,2,3,4,5,6")).toEqual([1, 2, 3, 4, 5, 6]);
+    expect(lireAdversaire("1,2,3,4,5,6,7")).toBeNull();
+  });
+
+  it("absent ou vide → null", () => {
+    expect(lireAdversaire(undefined)).toBeNull();
+    expect(lireAdversaire("")).toBeNull();
+    expect(lireAdversaire([])).toBeNull();
+  });
+
+  it("hors bornes → null : 0, 1026, -3", () => {
+    for (const valeur of ["0", "1026", "-3", "25,0"]) {
+      expect(lireAdversaire(valeur)).toBeNull();
+    }
+  });
+
+  it("pas un entier écrit en chiffres → null : abc, 2.5, 1e2, 0x10, espace, virgule en trop", () => {
+    for (const valeur of ["abc", "2.5", "1e2", "0x10", " 7", "25, 6", "25,,6", "25,", "Infinity"]) {
+      expect(lireAdversaire(valeur)).toBeNull();
+    }
+  });
+
+  it("doublon → null", () => {
+    expect(lireAdversaire("25,6,25")).toBeNull();
+  });
+
+  it("paramètre répété (?adversaire=a&adversaire=b) → le premier, sans planter", () => {
+    expect(lireAdversaire(["25,6", "94"])).toEqual([25, 6]);
+    expect(lireAdversaire(["abc", "94"])).toBeNull();
   });
 });
