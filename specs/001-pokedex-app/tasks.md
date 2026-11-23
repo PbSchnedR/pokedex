@@ -45,7 +45,7 @@ sauf mention contraire.
 
 ⏸ **STOP étape 0**
 
-- [ ] T008 [P] Étape 1, **hors du projet** (ex. `../pokedex-labo/labo.mjs`) : appeler `/pokemon?limit=10`, récupérer les 10 détails avec `Promise.all`, afficher `#001 bulbasaur — grass, poison`, provoquer une 404 et l'attraper en testant `reponse.ok` ; consigner les enseignements (`const`/`let`, `===`, `??`, `padStart`, `async`/`await`, `fetch` ne rejette pas sur 404) dans `docs/02-javascript-moderne.md`
+- [X] T008 [P] Étape 1, **hors du projet** (ex. `../pokedex-labo/labo.mjs`) : appeler `/pokemon?limit=10`, récupérer les 10 détails avec `Promise.all`, afficher `#001 bulbasaur — grass, poison`, provoquer une 404 et l'attraper en testant `reponse.ok` ; consigner les enseignements (`const`/`let`, `===`, `??`, `padStart`, `async`/`await`, `fetch` ne rejette pas sur 404) dans `docs/02-javascript-moderne.md`
 
 ⏸ **STOP étape 1**
 
