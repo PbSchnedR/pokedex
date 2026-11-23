@@ -289,3 +289,80 @@ simulation en JavaScript), focus relevé après chaque Tab, zones capturées et 
 - **Fichiers** : `lib/comparaison.ts` (`suggerer`, `lienComparaison`, `valeurChoix`),
   `lib/comparaison.test.ts` (+9 tests), `app/comparer/page.tsx`,
   `components/TableauComparaison.tsx`, `components/ChoixComparaison.tsx`.
+
+## Bonus — quiz silhouettes (T094, FR-038, research R11)
+
+### Le jeu : silhouette, saisie libre, révélation
+
+- **Point du cours** : « Pour aller plus loin » — « Un quiz « Qui est ce Pokémon ? » à partir de
+  la silhouette (`brightness-0` en Tailwind) ». Forme du jeu décidée en clarification (Q3 de la
+  spec : saisie libre du nom français, accents et majuscules ignorés) et au plan (R11).
+- **Choix** : `/quiz` = page serveur (titre `<h1>` « Qui est ce Pokémon ? » et consigne) qui rend
+  un seul îlot client, `components/Quiz.tsx`. Le tirage appelle notre Route Handler
+  `fetch("/api/aleatoire")` (ch. 11, contracts/api-aleatoire.md), au montage puis à chaque
+  « Suivant ». La silhouette est l'illustration elle-même avec `brightness-0`, avec
+  `alt="Silhouette mystère"` (le nom n'est ni dans l'`alt` ni à l'écran ; le numéro est masqué :
+  « #??? »). Champ libre avec libellé visible « Nom du Pokémon (en français) », bouton
+  « Valider » (`<form>` : la touche Entrée valide aussi).
+- **Révélation** : deux calques de la même image superposés (silhouette, puis couleur) ; seule
+  leur **opacité** change, en 300 ms, `motion-reduce:transition-none` (ch. 5 : < 0,5 s,
+  `transform`/`opacity` seulement ; `filter` n'est jamais animé). La même adresse d'image sert aux
+  deux calques : un seul téléchargement. Une fois révélé, l'`alt` de la silhouette devient vide et
+  celui de l'image en couleur devient le nom français. Une `key` par Pokémon remonte les calques
+  au tirage suivant : la nouvelle image part masquée sans rejouer la transition.
+- **Verdict annoncé** : « Juste ! C'est bien Salamèche. » / « Faux, c'était Salamèche. » dans une
+  zone `aria-live="polite"` reliée au champ (`aria-describedby`) ; le verdict est porté par le
+  texte, pas par une couleur (ch. 11).
+- **Clavier (ch. 11)** : après la révélation, le focus va sur « Suivant » ; à la question
+  suivante, il revient dans le champ ; après une panne, sur « Réessayer ». Sans cela, le bouton
+  cliqué disparaît et le focus tombe sur `<body>`. Au premier affichage, le focus n'est pas
+  déplacé (pas de clavier virtuel qui s'ouvre tout seul sur mobile).
+- **États** : chargement (cadre pulsé + « Tirage d'un Pokémon… », `motion-reduce:animate-none`) ;
+  panne de `/api/aleatoire` (tout statut non 2xx) → « Impossible de tirer un Pokémon au sort. » +
+  « Réessayer » (`role="alert"`). Premier tirage dans un `useEffect` avec annulation (ch. 4),
+  les suivants dans le gestionnaire de clic.
+- **`metadata`** : `app/quiz/layout.tsx` (« Quiz » → onglet « Quiz · Pokédex »), comme Combat.
+- **Alternatives écartées** : choix parmi 4 propositions (écarté en clarification Q3) ; filtre
+  CSS animé de `brightness(0)` à `brightness(1)` (interdit par le ch. 5) ; masquer l'image par
+  `mask-image` (même résultat, moins lisible que la classe du cours).
+- **Fichiers** : `app/quiz/page.tsx`, `app/quiz/layout.tsx`, `components/Quiz.tsx`.
+
+### Vérification de la réponse : `verifierReponse` (fonction pure testée)
+
+- **Point du cours / spec** : FR-038 (« salameche » = « Salamèche », réponse vide refusée) ;
+  Q-3 / R13 (Vitest sur les fonctions pures).
+- **Choix** : `verifierReponse(saisie, nomAttendu)` rend `"vide"`, `"juste"` ou `"faux"`, en
+  comparant `normaliser(saisie) === normaliser(nomAttendu)` (`lib/texte.ts`). Le nom attendu est
+  `nomFrancais(pokemon.id, pokemon.nom)` (`lib/noms-fr.ts`, module partagé, non modifié). Une
+  saisie vide ou faite d'espaces est refusée par un message (« Écrivez un nom avant de
+  valider. ») et ne révèle pas le Pokémon. Le nom anglais n'est pas accepté (Q3 : nom français).
+- **Tests** (`lib/quiz.test.ts`, 5) : « SALAMECHE » juste pour Salamèche ; accents dans les deux
+  sens (« evoli » / « Évoli ») ; espaces en début et en fin ; vide et espaces seuls refusés ;
+  « Carapuce », « salamech » et « charmander » faux.
+- **Fichiers** : `lib/quiz.ts`, `lib/quiz.test.ts`.
+
+### Vérifié (serveur de production, Chrome sans interface, 2026-11-23)
+
+Scénario quickstart (US8 › Quiz) rejoué deux fois, 375 px sombre et 1 280 px clair, avec un
+script CDP. Pour tester Salamèche, la réponse de `/api/aleatoire` est remplacée dans le navigateur
+par Salamèche (données réelles de la PokéAPI) ; les deux dernières étapes utilisent le vrai tirage.
+
+- Silhouette noire (`filter: brightness(0)`), `alt` « Silhouette mystère », numéro « #??? » ;
+  onglet « Quiz · Pokédex », un seul `<h1>`.
+- « Valider » sur un champ vide → « Écrivez un nom avant de valider. », rien n'est révélé.
+- « ␣␣SALAMECHE␣ » → « Juste ! C'est bien Salamèche. », image en couleur (`alt` « Salamèche »),
+  « #004 », focus sur « Suivant ».
+- « Suivant » → nouvelle silhouette, champ vidé, focus dans le champ ; « Carapuce » → « Faux,
+  c'était Salamèche. », révélé aussi.
+- Réponse 500 simulée → message + « Réessayer » (focus sur ce bouton) → vrai tirage : silhouette,
+  puis « zzz » → « Faux, c'était Têtampoule. » (375 px) et « Faux, c'était Superdofin. »
+  (1 280 px).
+- Aucun défilement horizontal (`scrollWidth = clientWidth`) ; console sans erreur, hormis la
+  ligne « 500 » de la panne volontairement simulée.
+
+### Intégration restante (à la fusion, T095)
+
+- Lien « Quiz » dans `components/EnTete.tsx` (via `LienNav`), hors du périmètre de cette branche.
+- En thème sombre, la silhouette noire est posée sur un fond gris clair dégradé
+  (`dark:from-doux-sombre/70`) pour rester visible ; ce fond est un choix d'interface non imposé,
+  soumis à validation.
