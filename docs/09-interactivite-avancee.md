@@ -328,8 +328,10 @@
 - **Intégration minimale** dans `app/sacoche/page.tsx` : le contenu des cartes (image, numéro,
   surnom, types, retirer) reste écrit dans la page et est passé par `rendreMembre` ; les
   emplacements libres sont passés en `children` ; `BoutonVider` et le compteur n'ont pas bougé.
-- **Écart** : la consigne demandait les icônes du composant `Icone`, qui n'a pas de flèche, et
-  `components/Icone.tsx` était hors du périmètre de ce bonus → caractères « ↑ » / « ↓ »
-  décoratifs en attendant (question posée au manager).
+- **Icônes (décision Q-1, option A)** : `Icone` n'avait pas de flèche ; ajout de `flecheHaut` et
+  `flecheBas`, tracés exacts de Phosphor « regular » (`arrow-up`, `arrow-down`, licence MIT),
+  repris du paquet `@phosphor-icons/core@2.1.1` (`assets/regular/*.svg`) et recoupés avec le dépôt
+  GitHub `phosphor-icons/core` ; les tracés `x` et `star` du même paquet sont identiques à ceux
+  déjà présents, donc même jeu et même style. Toujours `aria-hidden` (le texte reste le libellé).
 - **Fichiers** : `stores/sacoche.ts`, `stores/sacoche.test.ts`,
-  `components/ListeSacocheReordonnable.tsx`, `app/sacoche/page.tsx`.
+  `components/ListeSacocheReordonnable.tsx`, `components/Icone.tsx`, `app/sacoche/page.tsx`.

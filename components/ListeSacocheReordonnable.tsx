@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { CSSProperties, DragEvent, ReactNode } from "react";
+import Icone from "@/components/Icone";
 import { teinteType } from "@/lib/types";
 import { useSacoche, type Membre } from "@/stores/sacoche";
 
@@ -124,14 +125,13 @@ export default function ListeSacocheReordonnable({
                       aFocaliser.current = { id: membre.id, sens };
                       reordonner(i, vers);
                     }}
-                    className="grid size-10 place-items-center rounded-full bg-fond text-lg font-bold text-doux
+                    className="grid size-10 place-items-center rounded-full bg-fond text-doux
                                transition-transform hover:text-pokedex active:scale-90 focus-visible:outline-2
                                focus-visible:outline-offset-2 focus-visible:outline-pokedex disabled:opacity-30
                                disabled:hover:text-doux motion-reduce:transition-none dark:bg-fond-sombre
                                dark:text-doux-sombre dark:hover:text-pokedex-sombre dark:focus-visible:outline-pokedex-sombre"
                   >
-                    {/* Pas de flèche dans Icone (fichier hors périmètre de ce bonus) : caractère décoratif. */}
-                    <span aria-hidden="true">{sens === "monter" ? "↑" : "↓"}</span>
+                    <Icone nom={sens === "monter" ? "flecheHaut" : "flecheBas"} className="size-4" />
                     <span className="sr-only">
                       {sens === "monter" ? "Monter" : "Descendre"} {nomAffiche(membre)}
                     </span>
