@@ -23,15 +23,18 @@ const melange = (avant, fond, alpha) =>
 const C = {
   coque: "#d2232f", // accent du cours
   coqueClaire: "#da2c38", // zone la plus claire du dégradé sous un texte (le reflet blanc ne passe pas sous le texte)
-  coqueFoncee: "#a9161f", // bas du dégradé
+  coqueFoncee: "#b01a25", // bas du dégradé (--color-coque-bas)
   gravure: "#ffffff", // texte imprimé sur la coque
   touche: "#f6efe3", // touche ivoire
   toucheTexte: "#3a1d20",
   toucheActive: "#2d1f22", // touche enfoncée (page courante)
-  toucheActiveTexte: "#fff6ea",
+  toucheActiveTexte: "#ffffff",
   voyant: "#ffc53d", // segment allumé de la touche courante
   toucheSombre: "#2d1f22", // Au hasard, flèches
   cadre: "#231a1c", // pourtour fumé de l'écran
+  fenetre: "#1a1112", // fenêtre des mini-afficheurs et piste de l'interrupteur
+  segmentEteint: "#4a3720",
+  toucheBas: "#ece3d3", // bas du dégradé de la touche ivoire (pire cas pour son libellé)
   blanc: "#ffffff",
 };
 
@@ -74,7 +77,10 @@ const LIGNES = [
   [C.blanc, C.coque, 3, "Anneau de focus blanc sur la coque"],
   [C.blanc, C.coqueClaire, 3, "Anneau de focus blanc sur la zone claire de la coque"],
   [C.blanc, C.cadre, 3, "Anneau de focus blanc sur le cadre fumé"],
-  [C.toucheTexte, C.voyant, 4.5, "Afficheur des flèches : texte sur LCD ambre"],
+  [C.toucheTexte, C.toucheBas, 4.5, "Libellé d'une touche ivoire, bas du dégradé"],
+  [C.voyant, C.fenetre, 4.5, "Chiffres ambre des mini-afficheurs (3/43, #025, compteurs)"],
+  [C.voyant, C.segmentEteint, 3, "Segment de sacoche allumé contre segment éteint"],
+  [C.touche, C.fenetre, 3, "Curseur ivoire de l'interrupteur dans sa piste"],
   [E.encre, E.fond, 4.5, "Texte sur l'écran clair"],
   [E.encre, E.trame, 4.5, "Texte sur une ligne de trame (clair)"],
   [E.doux, E.fond, 4.5, "Texte secondaire sur l'écran clair"],
@@ -114,8 +120,9 @@ for (const [type, couleur] of Object.entries(TYPES)) {
 }
 // Jauge segmentée : segment plein (teinte ; éclaircie en sombre) contre segment vide.
 console.log("\nJauge : segment plein contre segment vide (seuil 3, composant graphique) :");
-const railClair = melange(E.encre, E.surface, 0.12);
-const railSombre = melange(E.encreSombre, E.surfaceSombre, 0.14);
+// Les jauges de la fiche sont posées directement sur l'écran (fond), pas sur une fiche (surface).
+const railClair = melange(E.encre, E.fond, 0.07);
+const railSombre = melange(E.encreSombre, E.fondSombre, 0.14);
 for (const [type, couleur] of Object.entries(TYPES)) {
   const clair = ratio(couleur, railClair);
   const sombre = ratio(melange("#ffffff", couleur, 0.4), railSombre);
