@@ -1,36 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mon Pokédex
 
-## Getting Started
+Application web qui présente les 1 025 Pokémon à partir de la [PokéAPI](https://pokeapi.co),
+construite en suivant le cours « Pokédex — 35 heures » (Next.js, React, TypeScript, Tailwind CSS,
+Zustand).
 
-First, run the development server:
+![Grille du Pokédex en thème clair](docs/captures/accueil-clair.png)
+
+## Fonctionnalités
+
+- **Grille paginée** : 24 Pokémon par page, illustration officielle, numéro `#025`, nom et types
+  en couleur ; chaque carte prend la teinte de son type principal.
+- **Fiche détaillée** (`/pokemon/pikachu`) : grande illustration, taille, poids, statistiques
+  de base en barres, chaîne d'évolution complète (branches comprises). Les 151 premières fiches
+  sont construites à l'avance.
+- **Recherche et filtre par type**, rangés dans l'adresse (`/?q=pi&type=electric&page=2`) :
+  le lien se partage et le bouton « Précédent » fonctionne. Touche `/` pour aller dans la
+  recherche.
+- **Favoris** (étoile sur chaque carte et chaque fiche) et **sacoche** de 6 Pokémon au plus, sans
+  doublon, avec un surnom pour chacun ; les deux sont conservés dans le navigateur.
+- **Bouton « Au hasard »** (point d'API `/api/aleatoire`), **thème sombre** mémorisé, interface
+  utilisable entièrement au clavier, états de chargement, d'erreur et page 404 soignés.
+
+| Fiche (thème sombre, téléphone) | Sacoche |
+|---|---|
+| ![Fiche de Pikachu en thème sombre](docs/captures/fiche-sombre-375.png) | ![Sacoche avec quatre membres et deux emplacements libres](docs/captures/sacoche-clair.png) |
+
+## Lancer le projet
+
+Prérequis : Node.js 20 ou plus récent (LTS), npm.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev      # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Autres commandes :
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run lint     # vérification du code (ESLint)
+npm test         # tests des fonctions pures (Vitest)
+npm run build    # version de production
+npm start        # lance la version de production en local
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Aucune variable d'environnement n'est nécessaire : la PokéAPI est publique et sans clé.
 
-## Learn More
+## Déploiement
 
-To learn more about Next.js, take a look at the following resources:
+Le projet est prévu pour [Vercel](https://vercel.com) : importer le dépôt GitHub dans Vercel,
+garder les réglages proposés pour Next.js, puis chaque `git push` redéploie le site.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Adresse publique : *à compléter après le déploiement.*
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Structure
 
-## Deploy on Vercel
+```text
+app/          pages et layouts (App Router), Route Handler app/api/aleatoire
+components/   composants (serveur par défaut, client seulement si nécessaire)
+hooks/        hooks personnalisés (usePokemons, useRappelTemporise, useRaccourci)
+lib/          accès aux données (pokeapi.ts, conversion.ts), table des types, validation de l'adresse
+stores/       stores Zustand (favoris, sacoche)
+types/        types TypeScript (type de l'API et type de l'application)
+docs/         justification de chaque choix, chapitre par chapitre
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Documentation des choix
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Chaque choix est expliqué et relié au chapitre du cours qu'il applique, avec les alternatives
+écartées, dans [`docs/`](docs/) :
+
+| Chapitre | Document |
+|---|---|
+| 0 — Démarrage | [docs/00-demarrage.md](docs/00-demarrage.md) |
+| 1 — Rappels web | [docs/01-rappels-web.md](docs/01-rappels-web.md) |
+| 2 — JavaScript moderne | [docs/02-javascript-moderne.md](docs/02-javascript-moderne.md) |
+| 3 — TypeScript | [docs/03-typescript.md](docs/03-typescript.md) |
+| 4 — React | [docs/04-react.md](docs/04-react.md) |
+| 5 — Tailwind CSS et interface | [docs/05-tailwind-interface.md](docs/05-tailwind-interface.md) |
+| 6 — Next.js | [docs/06-nextjs.md](docs/06-nextjs.md) |
+| 7 — Appels API | [docs/07-appels-api.md](docs/07-appels-api.md) |
+| 8 — Routes dynamiques | [docs/08-routes-dynamiques.md](docs/08-routes-dynamiques.md) |
+| 9 — Interactivité avancée | [docs/09-interactivite-avancee.md](docs/09-interactivite-avancee.md) |
+| 10 — Les hooks en profondeur | [docs/10-hooks.md](docs/10-hooks.md) |
+| 11 — Finitions | [docs/11-finitions.md](docs/11-finitions.md) |
+
+## Crédits
+
+- Données et illustrations : [PokéAPI](https://pokeapi.co). Pokémon est une marque de Nintendo,
+  Creatures et Game Freak ; ce projet est un exercice de cours sans but commercial.
+- Icônes : [Phosphor Icons](https://phosphoricons.com) (licence MIT), tracés copiés dans
+  `components/Icone.tsx`.
+- Police : Bricolage Grotesque (Google Fonts, licence SIL Open Font License), servie par
+  `next/font`.

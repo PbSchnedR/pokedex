@@ -103,6 +103,74 @@ simulation en JavaScript), focus relevé après chaque Tab, zones capturées et 
 - **Fichiers** : `app/error.tsx`, `components/CartePokemon.tsx`, `components/GrillePokemons.tsx`,
   `app/pokemon/[nom]/page.tsx`, `app/sacoche/page.tsx`, `components/PiedDePage.tsx`.
 
+## Performance : Lighthouse en production (T076)
+
+- **Point du cours** : ch. 11, « Performance » — audit sur la version de production
+  (`npm run build` puis `npm start`), viser plus de 90 dans chaque catégorie ; leviers :
+  `next/image`, `loading="eager"` sur la grande image de la fiche, le cache, peu de composants
+  client.
+- **Méthode** : `npx lighthouse@12` (12.8.2, outil lancé à la demande, **pas** ajouté à
+  `package.json`), Chrome sans interface, `npm start` sur un build neuf, 4 pages : `/`,
+  `/pokemon/pikachu`, `/favoris`, `/sacoche`. Profil **mobile** par défaut de Lighthouse (réseau
+  « 4G lent » simulé, processeur ralenti ×4) répété 4 fois, puis profil **ordinateur**
+  (`--preset=desktop`) une fois.
+
+### Résultats
+
+Accessibilité, bonnes pratiques et référencement : **100** sur les 4 pages, dans toutes les
+mesures retenues ci-dessous.
+
+| Page | Ordinateur : perf. / FCP / LCP | Mobile : perf. sur 4 mesures | Mobile : FCP | Mobile : LCP |
+|---|---|---|---|---|
+| `/` | **98** / 0,3 s / 1,1 s | 76 · 76 · 84 · 88 | 0,9 s | 3,6 – 4,2 s |
+| `/pokemon/pikachu` | **100** / 0,2 s / 0,7 s | 89 · 78 · 95 · 92 | 0,8 s | 2,8 – 3,2 s |
+| `/favoris` | **100** / 0,2 s / 0,6 s | 81 · 78 · 89 · 92 | 0,8 s | 2,6 – 2,8 s |
+| `/sacoche` | **100** / 0,2 s / 0,6 s | 95 · 78 · 96 · 84 | 0,8 – 1,0 s | 2,5 – 3,1 s |
+
+- **First Contentful Paint** (cible SC-003 : < 1 s) : 0,2 – 0,3 s sur ordinateur, 0,8 – 1,0 s en
+  mobile simulé.
+- **Ordinateur** : objectif atteint partout (> 90 dans les 4 catégories).
+- **Mobile** : objectif **non atteint de façon stable** en performance. Les mesures varient
+  beaucoup d'une passe à l'autre : l'indice de puissance que Lighthouse mesure sur la machine
+  (`benchmarkIndex`) est allé de 496 à 2 120 pendant ces passes (d'autres travaux tournaient sur
+  le poste), ce qui fait varier le temps de blocage (TBT) de 50 à 730 ms pour un même code.
+  Le point qui reste stable est le **LCP de l'accueil (3,6 à 4,2 s)** : l'élément LCP est la
+  1re image de la grille, qui arrive dans la zone `<Suspense>` diffusée après la coque ; Lighthouse
+  attribue l'essentiel du temps à un « délai d'affichage » (plus de 3 s), pas au téléchargement de
+  l'image (9 ms observés).
+
+### Ce qui a été changé d'après la mesure
+
+1. **Image LCP chargée en différé** (audit `lcp-lazy-loaded` en échec à la première mesure) : les
+   **6 premières cartes de l'accueil** passent en `loading="eager"` (prop `prioritaires` de
+   `GrillePokemons`, 0 par défaut, 6 sur l'accueil : une rangée sur grand écran, trois sur
+   téléphone). C'est la décision sur l'avertissement `loading="eager"` noté à l'étape 5–6 :
+   l'audit est désormais réussi ; l'effet sur la durée du LCP mobile est faible (le délai est
+   ailleurs, voir ci-dessus). Les grilles de la fiche (évolutions) et des favoris restent en
+   chargement différé. L'ajustement « opt-in » (6 sur l'accueil seulement) a été fait après les
+   passes v4 ; la passe v5 l'inclut.
+2. **`sizes`** sur l'image des cartes (`(min-width: 1024px) 160px, (min-width: 640px) 30vw,
+   45vw`) : le navigateur choisit une taille d'image proche de l'affichage (audit
+   `uses-responsive-images`).
+3. **Police plus légère** : Bricolage Grotesque chargée avec l'axe `wdth` seul (sans `opsz`) :
+   fichier de **129 Kio à 77 Kio**. Les numéros étroits (signature de la direction) sont gardés.
+4. **Contraste en accessibilité** (score 96 à la première mesure, audit `color-contrast`) : les
+   boutons « Précédent » / « Suivant » inactifs de la pagination (`<span>` estompé, code du cours)
+   portent maintenant `aria-disabled="true"`, ce qui les signale comme inactifs aux technologies
+   d'assistance ; l'audit passe (accessibilité 100).
+
+### Pistes non appliquées (au-delà du socle, à décider)
+
+- Réduire le JavaScript côté navigateur sur l'accueil (24 boutons « favori » client, un par
+  carte), par exemple en ne les hydratant qu'à l'approche de l'écran : modifie la structure du
+  cours (ch. 9).
+- Pré-rendre la 1re page de l'accueil sans `searchParams` pour sortir la grille de la zone
+  diffusée : modifie la structure du ch. 9 (état dans l'adresse lu sous `<Suspense>`).
+- **Mesurer en ligne** (T077, critère SC-004) : sur Vercel, le serveur et le réseau ne sont plus
+  ceux du poste ; c'est cette mesure qui compte pour la grille.
+- **Fichiers** : `components/CartePokemon.tsx`, `components/GrillePokemons.tsx`, `app/page.tsx`,
+  `app/layout.tsx`, `components/Pagination.tsx`.
+
 ## Bonus — combat de sacoches
 
 ### Règle de combat (FR-039, research R10)

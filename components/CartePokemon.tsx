@@ -10,7 +10,15 @@ import BoutonFavori from "./BoutonFavori";
 // Composant serveur. Direction « Album à compléter » (T012) : une vignette au cadre blanc.
 // ch. 11 — niveau de titre réglable : <h2> dans une grille de page, <h3> sous la section
 // « Évolutions » (<h2>) de la fiche, pour garder des titres dans l'ordre.
-export default function CartePokemon({ pokemon, titre: Titre = "h2" }: { pokemon: Pokemon; titre?: "h2" | "h3" }) {
+export default function CartePokemon({
+  pokemon,
+  titre: Titre = "h2",
+  prioritaire = false,
+}: {
+  pokemon: Pokemon;
+  titre?: "h2" | "h3";
+  prioritaire?: boolean;
+}) {
   const chiffres = String(pokemon.id).padStart(3, "0");
   const numero = `#${chiffres}`;
   // ch. 5 — la teinte du type principal passe par une variable CSS locale, lue par les classes.
@@ -44,6 +52,10 @@ export default function CartePokemon({ pokemon, titre: Titre = "h2" }: { pokemon
             alt={pokemon.nomFr}
             width={160}
             height={160}
+            // ch. 11 — mesure Lighthouse (T076) : l'image LCP de la grille était chargée en différé.
+            // Les premières cartes, visibles sans défiler, sont chargées tout de suite.
+            loading={prioritaire ? "eager" : "lazy"}
+            sizes="(min-width: 1024px) 160px, (min-width: 640px) 30vw, 45vw"
             className="relative mx-auto size-full object-contain p-4 drop-shadow-lg transition-transform duration-300 ease-out
                        group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
           />

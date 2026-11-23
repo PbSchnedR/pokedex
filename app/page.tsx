@@ -104,7 +104,9 @@ async function Resultats({ searchParams }: Props) {
             Aucun Pokémon ne correspond à cette recherche.
           </p>
         ) : (
-          <GrillePokemons pokemons={pokemons} />
+          // T076 — 6 premières images chargées tout de suite : la 1re rangée sur grand écran, les
+          // trois premières sur téléphone ; la 1re carte est l'élément LCP de la page.
+          <GrillePokemons pokemons={pokemons} prioritaires={6} />
         )}
       </div>
       <Pagination page={pageCourante} nombrePages={nombrePages} q={q} type={type} tri={tri} />
