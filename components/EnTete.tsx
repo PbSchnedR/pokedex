@@ -15,7 +15,7 @@ const LIEN_NAV =
 // md: ; sur téléphone il occupe 3 lignes (~150 px) et défile avec la page (recette, défaut D2).
 export default function EnTete() {
   return (
-    <header className="relative z-10 md:sticky md:top-0border-b border-black/5 bg-surface/85 backdrop-blur dark:border-white/10 dark:bg-surface-sombre/85">
+    <header className="relative z-10 md:sticky md:top-0 border-b border-black/5 bg-surface/85 backdrop-blur dark:border-white/10 dark:bg-surface-sombre/85">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-2">
         <Link
           href="/"
