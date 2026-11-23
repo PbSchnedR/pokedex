@@ -6,6 +6,8 @@ import BadgeType from "@/components/BadgeType";
 import BoutonVider from "@/components/BoutonVider";
 import Icone from "@/components/Icone";
 import ListeSacocheReordonnable from "@/components/ListeSacocheReordonnable";
+import TypesCouverts from "@/components/TypesCouverts";
+import { useTypesCouverts } from "@/hooks/useTypesCouverts";
 import { LONGUEUR_SURNOM, TAILLE_SACOCHE, useSacoche } from "@/stores/sacoche";
 
 // ch. 9 — page client : la sacoche n'existe que dans le navigateur.
@@ -14,8 +16,8 @@ export default function PageSacoche() {
   const equipe = useSacoche((etat) => etat.equipe);
   const retirer = useSacoche((etat) => etat.retirer);
   const renommer = useSacoche((etat) => etat.renommer);
-  // Valeurs dérivées, calculées à l'affichage et jamais stockées.
-  const typesCouverts = [...new Set(equipe.flatMap((membre) => membre.types))];
+  // Valeurs dérivées, calculées à l'affichage et jamais stockées (bonus : hook useTypesCouverts).
+  const typesCouverts = useTypesCouverts();
   const emplacementsLibres = TAILLE_SACOCHE - equipe.length;
 
   return (
@@ -27,6 +29,7 @@ export default function PageSacoche() {
       <p className="mt-2 text-base text-doux dark:text-doux-sombre">
         {equipe.length} / {TAILLE_SACOCHE} Pokémon · {typesCouverts.length} type(s) couvert(s)
       </p>
+      <TypesCouverts />
 
       {/* Bonus FR-040 — la liste (cartes <li>, glisser-déposer, « Monter » / « Descendre ») est dans
           ListeSacocheReordonnable ; le contenu de chaque carte reste écrit ici. */}
