@@ -80,9 +80,9 @@ couche d'accès aux données. Bloque toutes les stories.
 
 ⏸ **STOP étape 7** (l'étape 5–6 visuelle est livrée avec US1)
 
-- [ ] T022 Créer `lib/conversion.ts` : `export const API = "https://pokeapi.co/api/v2"` et `versPokemon(brut)` (`taille = height / 10`, `poids = weight / 10`, image official-artwork avec repli sur le sprite `…/sprites/pokemon/${id}.png`, `types` et `stats` aplatis)
-- [ ] T023 Créer `lib/pokeapi.ts` : `appeler<T>(adresse)` (404 → `null`, autre `!reponse.ok` → `Error("La PokéAPI a répondu … pour …")`), `recupererPokemon(nom)` avec `"use cache"` + `cacheLife("days")` et `encodeURIComponent(nom.toLowerCase())`, `recupererPlusieurs(noms)` (`Promise.all` + filtre `(p): p is Pokemon => p !== null`), `recupererListe(limite = 24, decalage = 0)` en cache ; commenter `// ch. 7 —` aux points non évidents
-- [ ] T024 Documenter la couche d'accès aux données (pourquoi 404 → `null`, pourquoi le cache, pourquoi `Promise.all`) dans `docs/07-appels-api.md`
+- [X] T022 Créer `lib/conversion.ts` : `export const API = "https://pokeapi.co/api/v2"` et `versPokemon(brut)` (`taille = height / 10`, `poids = weight / 10`, image official-artwork avec repli sur le sprite `…/sprites/pokemon/${id}.png`, `types` et `stats` aplatis)
+- [X] T023 Créer `lib/pokeapi.ts` : `appeler<T>(adresse)` (404 → `null`, autre `!reponse.ok` → `Error("La PokéAPI a répondu … pour …")`), `recupererPokemon(nom)` avec `"use cache"` + `cacheLife("days")` et `encodeURIComponent(nom.toLowerCase())`, `recupererPlusieurs(noms)` (`Promise.all` + filtre `(p): p is Pokemon => p !== null`), `recupererListe(limite = 24, decalage = 0)` en cache ; commenter `// ch. 7 —` aux points non évidents
+- [X] T024 Documenter la couche d'accès aux données (pourquoi 404 → `null`, pourquoi le cache, pourquoi `Promise.all`) dans `docs/07-appels-api.md`
 
 **Checkpoint**: socle prêt (types, thème, coque, données).
 
