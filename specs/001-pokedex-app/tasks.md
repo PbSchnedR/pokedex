@@ -273,50 +273,50 @@ glisser-déposer → combat → quiz. Un STOP par bonus.
 - [X] T079 [US8] Créer `scripts/generer-donnees.mjs` (Node, lancé à la main) : `/pokemon-species/{id}` pour 1–1 025 par lots de 20 avec une pause entre lots → `data/pokemons-fr.json` (`[{ id, nom, nomFr }]` trié par `id`, `nomFr` = entrée `names` où `language.name === "fr"`) ; `/type/{nom}` pour les 18 types → `data/table-types.json` (`Record<attaquant, Record<défenseur, 0 | 0.5 | 1 | 2>>` d'après `double_damage_to`, `half_damage_to`, `no_damage_to`, sinon 1) ; l'exécuter et commiter les deux fichiers
 - [X] T080 [P] [US8] Créer `lib/texte.ts` : `normaliser(t)` = NFD, suppression des diacritiques (`\p{Diacritic}` ou repli `[̀-ͯ]`), minuscules, `trim` (research R6)
 - [X] T081 [P] [US8] Écrire `lib/texte.test.ts` : « Salamèche », « salameche » et « SALAMECHE  » donnent la même valeur ; « Évoli » → « evoli » ; chaîne vide → chaîne vide
-- [ ] T082 [US8] Créer `lib/noms-fr.ts` (accès à `data/pokemons-fr.json`, `nomFrancais(id)` avec repli sur `nom`) ; ajouter `nomFr: string` à `Pokemon` dans `types/pokemon.ts` et le remplir dans `versPokemon` (`lib/conversion.ts`) ; afficher `nomFr` dans `CartePokemon`, la fiche, `generateMetadata`, la sacoche **via `nomFrancais(membre.id)` à l'affichage — ne jamais ajouter `nomFr` à `Membre`** (valeur calculable : constitution II ; et forme de `pokedex-sacoche` inchangée, donc aucune migration), les `aria-label` ; adresses et clés restent en anglais
-- [ ] T083 [US8] Dans `Resultats` (`app/page.tsx`), la recherche compare `normaliser(q)` à `normaliser(nomFr)` **uniquement** (un nom anglais ne trouve rien) ; le tri par nom suit `nomFr` ; mesurer le poids ajouté au JS client (research R5) et documenter dans `docs/11-finitions.md`
+- [X] T082 [US8] Créer `lib/noms-fr.ts` (accès à `data/pokemons-fr.json`, `nomFrancais(id)` avec repli sur `nom`) ; ajouter `nomFr: string` à `Pokemon` dans `types/pokemon.ts` et le remplir dans `versPokemon` (`lib/conversion.ts`) ; afficher `nomFr` dans `CartePokemon`, la fiche, `generateMetadata`, la sacoche **via `nomFrancais(membre.id)` à l'affichage — ne jamais ajouter `nomFr` à `Membre`** (valeur calculable : constitution II ; et forme de `pokedex-sacoche` inchangée, donc aucune migration), les `aria-label` ; adresses et clés restent en anglais
+- [X] T083 [US8] Dans `Resultats` (`app/page.tsx`), la recherche compare `normaliser(q)` à `normaliser(nomFr)` **uniquement** (un nom anglais ne trouve rien) ; le tri par nom suit `nomFr` ; mesurer le poids ajouté au JS client (research R5) et documenter dans `docs/11-finitions.md`
 
 ⏸ **STOP bonus noms FR**
 
 ### Tri (FR-036)
 
-- [ ] T084 [US8] Créer `components/SelecteurTri.tsx` (liens serveur `?tri=numero` / `?tri=nom`, `aria-current`) ; dans `Resultats`, valider `tri` (`numero` | `nom`, sinon `numero`) et trier **avant** le découpage en pages ; `FiltreTypes`, `Pagination` et `BarreRecherche` conservent `tri`
+- [X] T084 [US8] Créer `components/SelecteurTri.tsx` (liens serveur `?tri=numero` / `?tri=nom`, `aria-current`) ; dans `Resultats`, valider `tri` (`numero` | `nom`, sinon `numero`) et trier **avant** le découpage en pages ; `FiltreTypes`, `Pagination` et `BarreRecherche` conservent `tri`
 
 ⏸ **STOP bonus tri**
 
 ### Bonus sacoche (FR-034)
 
-- [ ] T085 [P] [US8] Créer `hooks/useTypesCouverts.ts` (types distincts de `equipe`, calculés, jamais stockés) et `components/TypesCouverts.tsx` (badges) ; l'afficher dans `app/sacoche/page.tsx`
-- [ ] T086 [US8] Créer `components/AjoutRapide.tsx` (client) sur chaque carte, **hors du `Link`**, qui appelle `ajouter` ; désactivé avec libellé explicite si pleine ou déjà présent ; l'intégrer dans `components/CartePokemon.tsx`
+- [X] T085 [P] [US8] Créer `hooks/useTypesCouverts.ts` (types distincts de `equipe`, calculés, jamais stockés) et `components/TypesCouverts.tsx` (badges) ; l'afficher dans `app/sacoche/page.tsx`
+- [X] T086 [US8] Créer `components/AjoutRapide.tsx` (client) sur chaque carte, **hors du `Link`**, qui appelle `ajouter` ; désactivé avec libellé explicite si pleine ou déjà présent ; l'intégrer dans `components/CartePokemon.tsx`
 
 ⏸ **STOP bonus sacoche**
 
 ### Comparateur (FR-035)
 
-- [ ] T087 [US8] Créer `app/comparer/page.tsx` (lecture de `searchParams` `a` et `b` sous `<Suspense>`) et `app/comparer/layout.tsx` (`metadata` « Comparer ») ; `components/TableauComparaison.tsx` aligne les 6 statistiques et met en évidence la meilleure valeur de chaque ligne ; nom inconnu → message dans sa colonne, pas de 404 global
-- [ ] T088 [US8] Ajouter un lien « Comparer » sur la fiche vers `/comparer?a={nom}` ; créer `components/ChoixComparaison.tsx` (client) : champ de recherche qui écrit `b` dans l'adresse
+- [X] T087 [US8] Créer `app/comparer/page.tsx` (lecture de `searchParams` `a` et `b` sous `<Suspense>`) et `app/comparer/layout.tsx` (`metadata` « Comparer ») ; `components/TableauComparaison.tsx` aligne les 6 statistiques et met en évidence la meilleure valeur de chaque ligne ; nom inconnu → message dans sa colonne, pas de 404 global
+- [X] T088 [US8] Ajouter un lien « Comparer » sur la fiche vers `/comparer?a={nom}` ; créer `components/ChoixComparaison.tsx` (client) : champ de recherche qui écrit `b` dans l'adresse
 
 ⏸ **STOP bonus comparateur**
 
 ### Glisser-déposer (FR-040, research R9)
 
-- [ ] T089 [US8] Ajouter `deplacer(depuis, vers)` dans `stores/sacoche.ts` (indices hors bornes → état inchangé, ordre persistant)
-- [ ] T090 [US8] Créer `components/ListeSacocheReordonnable.tsx` : glisser-déposer HTML5 natif (`draggable`, `onDragStart`, `onDragOver`, `onDrop`) **et** boutons « Monter » / « Descendre » utilisables au clavier ; l'utiliser dans `app/sacoche/page.tsx`
+- [X] T089 [US8] Ajouter `deplacer(depuis, vers)` dans `stores/sacoche.ts` (indices hors bornes → état inchangé, ordre persistant)
+- [X] T090 [US8] Créer `components/ListeSacocheReordonnable.tsx` : glisser-déposer HTML5 natif (`draggable`, `onDragStart`, `onDragOver`, `onDrop`) **et** boutons « Monter » / « Descendre » utilisables au clavier ; l'utiliser dans `app/sacoche/page.tsx`
 
 ⏸ **STOP bonus glisser-déposer**
 
 ### Combat de sacoches (FR-039, research R10)
 
 - [X] T091 [P] [US8] Créer `lib/combat.ts` : `multiplicateur(attaquant, defenseur)` = max sur les types attaquants du produit des efficacités contre chaque type défenseur (`data/table-types.json`) ; `scoreDuel(A, B)` = somme des 6 stats de base de A × `multiplicateur(A.types, B.types)` ; `combattre(equipeA, equipeB)` → duels dans l'ordre, vainqueur par score (égalité = duel nul), issue = plus de duels gagnés (égalité = match nul) ; aucune part d'aléatoire ([data-model.md](./data-model.md))
-- [ ] T092 [US8] Écrire `lib/combat.test.ts` (à partir de `data/table-types.json`) : immunité ×0 (normal contre ghost), double faiblesse ×4 et double résistance ×0,25 (valeurs lues dans la table), choix du meilleur type attaquant, duel nul à score égal, match nul à victoires égales, même entrée = même résultat ; ajouter `lireAdversaire(valeur)` à `lib/parametres.ts` (1 à 6 ids entiers uniques entre 1 et 1 025, sinon `null`) avec ses tests dans `lib/parametres.test.ts`
-- [ ] T093 [US8] Créer `app/combat/page.tsx` (`"use client"`) et `app/combat/layout.tsx` (`metadata` « Combat ») : lire et valider `?adversaire=` (1 à 6 ids uniques entre 1 et 1 025, ramené à la taille de la sacoche) ; s'il est absent ou invalide, tirer une sacoche adverse et l'écrire avec `router.replace` ; charger les stats des deux équipes avec `chargerPokemon` ; `components/ResultatCombat.tsx` affiche chaque duel (scores, multiplicateurs, vainqueur) et l'issue ; bouton « Nouvel adversaire » ; sacoche vide → message et lien vers le Pokédex
+- [X] T092 [US8] Écrire `lib/combat.test.ts` (à partir de `data/table-types.json`) : immunité ×0 (normal contre ghost), double faiblesse ×4 et double résistance ×0,25 (valeurs lues dans la table), choix du meilleur type attaquant, duel nul à score égal, match nul à victoires égales, même entrée = même résultat ; ajouter `lireAdversaire(valeur)` à `lib/parametres.ts` (1 à 6 ids entiers uniques entre 1 et 1 025, sinon `null`) avec ses tests dans `lib/parametres.test.ts`
+- [X] T093 [US8] Créer `app/combat/page.tsx` (`"use client"`) et `app/combat/layout.tsx` (`metadata` « Combat ») : lire et valider `?adversaire=` (1 à 6 ids uniques entre 1 et 1 025, ramené à la taille de la sacoche) ; s'il est absent ou invalide, tirer une sacoche adverse et l'écrire avec `router.replace` ; charger les stats des deux équipes avec `chargerPokemon` ; `components/ResultatCombat.tsx` affiche chaque duel (scores, multiplicateurs, vainqueur) et l'issue ; bouton « Nouvel adversaire » ; sacoche vide → message et lien vers le Pokédex
 
 ⏸ **STOP bonus combat**
 
 ### Quiz silhouettes (FR-038, research R11)
 
-- [ ] T094 [US8] Créer `app/quiz/page.tsx` et `app/quiz/layout.tsx` (`metadata` « Quiz ») ; `components/Quiz.tsx` (client) : tirage via `/api/aleatoire`, image en `brightness-0` avec un `alt` qui ne révèle pas le nom (« Silhouette mystère »), saisie libre avec libellé, réponse vide refusée, comparaison `normaliser(saisie) === normaliser(nomFr)`, révélation + « Juste » / « Faux », bouton « Suivant »
-- [ ] T095 [US8] Ajouter les liens « Combat » et « Quiz » dans `components/EnTete.tsx` (via `LienNav`) ; documenter chaque bonus et ses écarts dans `docs/11-finitions.md` (section « Pour aller plus loin ») ; rejouer [quickstart.md](./quickstart.md) US1–US7 pour vérifier l'absence de régression
+- [X] T094 [US8] Créer `app/quiz/page.tsx` et `app/quiz/layout.tsx` (`metadata` « Quiz ») ; `components/Quiz.tsx` (client) : tirage via `/api/aleatoire`, image en `brightness-0` avec un `alt` qui ne révèle pas le nom (« Silhouette mystère »), saisie libre avec libellé, réponse vide refusée, comparaison `normaliser(saisie) === normaliser(nomFr)`, révélation + « Juste » / « Faux », bouton « Suivant »
+- [X] T095 [US8] Ajouter les liens « Combat » et « Quiz » dans `components/EnTete.tsx` (via `LienNav`) ; documenter chaque bonus et ses écarts dans `docs/11-finitions.md` (section « Pour aller plus loin ») ; rejouer [quickstart.md](./quickstart.md) US1–US7 pour vérifier l'absence de régression
 
 ⏸ **STOP bonus quiz**
 
