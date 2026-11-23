@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Pokemon } from "@/types/pokemon";
 import { teinteType } from "@/lib/types";
+import AjoutRapide from "./AjoutRapide";
 import BadgeType from "./BadgeType";
 import BoutonFavori from "./BoutonFavori";
 
@@ -60,6 +61,12 @@ export default function CartePokemon({ pokemon, titre: Titre = "h2" }: { pokemon
       {/* ch. 9 — un bouton dans un lien pose un problème d'accessibilité et de clic : il est
           hors du Link, positionné sur la carte (relative). */}
       <BoutonFavori nom={pokemon.nom} className="absolute right-4 top-4 z-10" />
+      {/* Bonus FR-034 — ajout rapide, hors du Link lui aussi, à l'opposé de l'étoile. Seuls les
+          champs d'un membre traversent la frontière serveur → client (pas les statistiques). */}
+      <AjoutRapide
+        pokemon={{ id: pokemon.id, nom: pokemon.nom, image: pokemon.image, types: pokemon.types }}
+        className="absolute left-4 top-4 z-10"
+      />
     </article>
   );
 }
