@@ -3,12 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import type { CSSProperties, DragEvent, ReactNode } from "react";
 import Icone from "@/components/Icone";
+import { nomFrancais } from "@/lib/noms-fr";
 import { teinteType } from "@/lib/types";
 import { useSacoche, type Membre } from "@/stores/sacoche";
 
 type Sens = "monter" | "descendre";
 
-const nomAffiche = (membre: Membre) => membre.surnom || membre.nom;
+// Bonus FR-033 — le nom français se déduit du numéro : il n'est jamais stocké dans Membre.
+const nomAffiche = (membre: Membre) => membre.surnom || nomFrancais(membre.id, membre.nom);
 
 // Bonus FR-040 (research R9) — glisser-déposer HTML5 natif, sans bibliothèque, doublé de boutons
 // « Monter » / « Descendre » pour le clavier et le tactile (le glisser HTML5 ne marche pas au

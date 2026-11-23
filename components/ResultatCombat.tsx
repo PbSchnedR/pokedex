@@ -39,7 +39,7 @@ function Combattant({ pokemon, camp, multiplicateur, score, gagnant }: PropsComb
       }`}
     >
       <div className="relative h-28 overflow-hidden rounded-xl bg-radial-[at_50%_35%] from-(--teinte)/35 to-(--teinte)/10">
-        <Image src={pokemon.image} alt={pokemon.nom} width={96} height={96} className="mx-auto size-full object-contain p-2 drop-shadow-lg" />
+        <Image src={pokemon.image} alt={pokemon.nomFr} width={96} height={96} className="mx-auto size-full object-contain p-2 drop-shadow-lg" />
       </div>
       <div className="flex grow flex-col p-2">
         <p className="text-xs font-semibold text-doux dark:text-doux-sombre">{camp}</p>
@@ -47,7 +47,7 @@ function Combattant({ pokemon, camp, multiplicateur, score, gagnant }: PropsComb
         {gagnant ? (
           <span className="absolute left-4 top-4 rounded-full bg-pokedex px-2 py-0.5 text-xs font-bold text-white">Vainqueur</span>
         ) : null}
-        <p className="truncate text-base font-bold capitalize">{pokemon.nom}</p>
+        <p className="truncate text-base font-bold">{pokemon.nomFr}</p>
         <div className="mt-1 flex flex-wrap gap-1">
           {pokemon.types.map((type) => (
             <BadgeType key={type} type={type} />
@@ -115,7 +115,7 @@ export default function ResultatCombat({
                     "Égalité"
                   ) : (
                     <>
-                      <span className="capitalize">{duel.vainqueur === "a" ? duel.a.nom : duel.b.nom}</span> l&apos;emporte
+                      {duel.vainqueur === "a" ? duel.a.nomFr : duel.b.nomFr} l&apos;emporte
                     </>
                   )}
                 </p>

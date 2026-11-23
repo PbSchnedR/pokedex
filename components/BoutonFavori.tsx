@@ -5,7 +5,16 @@ import Icone from "./Icone";
 
 // ch. 9 — sélecteurs à une valeur : le bouton ne se réaffiche que si SON état change.
 // Étoile vide / pleine en SVG Phosphor (décision Q-T012-c) au lieu de « ☆ / ★ ».
-export default function BoutonFavori({ nom, className = "" }: { nom: string; className?: string }) {
+// Bonus FR-033 — `nom` (API) reste la clé stockée ; `libelle` (nom français) n'est qu'affiché.
+export default function BoutonFavori({
+  nom,
+  libelle = nom,
+  className = "",
+}: {
+  nom: string;
+  libelle?: string;
+  className?: string;
+}) {
   const actif = useFavoris((etat) => etat.noms.includes(nom));
   const basculer = useFavoris((etat) => etat.basculer);
   return (
@@ -13,7 +22,7 @@ export default function BoutonFavori({ nom, className = "" }: { nom: string; cla
       type="button"
       onClick={() => basculer(nom)}
       aria-pressed={actif}
-      aria-label={actif ? `Retirer ${nom} des favoris` : `Ajouter ${nom} aux favoris`}
+      aria-label={actif ? `Retirer ${libelle} des favoris` : `Ajouter ${libelle} aux favoris`}
       className={`grid size-10 place-items-center rounded-full bg-surface shadow-sm transition-transform duration-150
                   hover:scale-110 active:scale-90 focus-visible:outline-2 focus-visible:outline-offset-2
                   focus-visible:outline-pokedex motion-reduce:transition-none dark:bg-surface-sombre
