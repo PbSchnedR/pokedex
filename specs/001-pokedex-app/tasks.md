@@ -110,7 +110,7 @@ Phase 5 (US3), comme dans le cours (étape 14).
 
 ⏸ **STOP étape 8**
 
-- [ ] T031 [US1] Étape 9 : `app/page.tsx` affiche `recupererListe(24)` dans `GrillePokemons` ; supprimer `data/exemples.ts` ; vérifier que le deuxième affichage est nettement plus rapide
+- [X] T031 [US1] Étape 9 : `app/page.tsx` affiche `recupererListe(24)` dans `GrillePokemons` ; supprimer `data/exemples.ts` ; vérifier que le deuxième affichage est nettement plus rapide
 
 ⏸ **STOP étape 9**
 

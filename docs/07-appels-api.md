@@ -75,3 +75,15 @@
 - **Écart d'ordre** : `data/exemples.ts` est supprimé dès l'étape 8, comme le demande la liste de
   l'étape 8 du cours (la tâche T031 le plaçait à l'étape 9) ; plus aucun fichier ne l'importait.
 - **Fichiers** : `app/page.tsx`, `data/exemples.ts` (supprimé).
+
+## Étape 9 — la grille complète
+
+- **Point du cours** : ch. 7, étape 9 — `app/page.tsx` affiche `recupererListe(24)` dans
+  `GrillePokemons` ; appels en parallèle ; cache de plusieurs jours ; « le deuxième affichage est
+  nettement plus rapide ».
+- **Vérifié** (serveur de développement) :
+  - 24 cartes, n° 1 à 24 dans l'ordre des numéros (#001 Bulbasaur → #024 Arbok), à 375 px
+    (2 colonnes, pas de défilement horizontal) et à 1 280 px (6 colonnes), en clair et en sombre ;
+  - temps de réponse de `/` mesurés avec `curl` : **4,07 s** à la première visite (1 appel de liste
+    + 24 appels de détail), puis **0,20 s** et **0,28 s** : les visites suivantes lisent le cache.
+- **Fichiers** : `app/page.tsx`.

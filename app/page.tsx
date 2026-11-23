@@ -1,13 +1,15 @@
-import CartePokemon from "@/components/CartePokemon";
-import { recupererPokemon } from "@/lib/pokeapi";
+import GrillePokemons from "@/components/GrillePokemons";
+import { recupererListe } from "@/lib/pokeapi";
 
-// Étape 8 (temporaire) : une seule carte, chargée depuis l'API par la couche d'accès aux données.
+// Étape 9 : les 24 premiers Pokémon, chargés en parallèle et mis en cache (ch. 7).
 export default async function Accueil() {
-  const pikachu = await recupererPokemon("pikachu");
-  if (!pikachu) return <p>Pokémon introuvable.</p>;
+  const pokemons = await recupererListe(24);
   return (
-    <div className="w-48">
-      <CartePokemon pokemon={pikachu} />
-    </div>
+    <>
+      <h1 className="text-3xl font-extrabold tracking-tight font-stretch-85%">Pokédex</h1>
+      <div className="mt-6">
+        <GrillePokemons pokemons={pokemons} />
+      </div>
+    </>
   );
 }
