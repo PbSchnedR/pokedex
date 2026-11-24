@@ -84,3 +84,18 @@
   une fiche → aucun (captures à 375 px, clair et sombre).
 - **Fichiers** : `components/LienNav.tsx`, `components/EnTete.tsx`,
   `components/IndicateurSacoche.tsx`.
+
+## Bonus « Monde Pokémon » — `useCompteurClics` (spec 002, hors cours)
+
+- **Point du cours** : ch. 10 — `useRef` pour une valeur qui ne doit pas provoquer d'affichage,
+  `useCallback` pour une fonction stable, hook personnalisé dans `hooks/`, rien lu pendant le
+  rendu.
+- **Choix** : les horodatages des clics sur le titre vivent dans un `useRef` ; la fonction renvoyée
+  est appelée depuis `onClick` et renvoie vrai à la 5e activation en moins de 3 s. La règle
+  elle-même est une fonction pure (`lib/compteurClics.ts`, heure passée en paramètre) testée sans
+  faux minuteurs. `LogoPokedex` vit dans l'en-tête du gabarit, qui reste monté d'une page à
+  l'autre : le compte survit à la navigation vers l'accueil provoquée par les premiers clics.
+- **Alternatives écartées** : `useState` (un affichage par clic, pour rien) ; un `useEffect` qui
+  écoute les clics sur le document (le lien a déjà son événement).
+- **Fichiers** : `hooks/useCompteurClics.ts`, `lib/compteurClics.ts`, `lib/compteurClics.test.ts`,
+  `components/LogoPokedex.tsx`. Voir [bonus-monde-pokemon.md](bonus-monde-pokemon.md).

@@ -1,9 +1,9 @@
-import Link from "next/link";
 import { Suspense } from "react";
 import BoutonHasard from "./BoutonHasard";
 import BoutonTheme from "./BoutonTheme";
 import CompteurFavoris from "./CompteurFavoris";
 import IndicateurSacoche from "./IndicateurSacoche";
+import LogoPokedex from "./LogoPokedex";
 import LienNav from "./LienNav";
 
 const LIEN_NAV =
@@ -17,12 +17,7 @@ export default function EnTete() {
   return (
     <header className="relative z-10 md:sticky md:top-0 border-b border-black/5 bg-surface/85 backdrop-blur dark:border-white/10 dark:bg-surface-sombre/85">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-2">
-        <Link
-          href="/"
-          className="rounded-full py-2 text-base font-extrabold tracking-tight font-stretch-85% focus-visible:outline-2 focus-visible:outline-pokedex dark:focus-visible:outline-pokedex-sombre"
-        >
-          Mon Pokédex
-        </Link>
+        <LogoPokedex />
         <nav aria-label="Navigation principale" className="order-last flex w-full flex-wrap items-center gap-x-2 gap-y-1 lg:order-none lg:ml-auto lg:w-auto">
             {/* ch. 10 — usePathname dans un composant client : chaque lien sous <Suspense>, avec
                 son texte en repli. */}

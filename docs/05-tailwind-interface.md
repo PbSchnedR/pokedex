@@ -228,3 +228,22 @@ décalage) : aucun écart à justifier, et la durée reste sous 0,5 s.
   Lighthouse (étape 18) plutôt que d'ajouter un réglage non demandé maintenant.
 - **Fichiers** : `components/BadgeType.tsx`, `components/CartePokemon.tsx`,
   `components/GrillePokemons.tsx`, `app/globals.css` (`.carte::before`).
+
+## Bonus « Monde Pokémon » — le cube de la porte secrète (spec 002, hors cours)
+
+- **Point du cours** : ch. 5 — animation de moins de 0,5 s, sur `transform` et `opacity`
+  uniquement, désactivée par `motion-reduce:` ; couleurs du `@theme` ; pas de classe construite
+  dynamiquement.
+- **Choix** : un cube de 6 faces en CSS 3D (`perspective`, `transform-style: preserve-3d`, une
+  face = `rotateX/rotateY` + `translateZ(3rem)`), couleurs `type-grass` et `type-ground` du thème,
+  aucune image ni texture d'un autre jeu. Il se pose en tournant (`transform` seul ; le fondu
+  vient d'`animate-apparition` sur le contenu de la fenêtre, car une opacité animée sur l'élément
+  `preserve-3d` aplatit le cube dans Chrome — constaté sur capture) : `--animate-cube` (0,45 s,
+  `ease-out`) déclarée dans `@theme` à côté d'`apparition`. L'état final de l'animation est aussi
+  la pose du cube écrite dans ses classes : avec `motion-reduce:animate-none`, il apparaît
+  directement à sa place. Les 6 faces sont écrites en entier dans une table (`FACES`).
+- **Alternatives écartées** : `@starting-style` (variante `starting:`, rendu moins sûr pour les
+  descendants d'un `<dialog>` qui s'ouvre) ; une bibliothèque d'animation (hors pile, déjà écartée
+  plus haut) ; une image de bloc (texture d'un autre jeu).
+- **Fichiers** : `components/PorteMondePokemon.tsx`, `app/globals.css`. Détails du bonus :
+  [bonus-monde-pokemon.md](bonus-monde-pokemon.md).
