@@ -394,3 +394,18 @@ qui renvoie les types présents dans la sacoche »).
 - **Fichiers** : `lib/types-couverts.ts`, `lib/types-couverts.test.ts`,
   `hooks/useTypesCouverts.ts`, `components/TypesCouverts.tsx`, `components/AjoutRapide.tsx`,
   `components/Icone.tsx`, `components/CartePokemon.tsx`, `app/sacoche/page.tsx`.
+
+## Bonus « Monde Pokémon » — la sacoche emportée dans le jeu (spec 002, hors cours)
+
+- **Point du cours** : ch. 9 — le store reste la seule source de la sacoche ; ch. 3 — `Pick`.
+- **Choix** : à l'ouverture de la porte secrète, `LogoPokedex` lit la sacoche **une fois**, dans
+  l'événement (`useSacoche.getState().equipe`) : aucun abonnement, donc aucun nouvel affichage de
+  l'en-tête quand la sacoche change. `creerCodeSacoche` (`lib/codeSacoche.ts`, fonction pure et
+  testée) ne garde que `id` et `surnom` (`MembreTransfert = Pick<Membre, "id" | "surnom">`) et
+  produit `PKMD1.<base64url>.<empreinte>` ; le lien du jeu devient `…/?sacoche=<code>`. Sacoche
+  vide → `null` → lien sans paramètre.
+- **Alternatives écartées** : un bouton « Exporter » avec champ à copier sur la page Sacoche
+  (prévu pour l'ancienne version avec commande `/sacoche` en jeu ; inutile maintenant que le lien
+  transporte le code) ; un sélecteur Zustand dans l'en-tête (réaffichages pour rien).
+- **Fichiers** : `lib/codeSacoche.ts`, `lib/codeSacoche.test.ts`, `components/LogoPokedex.tsx`,
+  `lib/mondePokemon.ts`. Voir [bonus-monde-pokemon.md](bonus-monde-pokemon.md).

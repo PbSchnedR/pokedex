@@ -78,6 +78,16 @@
     from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: none; }
   }
+
+  /* Bonus « Monde Pokémon » (spec 002) — le cube se pose en tournant : 0,45 s, transform
+     seulement (le fondu vient d'`apparition` sur le contenu : une opacité animée sur l'élément
+     preserve-3d l'aplatirait) ; l'état final est aussi la pose du cube sous motion-reduce. */
+  --animate-cube: cube 0.45s ease-out both;
+
+  @keyframes cube {
+    from { transform: rotateX(-80deg) rotateY(-160deg) scale(0.4); }
+    to { transform: rotateX(-22deg) rotateY(38deg); }
+  }
 }
 
 /* ch. 6 — police chargée par next/font (variable posée sur <html> dans layout.tsx). */

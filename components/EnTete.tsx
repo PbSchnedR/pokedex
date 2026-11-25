@@ -1,5 +1,5 @@
-import Link from "next/link";
 import BoutonTheme from "./BoutonTheme";
+import LogoPokedex from "./LogoPokedex";
 
 // Refonte « Console de poche » — bande du haut de la coque : la marque imprimée (lien vers
 // l'accueil, ch. 6) et l'interrupteur du rétroéclairage (thème). Les touches de navigation sont
@@ -8,12 +8,11 @@ import BoutonTheme from "./BoutonTheme";
 export default function EnTete() {
   return (
     <header className="tete">
-      <Link
-        href="/"
+      {/* Bonus « Monde Pokémon » (spec 002) : la marque imprimée sur la coque est aussi l'entrée
+          secrète (5 activations) ; pour tout le monde, elle reste le lien d'accueil. */}
+      <LogoPokedex
         className="sur-coque rounded-md px-1 font-pixel text-xl leading-none [text-shadow:0_1px_0_rgb(90_0_8/0.45)] lg:text-3xl"
-      >
-        Mon Pokédex
-      </Link>
+      />
       <BoutonTheme />
     </header>
   );
